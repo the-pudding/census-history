@@ -1,6 +1,6 @@
 {
   "title": "The Evolution of the American Census",
-  "description": "What changes each decade, what stays the same, and what do the questions say about our culture and society?",
+  "description": "What changes each decade, what stays the same, and what do the questions say about American culture and society?",
   "site": "https://pudding.cool",
   "siteName": "The Pudding",
   "url": "https://pudding.cool/year/month/name/",
@@ -12,6 +12,5 @@
     "url": "https://pudding.cool/author/alec-barrett",
     "twitterHandle": "@alecbarrett"
   },
-  "analytics": "",
-  "lorem": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mollis neque sit amet sollicitudin vehicula. Maecenas fringilla mi non lacus mattis elementum. Curabitur dignissim faucibus justo."
+  "analytics": ""
 }

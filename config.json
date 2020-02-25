@@ -1,21 +1,25 @@
 {
-	"google": {
-		"doc": [
-			{
-				"id": "190qoOvrJNBn_Fo1Y5nMTY7Or9VEYwnRN5v1VezOn-E0",
-				"filepath": "data/patrons.json"
-			},
-			{
-				"id": "",
-				"filepath": ""
-			}
-		],
-		"sheet": [
-			{
-				"id": "",
-				"gid": "",
-				"filepath": ""
-			}
-		]
-	}
+  "google": {
+    "doc": [
+      {
+        "id": "190qoOvrJNBn_Fo1Y5nMTY7Or9VEYwnRN5v1VezOn-E0",
+        "filepath": "data/patrons.json"
+      },
+      {
+        "id": "1HflS-wcey1u2VnYQck95c1TW5Xp8yW7kXLngIw8xZAk",
+        "filepath": "data/textContent.json"
+      },
+      {
+        "id": "1W0PAEN5esB0POvFS-W5pO_EJ7kExgzkUZHCLxY_Qbms",
+        "filepath": "src/assets/data/storyMenu.json"
+      }
+    ],
+    "sheet": [
+      {
+        "id": "",
+        "gid": "",
+        "filepath": ""
+      }
+    ]
+  }
 }

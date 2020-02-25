@@ -8,11 +8,11 @@ const {
   UNIT,
   ASKED_OF,
   ANSWER_TYPE,
+  YEAR,
+  UID,
+  QUESTION,
   MARGIN,
   MOBILE_BREAKPT,
-  THEME_ECON,
-  THEME_RACE,
-  THEME_IMMIGR,
   sortedCategories,
   years
 } = Constants;
@@ -20,38 +20,10 @@ const {
 let state = {
   dataQuestions: [],
   dataLinks: [],
-  storyMenu: [
-    {
-      key: "econ",
-      label: THEME_ECON,
-      introText:
-        "In tortor nunc, imperdiet et mauris a, mattis tempus nisl. Vivamus et iaculis ex, at ullamcorper neque. Nullam pretium velit a mauris lacinia scelerisque. Morbi eget commodo mauris. Curabitur nec volutpat lectus. Praesent eget urna odio. Nunc sapien ante, bibendum vel augue eu, vestibulum pharetra sapien.",
-      steps: [
-        {
-          key: "",
-          label: "",
-          text: "",
-          filters: {},
-          position: 0
-        }
-      ]
-    },
-    {
-      key: "race",
-      label: THEME_RACE,
-      introText:
-        "Nam tristique sit amet enim quis facilisis. In nisl quam, lacinia vel nibh sed, sodales consectetur ante. Phasellus auctor, nisl at blandit tempor, nunc elit facilisis nibh, porttitor bibendum massa sem at ante. Sed sed malesuada lectus. Aliquam rhoncus ultrices iaculis. Aenean consectetur dignissim lobortis. Ut lacinia diam vel porttitor feugiat. Nam congue venenatis nisi, quis ultricies risus imperdiet quis.",
-      steps: [
-        {
-          key: "",
-          label: "",
-          text: "",
-          filters: {},
-          position: 0
-        }
-      ]
-    }
-  ],
+  storyMenu: [],
+  currentStoryKey: "",
+  currentStoryStepIndex: "",
+  currentPosition: 0,
   filters: [
     {
       key: CATEGORIES,
@@ -74,11 +46,10 @@ let state = {
       selectedValues: []
     }
   ],
-  currentPosition: 0,
   tooltip: {
     x: 0,
     y: 0,
-    content: ""
+    d: null
   },
   isMobile: window.innerWidth < MOBILE_BREAKPT,
   appHeight: window.innerHeight,
@@ -86,6 +57,7 @@ let state = {
 };
 
 function setState(nextState) {
+  console.log(nextState);
   const prevState = { ...state };
   state = { ...state, ...nextState };
   update(prevState);
@@ -100,8 +72,8 @@ function resize() {
 }
 
 function init() {
-  loadData(["questions.csv", "links.csv"])
-    .then(([rawQuestions, rawLinks]) => {
+  loadData(["questions.csv", "links.csv", "storyMenu.json"])
+    .then(([rawQuestions, rawLinks, { storyMenu }]) => {
       rawQuestions
         .sort(
           (a, b) =>
@@ -120,6 +92,7 @@ function init() {
           }
         });
       setState({
+        storyMenu,
         dataQuestions: rawQuestions,
         dataLinks: rawLinks,
         filters: state.filters.map(f => {
@@ -137,11 +110,26 @@ function init() {
     .catch(console.error);
 }
 
-function makeTooltip(x, y, d) {
-  d3.select(".interactive__tooltip")
-    .style("top", y + "px")
-    .style("left", x + "px")
-    .html(`${d.Year} ${d.Question}`);
+function makeTooltip({ x, y, d }) {
+  if (d) {
+    const { x: svgX } = d3
+      .select(".interactive__svg")
+      .node()
+      .getBoundingClientRect();
+
+    d3
+      .select(".interactive__tooltip")
+      .style("visibility", "visible")
+      .style("top", y + 10 + state.appHeight / 6 + "px")
+      .style("left", x + svgX + "px").html(`${d[UID]}<br/>
+      question: ${d[QUESTION]}<br/>
+      answer type: ${d[ANSWER_TYPE]}<br/>
+      unit: ${d[UNIT]}<br/>
+      ${d[ASKED_OF] ? `asked of: ${d[ASKED_OF]}` : ""}
+      `);
+  } else {
+    d3.select(".interactive__tooltip").style("visibility", "hidden");
+  }
 }
 
 function update(prevState) {
@@ -152,15 +140,11 @@ function update(prevState) {
     appHeight,
     appWidth,
     storyMenu,
+    tooltip,
     isMobile
   } = state;
   const svgHeight = 8.333 * appHeight;
   const svgWidth = isMobile ? appWidth : appWidth / 3;
-  const { x: svgX, y: svgY } = d3
-    .select(".interactive__svg")
-    .node()
-    .getBoundingClientRect();
-
   const colorScale = d3.scaleOrdinal([...d3.schemeSet1, ...d3.schemeSet2]);
 
   /**
@@ -174,7 +158,7 @@ function update(prevState) {
 
   // only works if dataQuestions is sorted by Year
   let indexByYear = 0;
-  let year = dataQuestions[0].Year;
+  let year = dataQuestions[0][YEAR];
 
   // position questions that are in filter
   const interimDataQuestions = dataQuestions
@@ -186,11 +170,11 @@ function update(prevState) {
       )
     );
   interimDataQuestions.forEach(e => {
-    if (e.Year === year) {
+    if (e[YEAR] === year) {
       e.indexByYear = indexByYear;
     } else {
       e.indexByYear = indexByYear = 0;
-      year = e.Year;
+      year = e[YEAR];
     }
     indexByYear++;
   });
@@ -199,7 +183,7 @@ function update(prevState) {
   const qsByYearLookup = qsByYearLookupSelector(interimDataQuestions);
   const maxYears = maxYearsSelector(interimDataQuestions);
   const xScale = d =>
-    svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d.Year)));
+    svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d[YEAR])));
 
   const nodes = new Map(
     interimDataQuestions.map(d => [
@@ -209,9 +193,9 @@ function update(prevState) {
         x: d.UID === "2010_ACS" ? svgWidth - 10 : xScale(d),
         y:
           d.UID === "2010_ACS"
-            ? yScale(d.Year) - appHeight / 6
-            : yScale(d.Year),
-        r: d.UID === "2010_ACS" ? 10 : 5
+            ? yScale(d[YEAR]) - appHeight / 6
+            : yScale(d[YEAR]),
+        r: d.UID === "2010_ACS" ? 10 : 200 / qsByYearLookup.get(d[YEAR])
       }
     ])
   );
@@ -237,8 +221,13 @@ function update(prevState) {
   /** DRAWING
    *
    */
-  d3.select(".interactive__dropdown")
-    .select("select")
+  const dropdown = d3.select(".interactive__dropdown").select("select");
+  dropdown.on("change", function(d) {
+    setState({
+      currentStoryKey: d3.event.target.value
+    });
+  });
+  dropdown
     .selectAll("option")
     .data(storyMenu)
     .join("option")
@@ -253,7 +242,7 @@ function update(prevState) {
     .data(years)
     .join("text")
     .attr("class", "label")
-    .attr("y", d => yScale(d) + 40) // vertically center
+    .attr("y", d => yScale(d) + 70) // vertically center
     .attr("x", svgWidth / 2)
     .text(d => d);
 
@@ -287,14 +276,25 @@ function update(prevState) {
       update => update.call(update => update.transition().attr("cx", d => d.x))
     )
     .attr("cy", d => d.y)
-    .attr("fill", d => (d["Age range"] ? "#ffffff" : colorScale(d.Categories)))
-    .attr("stroke", d => colorScale(d.Categories))
+    .attr("fill", d => (d["Age range"] ? "#ffffff" : colorScale(d[CATEGORIES])))
+    .attr("stroke", d => colorScale(d[CATEGORIES]))
     .attr("stroke-width", d => (d["Age range"] ? 2 : 0))
     .attr("r", d => d.r)
     .on("mouseenter", function(d) {
       const { x, y } = this.getBBox();
-      makeTooltip(svgX + x, svgY + y, d);
+      setState({
+        tooltip: {
+          x,
+          y,
+          d
+        }
+      });
+    })
+    .on("mouseleave", () => {
+      setState({ tooltip: { ...tooltip, d: null } });
     });
+
+  makeTooltip(tooltip);
 }
 
 export default { init, resize };

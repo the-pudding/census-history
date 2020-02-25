@@ -1,12 +1,11 @@
 export default {
   CATEGORIES: "Categories",
   UNIT: "Unit",
-  ASKED_OF: "Asked Of",
+  ASKED_OF: "Asked of",
   ANSWER_TYPE: "Answer Type",
-
-  THEME_ECON: "Economy and Employment",
-  THEME_RACE: "Race, Ethnicity, and Slavery",
-  THEME_IMMIGR: "Immigration and Citizenship",
+  UID: "UID",
+  QUESTION: "Question",
+  YEAR: "Year",
 
   MARGIN: 100,
   MOBILE_BREAKPT: 768,
