@@ -2,31 +2,115 @@
 .interactive
   position relative
 
-  &__dropdown
-    display block
-    margin 0 auto
-    margin-top 1rem
-    text-align center
-
   &__tooltip
     position absolute
-    transition top 0.5s, left 0.5s
+    transition top 0.5s, left 0.5s, opacity 0.25s
     pointer-events none
+    opacity 0
+    &.visible
+      opacity 1
 
-  &__svg
+  &__img
+    display block
+    height 300px
+    border 1px solid black
+    max-width $column-width
+    margin 0 auto
+    margin-top 1rem
+    text-align center
+
+  &__story-intro
+    display block
+    max-width $column-width
+    margin 0 auto
+    margin-top 1rem
+    text-align center
+
+  &__navigation
     display block
     margin 0 auto
     margin-top 1rem
     text-align center
 
-    .label
-      font-size 200px
-      text-anchor middle
-      font-family Arial, Helvetica, sans-serif
-      fill #dddddd
+  .sticky-container
+    display block
+    margin 0 auto
+    margin-top 1rem
+    text-align center
+    display flex
 
-    circle
-      fill-opacity 0.6
+    .interactive__story-step
+      position sticky
+      width 23.33%
+      left 5%
+      top 33.33vh
+      height 33.33vh
+      border 1px solid green
+      border-radius 10px
+      transition opacity 0.25s
+      opacity 0
+      &.visible
+        opacity 1
+
+      &-title
+        border-bottom 1px solid green
+        width 90%
+        height 15%
+      &-body
+        width 90%
+        vertical-align middle
+        font-size 12px
+        text-align left
+
+      .interactive__story-stepper
+        position absolute
+        height 100%
+        right 0px
+        top 0px
+        width 10%
+        border-left 1px solid green
+
+        &-dots
+          position absolute
+          height calc(100% - 48px)
+          top 24px
+          width 100%
+          display flex
+          flex-direction column
+          justify-content space-around
+          .step-dot
+            height 10px
+            width 10px
+            margin 0 auto
+            border-radius 2px
+            border 1px solid green
+            &.current
+              background-color green
+        &-up
+          position absolute
+          top 4px
+          left 4px
+          cursor pointer
+        &-down
+          position absolute
+          bottom 4px
+          left 4px
+          cursor pointer
+
+    .interactive__svg
+      display block
+      margin 0 auto 0 10%
+      margin-top 1rem
+      text-align center
+
+      .label
+        font-size 200px
+        text-anchor middle
+        font-family Arial, Helvetica, sans-serif
+        fill #dddddd
+
+      circle
+        fill-opacity 0.6
 
 .conclusion
   display block

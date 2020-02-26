@@ -10,3 +10,6 @@ export const qsByYearLookupSelector = questions =>
 
 export const maxYearsSelector = questions =>
   max(qsByYearLookupSelector(questions), d => d[1]);
+
+export const currentStorySelector = state =>
+  state.storyMenu.find(d => d.key === state.currentStoryKey);

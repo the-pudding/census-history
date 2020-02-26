@@ -1,7 +1,12 @@
 /* global d3 */
+import enterView from "enter-view";
 import loadData from "./load-data";
 import Constants from "./constants";
-import { qsByYearLookupSelector, maxYearsSelector } from "./selectors";
+import {
+  qsByYearLookupSelector,
+  maxYearsSelector,
+  currentStorySelector
+} from "./selectors";
 
 const {
   CATEGORIES,
@@ -17,13 +22,14 @@ const {
   years
 } = Constants;
 
+let firstDrawComplete = false;
 let state = {
   dataQuestions: [],
   dataLinks: [],
   storyMenu: [],
   currentStoryKey: "",
-  currentStoryStepIndex: "",
-  currentPosition: 0,
+  currentStoryStepIndex: null,
+  currentYearInView: years[0],
   filters: [
     {
       key: CATEGORIES,
@@ -92,7 +98,10 @@ function init() {
           }
         });
       setState({
-        storyMenu,
+        storyMenu: storyMenu.map(s => ({
+          ...s,
+          steps: s.steps.map(p => ({ ...p, year: +p.year }))
+        })),
         dataQuestions: rawQuestions,
         dataLinks: rawLinks,
         filters: state.filters.map(f => {
@@ -119,21 +128,116 @@ function makeTooltip({ x, y, d }) {
 
     d3
       .select(".interactive__tooltip")
-      .style("visibility", "visible")
-      .style("top", y + 10 + state.appHeight / 6 + "px")
-      .style("left", x + svgX + "px").html(`${d[UID]}<br/>
+      .style("top", y + 10 + state.appHeight / 3 + "px")
+      .style("left", x + svgX + "px")
+      .classed("visible", true).html(`${d[UID]}<br/>
       question: ${d[QUESTION]}<br/>
       answer type: ${d[ANSWER_TYPE]}<br/>
       unit: ${d[UNIT]}<br/>
       ${d[ASKED_OF] ? `asked of: ${d[ASKED_OF]}` : ""}
       `);
   } else {
-    d3.select(".interactive__tooltip").style("visibility", "hidden");
+    d3.select(".interactive__tooltip").classed("visible", false);
   }
+}
+
+function makeStoryStep(story, storyKey, storyStepIndex) {
+  const storyStepEl = d3.select(".interactive__story-step");
+  if (!story || storyKey === "") {
+    d3.select(".interactive__story-intro").html();
+    storyStepEl.classed("visible", false);
+    return;
+  }
+
+  d3.select(".interactive__story-intro").html(story.storyIntro);
+  storyStepEl.classed("visible", true);
+
+  const storyStep = story.steps[storyStepIndex];
+  storyStepEl
+    .select(".interactive__story-stepper-dots")
+    .selectAll(".step-dot")
+    .data(story.steps, d => d.key)
+    .join("div")
+    .attr("class", "step-dot")
+    .classed("current", (_, i) => i === storyStepIndex);
+
+  storyStepEl.select(".interactive__story-step-title").html(storyStep.label);
+  storyStepEl.select(".interactive__story-step-body").html(storyStep.text);
+  storyStepEl.select(".interactive__story-stepper-up").on("click", () => {
+    setState({
+      currentStoryStepIndex:
+        (storyStepIndex - 1 + story.steps.length) % story.steps.length
+    });
+  });
+  storyStepEl.select(".interactive__story-stepper-down").on("click", () => {
+    setState({
+      currentStoryStepIndex: (storyStepIndex + 1) % story.steps.length
+    });
+  });
+}
+
+function onEnterView(el) {
+  const isEnter = this.direction === "enter";
+  const { currentYearInView, currentStoryKey, currentStoryStepIndex } = state;
+  const currentStory = currentStorySelector(state);
+  const [d] = d3.select(el).data();
+  const i = years.indexOf(d);
+  let nextStoryStepIndex;
+  if (isEnter) {
+    // when a new year enters into view
+    // advance to the next story step IFF
+    // - there is a story
+    // - we are not at the end of the story
+    // - new year is greater/equal to next story step's year
+    nextStoryStepIndex =
+      currentStoryKey !== "" &&
+      currentStoryStepIndex !== null &&
+      currentStoryStepIndex < currentStory.steps.length - 1 &&
+      d >= currentStory.steps[currentStoryStepIndex + 1].year
+        ? currentStoryStepIndex + 1
+        : currentStoryStepIndex;
+  } else {
+    // when a year exits view
+    // same idea but IFF
+    // - we are not at the beginning of the story
+    // - exiting year is less than/equal to current story step's year
+    nextStoryStepIndex =
+      currentStoryKey !== "" &&
+      currentStoryStepIndex !== null &&
+      currentStoryStepIndex > 0 &&
+      d <= currentStory.steps[currentStoryStepIndex].year
+        ? currentStoryStepIndex - 1
+        : currentStoryStepIndex;
+  }
+  const nextYearInView = isEnter ? d : years[i - 1];
+  if (
+    (isEnter && d !== currentYearInView) ||
+    (!isEnter && d === currentYearInView && i !== 0)
+  ) {
+    setState({
+      currentYearInView: nextYearInView,
+      ...(nextStoryStepIndex === currentStoryStepIndex
+        ? {}
+        : { currentStoryStepIndex: nextStoryStepIndex })
+    });
+  }
+}
+
+function afterFirstDraw() {
+  enterView({
+    selector: ".label",
+    enter: onEnterView.bind({ direction: "enter" }),
+    exit: onEnterView.bind({ direction: "exit" }),
+    offset: 0.5,
+    once: false
+  });
 }
 
 function update(prevState) {
   const {
+    currentStoryKey,
+    currentStoryStepIndex,
+    currentYearInView,
     filters,
     dataQuestions,
     dataLinks,
@@ -146,6 +250,30 @@ function update(prevState) {
   const svgHeight = 8.333 * appHeight;
   const svgWidth = isMobile ? appWidth : appWidth / 3;
   const colorScale = d3.scaleOrdinal([...d3.schemeSet1, ...d3.schemeSet2]);
+
+  /**
+   * STORY NAVIGATION
+   */
+  const dropdown = d3.select(".intro__dropdown").select("select");
+  dropdown.on("change", function(d) {
+    setState({
+      currentStoryKey: d3.event.target.value,
+      currentStoryStepIndex: 0
+    });
+  });
+  dropdown
+    .selectAll("option")
+    .data([{ label: "CHOOSE A STORY" }, ...storyMenu])
+    .join("option")
+    .attr("value", d => d.key || "")
+    .text(d => d.label);
+
+  d3.select(".interactive__story-restart").on("click", function() {
+    setState({
+      currentStoryKey: "",
+      currentStoryStepIndex: null
+    });
+  });
 
   /**
    * NODES
@@ -218,21 +346,9 @@ function update(prevState) {
       return { ...d, sourceX, sourceY, targetX, targetY, Category };
     });
 
-  /** DRAWING
+  /** DRAWING VIZ
    *
    */
-  const dropdown = d3.select(".interactive__dropdown").select("select");
-  dropdown.on("change", function(d) {
-    setState({
-      currentStoryKey: d3.event.target.value
-    });
-  });
-  dropdown
-    .selectAll("option")
-    .data(storyMenu)
-    .join("option")
-    .text(d => d.label);
-
   d3.select(".interactive__svg")
     .attr("height", svgHeight)
     .attr("width", svgWidth);
@@ -294,7 +410,31 @@ function update(prevState) {
       setState({ tooltip: { ...tooltip, d: null } });
     });
 
+  /**
+   * TOOLTIP
+   */
   makeTooltip(tooltip);
+
+  /**
+   * STORY STEP
+   */
+  const currentStory = currentStorySelector(state);
+  makeStoryStep(currentStory, currentStoryKey, currentStoryStepIndex);
+  if (prevState.currentStoryKey !== currentStoryKey) {
+    d3.select(".interactive")
+      .node()
+      .scrollIntoView({ behavior: "smooth" });
+  } else if (prevState.currentStoryStepIndex !== currentStoryStepIndex) {
+    d3.selectAll(".interactive_g_labels .label")
+      .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
+      .node()
+      .scrollIntoView({ behavior: "smooth" });
+    // TODO this currently overshoots by 1/3 appHeight
+  }
+
+  if (!firstDrawComplete) {
+    afterFirstDraw();
+  }
 }
 
 export default { init, resize };

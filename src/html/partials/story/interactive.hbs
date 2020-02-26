@@ -1,13 +1,31 @@
-<div class='interactive'>
-  <div class='interactive__dropdown'>
-    <h4>Choose a story</h4>
-    <select></select>
-    <h4>or explore on your own below</h4>
+<div class='interactive' id='interactive'>
+  <div class='interactive__img'>STORY-SPECIFIC IMAGE PLACEHOLDER</div>
+  <div class='interactive__story-intro explore-mode'>{{textContent.exploreIntro}}</div>
+  <div class='interactive__story-intro story-mode'></div>
+
+  {{!-- sticky --}}
+  <div class='sticky-container'>
+    <div class='interactive__story-step'>
+      <div class='interactive__story-step-title'></div>
+      <div class='interactive__story-step-body'></div>
+      <div class='interactive__story-stepper'>
+        <img inline src='arrow-up.svg' class='interactive__story-stepper-up'>
+        <div class='interactive__story-stepper-dots'></div>
+        <img inline src='arrow-down.svg' class='interactive__story-stepper-down'>
+      </div>
+    </div>
+    <svg class='interactive__svg'>
+      <g class='interactive_g_labels'></g>
+      <g class='interactive_g_links'></g>
+      <g class='interactive_g_circles'></g>
+    </svg>
   </div>
+
+  <div class='interactive__navigation'>
+    Read on or <a class='interactive__story-restart' href="#intro__dropdown">return
+      to the top for another story</a>.
+  </div>
+
+  {{!-- absolute positioned elements --}}
   <div class='interactive__tooltip'></div>
-  <svg class='interactive__svg'>
-    <g class='interactive_g_labels'></g>
-    <g class='interactive_g_links'></g>
-    <g class='interactive_g_circles'></g>
-  </svg>
 </div>
