@@ -7,6 +7,7 @@ import {
   maxYearsSelector,
   currentStorySelector
 } from "./selectors";
+import getDynamicFontSize from "./utils/dynamic-font-size";
 
 const {
   CATEGORIES,
@@ -16,10 +17,15 @@ const {
   YEAR,
   UID,
   QUESTION,
+  AGE_RANGE,
+  OPTIONS,
   MARGIN,
   MOBILE_BREAKPT,
   sortedCategories,
-  years
+  years,
+  answerTypeLookup,
+  unitReverseLookup,
+  imageFilesLookup
 } = Constants;
 
 let firstDrawComplete = false;
@@ -61,6 +67,7 @@ let state = {
   appHeight: window.innerHeight,
   appWidth: window.innerWidth
 };
+const colorScale = d3.scaleOrdinal([...d3.schemeSet1, ...d3.schemeSet2]);
 
 function setState(nextState) {
   console.log(nextState);
@@ -126,16 +133,56 @@ function makeTooltip({ x, y, d }) {
       .node()
       .getBoundingClientRect();
 
-    d3
-      .select(".interactive__tooltip")
-      .style("top", y + 10 + state.appHeight / 3 + "px")
-      .style("left", x + svgX + "px")
-      .classed("visible", true).html(`${d[UID]}<br/>
-      question: ${d[QUESTION]}<br/>
-      answer type: ${d[ANSWER_TYPE]}<br/>
-      unit: ${d[UNIT]}<br/>
-      ${d[ASKED_OF] ? `asked of: ${d[ASKED_OF]}` : ""}
-      `);
+    let listItems = [];
+    let listTitle = "";
+    // these should be mutually exclusive but may not always be
+    if (d[OPTIONS]) {
+      listItems = d[OPTIONS].split(",");
+      listTitle = "Options provided";
+    } else if (d[AGE_RANGE]) {
+      listItems = d[AGE_RANGE].split(",");
+      listTitle = "Age categories";
+    }
+    d3.select(".interactive__tooltip")
+      .style("top", y + 190 + state.appHeight / 3 + "px")
+      .style("left", x + svgX - 120 + "px")
+      .style("background-color", colorScale(d[CATEGORIES]))
+      .classed("visible", true)
+      .html(
+        `<div class='interactive__tooltip_question' style='font-size:${getDynamicFontSize(
+          d[QUESTION]
+        )}px;'>${d[QUESTION]}</div>
+        <img class='image-question' src='assets/images/questions/${
+          imageFilesLookup[d[UID]]
+        }' >
+        <div class='interactive__tooltip_right-col'>
+          <div class='interactive__tooltip_right-col_unit'><img class='image-unit' src='assets/images/icons/census_unit_${
+            unitReverseLookup[d[UNIT]]
+          }.png' ><span>${d[UNIT]}</span></div>
+          <div class='interactive__tooltip_right-col_qtype'><img class='image-qtype' src='assets/images/icons/census_qtype_${
+            d[ANSWER_TYPE]
+          }.png' ><span>${answerTypeLookup[d[ANSWER_TYPE]]}</span></div>
+          ${
+            d[ASKED_OF]
+              ? `<div class='interactive__tooltip_right-col_asked-of'>
+                <img class='image-asked-of' src='assets/images/icons/alert-triangle.svg' >
+                <span>${d[ASKED_OF]}<span>
+              </div>`
+              : ""
+          }
+          ${
+            listItems.length
+              ? `<div class='interactive__tooltip_right-col_options'>
+              ${listTitle}:
+            <ul>
+              ${listItems.map(d => `<li>-${d.trim()}</li>`).join("")}
+            </ul>
+          </div>`
+              : ""
+          }
+        </div>
+        `
+      );
   } else {
     d3.select(".interactive__tooltip").classed("visible", false);
   }
@@ -249,7 +296,6 @@ function update(prevState) {
   } = state;
   const svgHeight = 8.333 * appHeight;
   const svgWidth = isMobile ? appWidth : appWidth / 3;
-  const colorScale = d3.scaleOrdinal([...d3.schemeSet1, ...d3.schemeSet2]);
 
   /**
    * STORY NAVIGATION
@@ -396,6 +442,7 @@ function update(prevState) {
     .attr("stroke", d => colorScale(d[CATEGORIES]))
     .attr("stroke-width", d => (d["Age range"] ? 2 : 0))
     .attr("r", d => d.r)
+    .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID])
     .on("mouseenter", function(d) {
       const { x, y } = this.getBBox();
       setState({
