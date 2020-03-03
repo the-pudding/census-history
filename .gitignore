@@ -8,3 +8,4 @@ dev
 dist
 svg
 src/assets
+scripts/two-n-deploy.sh

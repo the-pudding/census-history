@@ -30,6 +30,7 @@
     &_right-col
       grid-row 2 / 3
       grid-column 2 / 3
+      margin-top 10px
       &_qtype,
       &_unit,
       &_asked-of
@@ -44,7 +45,8 @@
       &_options
         padding 5px
         font-size 10px
-        ul
+        ul.wrap
+          overflow hidden
           columns 2
           column-gap 2px
         li
@@ -90,6 +92,7 @@
 
   .sticky-container
     display block
+    position relative
     margin 0 auto
     margin-top 1rem
     text-align center
@@ -155,7 +158,7 @@
 
     .interactive__svg
       display block
-      margin 0 auto 0 10%
+      margin 0 0 0 10%
       margin-top 1rem
       text-align center
 
@@ -169,6 +172,113 @@
         fill-opacity 0.6
         &.active
           stroke-width 2px
+
+    .interactive__history
+      display block
+      position relative
+      margin-left 3.333%
+      width 30%
+      &_flag
+        position absolute
+        border 1px solid brown
+        border-radius 5px
+        width 10%
+        text-align left
+        &_years
+          top -5px
+          font-size 12px
+        &_event
+          top 10px
+          font-size 10px
+          font-weight bold
+        &_years, &_event
+          position absolute
+          left 110%
+          min-width 120px
+          max-width 150px
+          background white
+    .interactive__filter-toggle
+      position sticky
+      top 10vh
+      left 25px
+      margin-right -24px
+      cursor pointer
+      opacity 0
+      transition opacity 0.5s
+      &.visible
+        opacity 1
+
+    .interactive__filters
+      position fixed
+      left -300px
+      width 200px
+      top 80px
+      transition left 0.5s
+      font-size 12px
+      border 1px solid gray
+      z-index 1
+      padding 0 5px
+      &.open
+        left 5%
+      .interactive__filter
+        position relative
+        display flex
+        flex-direction row
+        &:not(:last-child)
+          border-bottom 1px solid gray
+        &_label
+          font-weight bold
+          height 20px
+        &_multiselect
+          position absolute
+          min-height 20px
+          top 20px
+          left 0px
+          width 188px
+          &_option
+            display block
+            position relative
+            transition height, padding
+            transition-duration 0.25s
+            height 0
+            padding 0 10px 0 20px
+            background-color white
+            opacity 0.95
+            overflow hidden
+            text-align left
+            font-size 10px
+            &:hover
+              background-color #dddddd
+            &:before
+              content: ''
+              position absolute
+              left 4px
+              top 3px
+              height 10px
+              width 10px
+              border 1px solid gray
+            &.selected
+              font-weight bold
+              &:after
+                content: ''
+                position absolute
+                left 8px
+                top 3px
+                height 8px
+                width 3px
+                border-left 1px solid gray
+                border-top 1px solid gray
+                transform rotate(220deg)
+        &:focus
+          z-index 10
+          .interactive__filter_multiselect_option
+              height 20px
+              padding-top 2px
+              border-bottom 1px solid white
+
+
+
+
 
 .conclusion
   display block

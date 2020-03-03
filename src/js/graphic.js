@@ -8,6 +8,7 @@ import {
   currentStorySelector
 } from "./selectors";
 import getDynamicFontSize from "./utils/dynamic-font-size";
+import immutableAddRemove from "./utils/immutable-add-remove";
 
 const {
   CATEGORIES,
@@ -19,6 +20,10 @@ const {
   QUESTION,
   AGE_RANGE,
   OPTIONS,
+  DEFAULT,
+  START_YEAR,
+  END_YEAR,
+  EVENT,
   MARGIN,
   MOBILE_BREAKPT,
   sortedCategories,
@@ -32,9 +37,10 @@ let firstDrawComplete = false;
 let state = {
   dataQuestions: [],
   dataLinks: [],
+  dataHistory: [],
   storyMenu: [],
-  currentStoryKey: "",
-  currentStoryStepIndex: null,
+  currentStoryKey: DEFAULT,
+  currentStoryStepIndex: 0,
   currentYearInView: years[0],
   filters: [
     {
@@ -65,7 +71,8 @@ let state = {
   },
   isMobile: window.innerWidth < MOBILE_BREAKPT,
   appHeight: window.innerHeight,
-  appWidth: window.innerWidth
+  appWidth: window.innerWidth,
+  isFilterMenuOpen: false
 };
 const colorScale = d3.scaleOrdinal([...d3.schemeSet1, ...d3.schemeSet2]);
 
@@ -85,8 +92,8 @@ function resize() {
 }
 
 function init() {
-  loadData(["questions.csv", "links.csv", "storyMenu.json"])
-    .then(([rawQuestions, rawLinks, { storyMenu }]) => {
+  loadData(["questions.csv", "links.csv", "storyMenu.json", "history.csv"])
+    .then(([rawQuestions, rawLinks, { storyMenu }, history]) => {
       rawQuestions
         .sort(
           (a, b) =>
@@ -104,6 +111,20 @@ function init() {
             e.Categories = e.Categories.split(" - ")[0];
           }
         });
+      let stack = [];
+      history
+        .sort(
+          (a, b) =>
+            d3.ascending(a[START_YEAR], b[START_YEAR]) ||
+            d3.ascending(a[END_YEAR], b[END_YEAR])
+        )
+        .forEach(e => {
+          const i = stack.findIndex(
+            s => s[END_YEAR] <= e[START_YEAR] && s[START_YEAR] < e[START_YEAR]
+          );
+          e.xIndex = i === -1 ? stack.length : i;
+          stack[e.xIndex] = e;
+        });
       setState({
         storyMenu: storyMenu.map(s => ({
           ...s,
@@ -111,10 +132,15 @@ function init() {
         })),
         dataQuestions: rawQuestions,
         dataLinks: rawLinks,
+        dataHistory: history.map(d => ({
+          ...d,
+          [START_YEAR]: +d[START_YEAR],
+          [END_YEAR]: +d[END_YEAR]
+        })),
         filters: state.filters.map(f => {
-          const allValues = Array.from(
-            new Set(rawQuestions.map(d => d[f.key]))
-          );
+          let allValues = Array.from(
+            new Set(rawQuestions.map(d => d[f.key]).filter(d => !!d))
+          ).sort();
           return {
             ...f,
             allValues,
@@ -124,6 +150,64 @@ function init() {
       });
     })
     .catch(console.error);
+}
+
+function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
+  d3.select(".interactive__filter-toggle")
+    .classed("visible", currentYearInView > years[0])
+    .on("click", () => {
+      setState({
+        isFilterMenuOpen: !isFilterMenuOpen
+      });
+    });
+  const filtersEl = d3
+    .select(".interactive__filters")
+    .classed("open", isFilterMenuOpen);
+  const category = filtersEl
+    .selectAll(".interactive__filter")
+    .data(filters, d => d.key)
+    .join(enter => {
+      enter = enter.append("div").attr("class", "interactive__filter");
+      enter
+        .append("div")
+        .attr("class", "interactive__filter_label")
+        .text(d => d.key);
+      enter.append("div").attr("class", "interactive__filter_multiselect");
+      return enter;
+    })
+    .attr("class", "interactive__filter")
+    .attr("tabIndex", -1);
+  category
+    .select(".interactive__filter_multiselect")
+    .selectAll(".interactive__filter_multiselect_option")
+    .data(d =>
+      d.allValues.map(e => ({
+        label: d.key === ANSWER_TYPE ? answerTypeLookup[e] : e,
+        value: e,
+        selected: !!~d.selectedValues.indexOf(e),
+        key: d.key
+      }))
+    )
+    .join("div")
+    .attr("class", "interactive__filter_multiselect_option")
+    .classed("selected", d => d.selected)
+    .text(d => d.label)
+    .on("click", function(d) {
+      const filterIndex = filters.findIndex(f => f.key === d.key);
+      setState({
+        filters: [
+          ...filters.slice(0, filterIndex),
+          {
+            ...filters[filterIndex],
+            selectedValues: immutableAddRemove(
+              filters[filterIndex].selectedValues,
+              d.value
+            )
+          },
+          ...filters.slice(filterIndex + 1)
+        ]
+      });
+    });
 }
 
 function makeTooltip({ x, y, d }) {
@@ -144,8 +228,8 @@ function makeTooltip({ x, y, d }) {
       listTitle = "Age categories";
     }
     d3.select(".interactive__tooltip")
-      .style("top", y + 190 + state.appHeight / 3 + "px")
-      .style("left", x + svgX - 120 + "px")
+      .style("top", y + 200 + state.appHeight / 3 + "px")
+      .style("left", x + svgX - 150 + "px")
       .style("background-color", colorScale(d[CATEGORIES]))
       .classed("visible", true)
       .html(
@@ -159,9 +243,6 @@ function makeTooltip({ x, y, d }) {
           <div class='interactive__tooltip_right-col_unit'><img class='image-unit' src='assets/images/icons/census_unit_${
             unitReverseLookup[d[UNIT]]
           }.png' ><span>${d[UNIT]}</span></div>
-          <div class='interactive__tooltip_right-col_qtype'><img class='image-qtype' src='assets/images/icons/census_qtype_${
-            d[ANSWER_TYPE]
-          }.png' ><span>${answerTypeLookup[d[ANSWER_TYPE]]}</span></div>
           ${
             d[ASKED_OF]
               ? `<div class='interactive__tooltip_right-col_asked-of'>
@@ -170,11 +251,14 @@ function makeTooltip({ x, y, d }) {
               </div>`
               : ""
           }
+          <div class='interactive__tooltip_right-col_qtype'><img class='image-qtype' src='assets/images/icons/census_qtype_${
+            d[ANSWER_TYPE]
+          }.png' ><span>${answerTypeLookup[d[ANSWER_TYPE]]}</span></div>
           ${
             listItems.length
               ? `<div class='interactive__tooltip_right-col_options'>
               ${listTitle}:
-            <ul>
+            <ul class='${listItems.length > 10 ? "wrap" : ""}'>
               ${listItems.map(d => `<li>-${d.trim()}</li>`).join("")}
             </ul>
           </div>`
@@ -190,11 +274,6 @@ function makeTooltip({ x, y, d }) {
 
 function makeStoryStep(story, storyKey, storyStepIndex) {
   const storyStepEl = d3.select(".interactive__story-step");
-  if (!story || storyKey === "") {
-    d3.select(".interactive__story-intro").html();
-    storyStepEl.classed("visible", false);
-    return;
-  }
 
   d3.select(".interactive__story-intro").html(story.storyIntro);
   storyStepEl.classed("visible", true);
@@ -265,7 +344,8 @@ function onEnterView(el) {
       currentYearInView: nextYearInView,
       ...(nextStoryStepIndex === currentStoryStepIndex
         ? {}
-        : { currentStoryStepIndex: nextStoryStepIndex })
+        : { currentStoryStepIndex: nextStoryStepIndex }),
+      ...(nextYearInView === years[0] ? { isFilterMenuOpen: false } : {})
     });
   }
 }
@@ -288,11 +368,13 @@ function update(prevState) {
     filters,
     dataQuestions,
     dataLinks,
+    dataHistory,
     appHeight,
     appWidth,
     storyMenu,
     tooltip,
-    isMobile
+    isMobile,
+    isFilterMenuOpen
   } = state;
   const svgHeight = 8.333 * appHeight;
   const svgWidth = isMobile ? appWidth : appWidth / 3;
@@ -309,15 +391,15 @@ function update(prevState) {
   });
   dropdown
     .selectAll("option")
-    .data([{ label: "CHOOSE A STORY" }, ...storyMenu])
+    .data(storyMenu)
     .join("option")
     .attr("value", d => d.key || "")
     .text(d => d.label);
 
   d3.select(".interactive__story-restart").on("click", function() {
     setState({
-      currentStoryKey: "",
-      currentStoryStepIndex: null
+      currentStoryKey: DEFAULT,
+      currentStoryStepIndex: 0
     });
   });
 
@@ -333,13 +415,13 @@ function update(prevState) {
   // only works if dataQuestions is sorted by Year
   let indexByYear = 0;
   let year = dataQuestions[0][YEAR];
-
   // position questions that are in filter
   const interimDataQuestions = dataQuestions
     .slice()
     .filter(d =>
       filters.reduce(
-        (acc, f) => acc && f.selectedValues.indexOf(d[f.key]) > -1,
+        (acc, f) =>
+          acc && (d[f.key] === "" || f.selectedValues.indexOf(d[f.key]) > -1),
         true
       )
     );
@@ -421,6 +503,7 @@ function update(prevState) {
         update.call(update =>
           update
             .transition()
+            .duration(500)
             .attr("x1", d => d.sourceX)
             .attr("x2", d => d.targetX)
         )
@@ -434,14 +517,24 @@ function update(prevState) {
     .selectAll("circle")
     .data(Array.from(nodes.values()), d => d.UID)
     .join(
-      enter => enter.append("circle").attr("cx", d => d.x),
-      update => update.call(update => update.transition().attr("cx", d => d.x))
+      enter =>
+        enter
+          .append("circle")
+          .attr("cx", d => d.x)
+          .attr("r", d => d.r),
+      update =>
+        update.call(update =>
+          update
+            .transition()
+            .duration(500)
+            .attr("cx", d => d.x)
+            .attr("r", d => d.r)
+        )
     )
     .attr("cy", d => d.y)
     .attr("fill", d => (d["Age range"] ? "#ffffff" : colorScale(d[CATEGORIES])))
     .attr("stroke", d => colorScale(d[CATEGORIES]))
     .attr("stroke-width", d => (d["Age range"] ? 2 : 0))
-    .attr("r", d => d.r)
     .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID])
     .on("mouseenter", function(d) {
       const { x, y } = this.getBBox();
@@ -456,6 +549,11 @@ function update(prevState) {
     .on("mouseleave", () => {
       setState({ tooltip: { ...tooltip, d: null } });
     });
+
+  /**
+   * FILTERS
+   */
+  makeFilters(filters, isFilterMenuOpen, currentYearInView);
 
   /**
    * TOOLTIP
@@ -475,9 +573,37 @@ function update(prevState) {
     d3.selectAll(".interactive_g_labels .label")
       .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
       .node()
-      .scrollIntoView({ behavior: "smooth" });
-    // TODO this currently overshoots by 1/3 appHeight
+      .scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center"
+      });
   }
+
+  /**
+   * HISTORY FLAGS
+   */
+  d3.select(".interactive__history")
+    .selectAll(".interactive__history_flag")
+    .data(dataHistory)
+    .join("div")
+    .attr("class", "interactive__history_flag")
+    .style("top", d => yScale(d[START_YEAR]) + "px")
+    .style("left", d => 15 * d.xIndex + "%")
+    .style(
+      "height",
+      d =>
+        (d[START_YEAR] >= d[END_YEAR]
+          ? appHeight / 30
+          : yScale(d[END_YEAR]) - yScale(d[START_YEAR])) + "px"
+    )
+    .html(
+      d => `<div class='interactive__history_flag_years'>${d[START_YEAR]}${
+        d[END_YEAR] > d[START_YEAR] ? ` - ${d[END_YEAR]}` : ""
+      }</div>
+          <div class='interactive__history_flag_event'>${d[EVENT]}</div>
+    `
+    );
 
   if (!firstDrawComplete) {
     afterFirstDraw();

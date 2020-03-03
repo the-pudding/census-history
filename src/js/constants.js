@@ -11,8 +11,14 @@ export default {
   YEAR: "Year",
   OPTIONS: "Categorical options",
 
+  START_YEAR: "startYear",
+  END_YEAR: "endYear",
+  EVENT: "event",
+
   MARGIN: 100,
   MOBILE_BREAKPT: 768,
+
+  DEFAULT: "default",
 
   sortedCategories: [
     "[Multiple]",

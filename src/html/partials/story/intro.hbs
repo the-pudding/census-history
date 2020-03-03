@@ -10,7 +10,11 @@
 
 	<div class='intro__img'>IMAGE PLACEHOLDER</div>
 
-	<p class='intro__text'>{{textContent.introPara}}</p>
+	<div>
+		{{#each textContent.introPara}}
+		<p class='intro__text'>{{this}}</p>
+		{{/each}}
+	</div>
 
 	<p class='intro__disclaimer'>{{textContent.disclaimer}}</p>
 
