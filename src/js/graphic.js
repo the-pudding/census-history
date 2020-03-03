@@ -154,7 +154,11 @@ function init() {
 
 function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
   d3.select(".interactive__filter-toggle")
-    .classed("visible", currentYearInView > years[0])
+    .classed(
+      "visible",
+      currentYearInView > years[0] &&
+        currentYearInView < years[years.length - 1]
+    )
     .on("click", () => {
       setState({
         isFilterMenuOpen: !isFilterMenuOpen
@@ -230,12 +234,14 @@ function makeTooltip({ x, y, d }) {
     d3.select(".interactive__tooltip")
       .style("top", y + 200 + state.appHeight / 3 + "px")
       .style("left", x + svgX - 150 + "px")
-      .style("background-color", colorScale(d[CATEGORIES]))
+      // .style("border-color", colorScale(d[CATEGORIES]))
       .classed("visible", true)
       .html(
         `<div class='interactive__tooltip_question' style='font-size:${getDynamicFontSize(
           d[QUESTION]
-        )}px;'>${d[QUESTION]}</div>
+        )}px;background-color:${colorScale(d[CATEGORIES])};'>${
+          d[QUESTION]
+        }</div>
         <img class='image-question' src='assets/images/questions/${
           imageFilesLookup[d[UID]]
         }' >
@@ -300,6 +306,25 @@ function makeStoryStep(story, storyKey, storyStepIndex) {
       currentStoryStepIndex: (storyStepIndex + 1) % story.steps.length
     });
   });
+}
+
+function makeLegend(currentYearInView) {
+  const legendData = colorScale
+    .domain()
+    .sort()
+    .map(d => ({ in: d, out: colorScale(d) }));
+  d3.select(".interactive__legend")
+    .classed(
+      "visible",
+      currentYearInView > years[0] &&
+        currentYearInView < years[years.length - 1]
+    )
+    .selectAll(".interactive__legend_tile")
+    .data(legendData)
+    .join("div")
+    .attr("class", "interactive__legend_tile")
+    .style("background-color", d => d.out)
+    .text(d => d.in);
 }
 
 function onEnterView(el) {
@@ -559,6 +584,11 @@ function update(prevState) {
    * TOOLTIP
    */
   makeTooltip(tooltip);
+
+  /**
+   * LEGEND
+   */
+  makeLegend(currentYearInView);
 
   /**
    * STORY STEP

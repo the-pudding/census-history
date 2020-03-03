@@ -16,7 +16,7 @@ set-type-class(scale, lh = false)
             font-size: $type-size[scale].size
             if lh == true
                 line-height: $type-size[scale].line-height
-    
+
     else if scale == all
         for scale in $type-size
             .{scale}
@@ -45,7 +45,7 @@ set-type-size(scale, lh = false)
     else
         error('Not a defined type scale')
 
-			
+
 // -------------------
 // BREAKPOINTS
 // -------------------
@@ -73,7 +73,7 @@ list-style(type = none)
 	list-style-type type
 	margin 0
 	padding 0
-	
+
 // -------------------
 // GRIDS
 // -------------------
@@ -95,8 +95,8 @@ flex-grid(num, child, gutter = false, direction = row)
 // -------------------
 hidden(type = false)
 	if type == accessible
-		width 1px 
-		height 1px 
+		width 1px
+		height 1px
 		overflow hidden
 		position absolute
 	else if type == invisible
@@ -144,9 +144,14 @@ set-index(layer)
 //===============================
 random(min, max)
 	return math(math(0, 'random')*(max - min + 1) + min, 'floor')
-	
+
 //===============================
 // MODULAR SCALE
 //===============================
 ms(scale)
 	modularScale(scale, 18, 'golden', rem)
+
+color-glow(color)
+	background-color color
+	border 1px solid white
+	box-shadow 0px 0px 3px 0px color
