@@ -3,20 +3,21 @@ import enterView from "enter-view";
 import loadData from "./load-data";
 import Constants from "./constants";
 import {
-  qsByYearLookupSelector,
-  maxYearsSelector,
-  currentStorySelector
+  currentStorySelector,
+  nodesSelector,
+  miniNodesSelector,
+  linksSelector
 } from "./selectors";
 import getDynamicFontSize from "./utils/dynamic-font-size";
 import immutableAddRemove from "./utils/immutable-add-remove";
-import getIthPoint from "./utils/get-ith-point";
+
+import stateChangedKeys from "./utils/state-compare";
 
 const {
   CATEGORIES,
   UNIT,
   ASKED_OF,
   ANSWER_TYPE,
-  YEAR,
   UID,
   QUESTION,
   AGE_RANGE,
@@ -40,6 +41,7 @@ let state = {
   dataLinks: [],
   dataHistory: [],
   storyMenu: [],
+
   currentStoryKey: DEFAULT,
   currentStoryStepIndex: 0,
   currentYearInView: years[0],
@@ -71,15 +73,15 @@ let state = {
     d: null
   },
   isMobile: window.innerWidth < MOBILE_BREAKPT,
-  appHeight: window.innerHeight,
-  appWidth: window.innerWidth,
+  appHeight: 0,
+  appWidth: 0,
   isFilterMenuOpen: false,
   isInteractiveInView: false
 };
 const colorScale = d3.scaleOrdinal([...d3.schemeSet1, ...d3.schemeSet2]);
 
 function setState(nextState) {
-  console.log(nextState);
+  // console.log(nextState);
   const prevState = { ...state };
   state = { ...state, ...nextState };
   update(prevState);
@@ -148,7 +150,10 @@ function init() {
             allValues,
             selectedValues: allValues
           };
-        })
+        }),
+        appHeight: window.innerHeight,
+        appWidth: window.innerWidth,
+        isMobile: window.innerWidth < MOBILE_BREAKPT
       });
     })
     .catch(console.error);
@@ -414,157 +419,7 @@ function afterFirstDraw() {
   });
 }
 
-function update(prevState) {
-  const {
-    currentStoryKey,
-    currentStoryStepIndex,
-    currentYearInView,
-    filters,
-    dataQuestions,
-    dataLinks,
-    dataHistory,
-    appHeight,
-    appWidth,
-    storyMenu,
-    tooltip,
-    isMobile,
-    isFilterMenuOpen,
-    isInteractiveInView
-  } = state;
-  const svgHeight = 8.333 * appHeight;
-  const svgWidth = isMobile ? appWidth : appWidth / 3;
-
-  /**
-   * STORY NAVIGATION
-   */
-  const dropdown = d3.select(".intro__dropdown").select("select");
-  dropdown.on("change", function(d) {
-    setState({
-      currentStoryKey: d3.event.target.value,
-      currentStoryStepIndex: 0
-    });
-  });
-  dropdown
-    .selectAll("option")
-    .data(storyMenu)
-    .join("option")
-    .attr("value", d => d.key || "")
-    .text(d => d.label);
-
-  d3.select(".interactive__story-restart").on("click", function() {
-    setState({
-      currentStoryKey: DEFAULT,
-      currentStoryStepIndex: 0
-    });
-  });
-
-  /**
-   * NODES
-   * TODO: extract to a utility with reselect
-   */
-  const yScale = d3
-    .scaleLinear()
-    .domain([years[0], years[years.length - 1]])
-    .range([appHeight / 6, svgHeight - appHeight / 6]);
-
-  // only works if dataQuestions is sorted by Year
-  let indexByYear = 0;
-  let year = dataQuestions[0][YEAR];
-  // position questions that are in filter
-  const interimDataQuestions = dataQuestions
-    .slice()
-    .filter(d =>
-      filters.reduce(
-        (acc, f) =>
-          acc && (d[f.key] === "" || f.selectedValues.indexOf(d[f.key]) > -1),
-        true
-      )
-    );
-  interimDataQuestions.forEach(e => {
-    if (e[YEAR] === year) {
-      e.indexByYear = indexByYear;
-    } else {
-      e.indexByYear = indexByYear = 0;
-      year = e[YEAR];
-    }
-    indexByYear++;
-  });
-
-  // define xScale after indexByYear has been assigned
-  const qsByYearLookup = qsByYearLookupSelector(interimDataQuestions);
-  const maxYears = maxYearsSelector(interimDataQuestions);
-  const xScale = d =>
-    svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d[YEAR])));
-
-  const nodes = new Map(
-    interimDataQuestions.map(d => [
-      d[UID],
-      {
-        ...d,
-        x: d[UID] === "2010_ACS" ? svgWidth - 10 : xScale(d),
-        y:
-          d[UID] === "2010_ACS"
-            ? yScale(d[YEAR]) - appHeight / 6
-            : yScale(d[YEAR]),
-        r: d[UID] === "2010_ACS" ? 10 : 200 / qsByYearLookup.get(d[YEAR])
-      }
-    ])
-  );
-
-  const miniNodes = interimDataQuestions
-    .filter(d => d[AGE_RANGE])
-    .map(d => {
-      const range = d[AGE_RANGE].split(",");
-      const n = range.length;
-      const { x, y, r } = nodes.get(d[UID]);
-      return range.map((e, i) => {
-        const [xi, yi] = getIthPoint(i, n, r - r / n);
-        return {
-          value: e.trim(),
-          x: x + xi,
-          y: y + yi,
-          r: r / n
-        };
-      });
-    })
-    .flat();
-
-  /** LINKS
-   *
-   */
-  const links = dataLinks
-    .filter(d => nodes.has(d.Source) && nodes.has(d.Target))
-    .map(d => {
-      // use Category from source node instead of Links file
-      const { x: sourceX, y: sourceY, [CATEGORIES]: Category } = nodes.get(
-        d.Source
-      );
-      const { x: targetX, y: targetY } = nodes.get(d.Target);
-      if (Category.indexOf(", ") !== -1) {
-        Category = "[Multiple]";
-      }
-      if (Category.indexOf(" - ") !== -1) {
-        Category = Category.split(" - ")[0];
-      }
-      return { ...d, sourceX, sourceY, targetX, targetY, Category };
-    });
-
-  /** DRAWING VIZ
-   *
-   */
-  d3.select(".interactive__svg")
-    .attr("height", svgHeight)
-    .attr("width", svgWidth);
-
-  d3.select(".interactive_g_labels")
-    .selectAll("text")
-    .data(years)
-    .join("text")
-    .attr("class", "label")
-    .attr("y", d => yScale(d) + 70) // vertically center
-    .attr("x", svgWidth / 2)
-    .text(d => d);
-
+function drawCirclesAndLinks(links, nodes, miniNodes) {
   d3.select(".interactive_g_links")
     .selectAll("line")
     .data(links, d => d.Source + d.Target)
@@ -612,7 +467,6 @@ function update(prevState) {
     .attr("fill", d => (d["Age range"] ? "#ffffff" : colorScale(d[CATEGORIES])))
     .attr("stroke", d => colorScale(d[CATEGORIES]))
     .attr("stroke-width", d => (d["Age range"] ? 2 : 0))
-    .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID])
     .on("mouseenter", function(d) {
       const { x, y } = this.getBBox();
       setState({
@@ -624,7 +478,7 @@ function update(prevState) {
       });
     })
     .on("mouseleave", () => {
-      setState({ tooltip: { ...tooltip, d: null } });
+      setState({ tooltip: { ...state.tooltip, d: null } });
     });
   circles
     .selectAll("circle.mininode")
@@ -649,75 +503,189 @@ function update(prevState) {
     .attr("fill", "none")
     .attr("stroke", colorScale("[Multiple]"))
     .attr("stroke-width", 2);
+}
+
+function update(prevState) {
+  const start = new Date();
+  const {
+    currentStoryKey,
+    currentStoryStepIndex,
+    currentYearInView,
+    filters,
+    dataHistory,
+    appHeight,
+    appWidth,
+    storyMenu,
+    tooltip,
+    isMobile,
+    isFilterMenuOpen,
+    isInteractiveInView
+  } = state;
+  const svgHeight = 8.333 * appHeight;
+  const svgWidth = isMobile ? appWidth : appWidth / 3;
+  const changedKeys = stateChangedKeys(prevState, state);
+
+  /**
+   * STORY NAVIGATION
+   */
+  if (!firstDrawComplete) {
+    const dropdown = d3.select(".intro__dropdown").select("select");
+    dropdown.on("change", function(d) {
+      setState({
+        currentStoryKey: d3.event.target.value,
+        currentStoryStepIndex: 0
+      });
+    });
+    dropdown
+      .selectAll("option")
+      .data(storyMenu)
+      .join("option")
+      .attr("value", d => d.key || "")
+      .text(d => d.label);
+
+    d3.select(".interactive__story-restart").on("click", function() {
+      setState({
+        currentStoryKey: DEFAULT,
+        currentStoryStepIndex: 0
+      });
+    });
+  }
+
+  /**
+   * NODES
+   * LINKS
+   */
+  const yScale = d3
+    .scaleLinear()
+    .domain([years[0], years[years.length - 1]])
+    .range([appHeight / 6, svgHeight - appHeight / 6]);
+  const nodes = nodesSelector(state, { svgWidth, yScale });
+  const miniNodes = miniNodesSelector(state, { svgWidth, yScale });
+  const links = linksSelector(state, { svgWidth, yScale });
+
+  /**
+   * DRAWING VIZ
+   */
+  if (changedKeys.appHeight || changedKeys.appWidth || changedKeys.isMobile) {
+    d3.select(".interactive__svg")
+      .attr("height", svgHeight)
+      .attr("width", svgWidth);
+  }
+
+  if (
+    changedKeys.dataQuestions ||
+    changedKeys.dataLinks ||
+    changedKeys.filters ||
+    changedKeys.appHeight ||
+    changedKeys.appWidth ||
+    changedKeys.isMobile
+  ) {
+    drawCirclesAndLinks(links, nodes, miniNodes);
+  }
 
   /**
    * FILTERS
    */
-  makeFilters(filters, isFilterMenuOpen, currentYearInView);
+  if (
+    changedKeys.filters ||
+    changedKeys.isFilterMenuOpen ||
+    changedKeys.currentYearInView
+  ) {
+    makeFilters(filters, isFilterMenuOpen, currentYearInView);
+  }
 
   /**
    * TOOLTIP
    */
-  makeTooltip(tooltip, isMobile);
+  if (changedKeys.isMobile || changedKeys.tooltip) {
+    d3.select(".interactive_g_circles")
+      .selectAll("circle.node")
+      .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID]);
+    makeTooltip(tooltip, isMobile);
+  }
 
   /**
    * LEGEND
    */
-  makeLegend(isMobile, currentYearInView);
+  if (changedKeys.isMobile || changedKeys.currentYearInView) {
+    makeLegend(isMobile, currentYearInView);
+  }
 
   /**
    * STORY STEP
    */
-  const currentStory = currentStorySelector(state);
-  makeStoryStep(
-    currentStory,
-    currentStoryKey,
-    currentStoryStepIndex,
-    isInteractiveInView
-  );
-  if (prevState.currentStoryKey !== currentStoryKey) {
-    d3.select(".interactive")
-      .node()
-      .scrollIntoView({ behavior: "smooth" });
-  } else if (prevState.currentStoryStepIndex !== currentStoryStepIndex) {
-    d3.selectAll(".interactive_g_labels .label")
-      .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
-      .node()
-      .scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center"
-      });
+  if (
+    !firstDrawComplete ||
+    changedKeys.currentStory ||
+    changedKeys.currentStoryKey ||
+    changedKeys.currentStoryStepIndex ||
+    changedKeys.isInteractiveInView
+  ) {
+    const currentStory = currentStorySelector(state);
+    makeStoryStep(
+      currentStory,
+      currentStoryKey,
+      currentStoryStepIndex,
+      isInteractiveInView
+    );
+    if (prevState.currentStoryKey !== currentStoryKey) {
+      d3.select(".interactive")
+        .node()
+        .scrollIntoView({ behavior: "smooth" });
+    } else if (prevState.currentStoryStepIndex !== currentStoryStepIndex) {
+      d3.selectAll(".interactive_g_labels .label")
+        .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
+        .node()
+        .scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center"
+        });
+    }
   }
 
   /**
    * HISTORY FLAGS
+   * VIZ LABELS
    */
-  d3.select(".interactive__history")
-    .selectAll(".interactive__history_flag")
-    .data(dataHistory)
-    .join("div")
-    .attr("class", "interactive__history_flag")
-    .style("top", d => yScale(d[START_YEAR]) + "px")
-    .style("left", d => 15 * d.xIndex + "%")
-    .style(
-      "height",
-      d =>
-        (d[START_YEAR] >= d[END_YEAR]
-          ? appHeight / 30
-          : yScale(d[END_YEAR]) - yScale(d[START_YEAR])) + "px"
-    )
-    .html(
-      d => `<div class='interactive__history_flag_years'>${d[START_YEAR]}${
-        d[END_YEAR] > d[START_YEAR] ? ` - ${d[END_YEAR]}` : ""
-      }</div>
-          <div class='interactive__history_flag_event'>${d[EVENT]}</div>
-    `
-    );
+  if (changedKeys.appHeight) {
+    d3.select(".interactive_g_labels")
+      .selectAll("text")
+      .data(years)
+      .join("text")
+      .attr("class", "label")
+      .attr("y", d => yScale(d) + 70) // vertically center
+      .attr("x", svgWidth / 2)
+      .text(d => d);
+
+    d3.select(".interactive__history")
+      .selectAll(".interactive__history_flag")
+      .data(dataHistory)
+      .join("div")
+      .attr("class", "interactive__history_flag")
+      .style("top", d => yScale(d[START_YEAR]) + "px")
+      .style("left", d => 15 * d.xIndex + "%")
+      .style(
+        "height",
+        d =>
+          (d[START_YEAR] >= d[END_YEAR]
+            ? appHeight / 30
+            : yScale(d[END_YEAR]) - yScale(d[START_YEAR])) + "px"
+      )
+      .html(
+        d => `<div class='interactive__history_flag_years'>${d[START_YEAR]}${
+          d[END_YEAR] > d[START_YEAR] ? ` - ${d[END_YEAR]}` : ""
+        }</div>
+            <div class='interactive__history_flag_event'>${d[EVENT]}</div>
+      `
+      );
+  }
 
   if (!firstDrawComplete) {
+    firstDrawComplete = true;
     afterFirstDraw();
   }
+  console.log(new Date() - start);
 }
 
 export default { init, resize };

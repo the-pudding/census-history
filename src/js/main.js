@@ -31,6 +31,7 @@ function setupStickyHeader() {
 }
 
 function init() {
+  window.scrollTo(0, 0); // TODO
   // add mobile class to body tag
   $body.classed("is-mobile", isMobile.any());
   // setup resize event
