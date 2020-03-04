@@ -50,7 +50,7 @@ export default {
     BN: "Yes/No",
     CC: "Multiple Choice",
     FN: "Number",
-    FD: "Date",
+    FD: "Date/Time",
     FM: "Dollar Amount"
   },
 
