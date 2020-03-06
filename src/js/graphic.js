@@ -627,7 +627,6 @@ function update(prevState) {
    */
   if (
     !firstDrawComplete ||
-    changedKeys.currentStory ||
     changedKeys.currentStoryKey ||
     changedKeys.currentStoryStepIndex ||
     changedKeys.isInteractiveInView
@@ -639,24 +638,33 @@ function update(prevState) {
       currentStoryStepIndex,
       isInteractiveInView
     );
-  }
-  if (changedKeys.currentStoryKey) {
-    d3.select(".story-menu_dropdown")
-      .selectAll(".story-menu_dropdown_option")
-      .classed("selected", d => d.key === currentStoryKey);
-    d3.select(".interactive")
-      .node()
-      .scrollIntoView({ behavior: "smooth" });
-  }
-  if (!changedKeys.currentStoryKey && changedKeys.currentStoryStepIndex) {
-    d3.selectAll(".interactive_g_labels .label")
-      .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
-      .node()
-      .scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center"
-      });
+    if (!firstDrawComplete) {
+      d3.select(".interactive__img").attr(
+        "src",
+        `assets/images/${currentStoryKey}.jpg`
+      );
+    }
+    if (changedKeys.currentStoryKey) {
+      d3.select(".story-menu_dropdown")
+        .selectAll(".story-menu_dropdown_option")
+        .classed("selected", d => d.key === currentStoryKey);
+      d3.select(".interactive")
+        .node()
+        .scrollIntoView({ behavior: "smooth" });
+      d3.select(".interactive__img").attr(
+        "src",
+        `assets/images/${currentStoryKey}.jpg`
+      );
+    } else if (changedKeys.currentStoryStepIndex) {
+      d3.selectAll(".interactive_g_labels .label")
+        .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
+        .node()
+        .scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center"
+        });
+    }
   }
 
   /**
