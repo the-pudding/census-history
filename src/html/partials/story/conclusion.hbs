@@ -7,13 +7,26 @@
     sit amet, pulvinar nec orci. Phasellus sagittis est lectus, eget vestibulum nulla venenatis a. Duis nec maximus
     quam, eu ultrices justo. Integer lacinia imperdiet nulla in commodo.</p>
   <h2>Methodology</h2>
-  <p>Nulla finibus facilisis leo, et ornare urna convallis in. Quisque finibus justo sit amet cursus vulputate.
-    Integer feugiat massa nec diam finibus, id fringilla tortor auctor. Quisque interdum in metus eu finibus. Donec
-    vel tempus magna. Sed eleifend ante nibh, at eleifend leo blandit sed. Nunc et tristique nisl. Quisque sodales a
-    justo nec efficitur. Curabitur a nisi eget libero convallis euismod volutpat a felis. Sed ornare eget turpis sed
-    molestie. Nam laoreet ante nec mi hendrerit malesuada.</p>
+  <div class='conclusion__methodology'>
+    {{#each textContent.methodologyNotes}}
+    <p>{{this}}</p>
+    {{/each}}
+  </div>
   <h2>Credits</h2>
-  <p>In tortor nunc, imperdiet et mauris a, mattis tempus nisl. Vivamus et iaculis ex, at ullamcorper neque. Nullam
-    pretium velit a mauris lacinia scelerisque. Morbi eget commodo mauris. Curabitur nec volutpat lectus. Praesent
-    eget urna odio. Nunc sapien ante, bibendum vel augue eu, vestibulum pharetra sapien.</p>
+  <div class='conclusion__credits'>
+    <strong>All Media Assets:</strong> U.S. Census Bureau.
+    <p>
+      Secondary sources for historical context included:
+      <ul>
+        {{#each textContent.sources}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    </p>
+    {{#each textContent.credits}}
+    <p>{{this}}</p>
+    {{/each}}
+  </div>
+  <div class='two-n'>Designed and developed at <a href='http://two-n.com/'><img
+        src='../../../assets/images/2n_logo.png'></a></div>
 </div>

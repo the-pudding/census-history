@@ -1,0 +1,51 @@
+.story-menu
+  position sticky
+  position -webkit-sticky
+  width 100%
+  height 3rem
+  z-index 1001
+  top 0px
+  background-color white
+  .story-menu_dropdown
+    outline none
+    height 100%
+    width 300px
+    margin 0px 50px
+    line-height 44px
+    display block
+    position relative
+    margin 0 auto
+    margin-top 1rem
+    text-align center
+    &_option
+      display block
+      position relative
+      transition height, padding
+      transition-duration 0.25s
+      height 0
+      width 300px
+      padding 0 3px
+      opacity 0.95
+      overflow hidden
+      text-align center
+      set-type-size(medium, false)
+      cursor pointer
+      &.selected
+        height 48px
+        line-height 44px
+        padding-top 2px
+        border-bottom 1px solid white
+        font-weight bold
+    &:focus
+      .story-menu_dropdown_option
+        height 36px
+        line-height 32px
+        padding-top 2px
+        background-color white
+        &:hover
+          background-color #dddddd
+        &.selected
+          font-weight bold
+        &:first-child
+          height 48px
+          line-height 44px

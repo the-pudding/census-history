@@ -419,6 +419,37 @@ function afterFirstDraw() {
   });
 }
 
+function drawStoryMenu(storyMenu, currentStoryKey) {
+  const dropdown = d3
+    .select(".story-menu_dropdown")
+    .on("mousedown", function() {
+      if (this === document.activeElement) {
+        d3.event.preventDefault();
+        this.blur();
+      }
+    });
+  dropdown
+    .selectAll(".story-menu_dropdown_option")
+    .data(storyMenu)
+    .join("div")
+    .attr("class", "story-menu_dropdown_option")
+    .classed("selected", d => d.key === currentStoryKey)
+    .text(d => d.label)
+    .on("mousedown", function(d) {
+      setState({
+        currentStoryKey: d.key,
+        currentStoryStepIndex: 0
+      });
+    });
+
+  d3.select(".interactive__story-restart").on("click", function() {
+    setState({
+      currentStoryKey: DEFAULT,
+      currentStoryStepIndex: 0
+    });
+  });
+}
+
 function drawCirclesAndLinks(links, nodes, miniNodes) {
   d3.select(".interactive_g_links")
     .selectAll("line")
@@ -506,7 +537,6 @@ function drawCirclesAndLinks(links, nodes, miniNodes) {
 }
 
 function update(prevState) {
-  const start = new Date();
   const {
     currentStoryKey,
     currentStoryStepIndex,
@@ -529,26 +559,7 @@ function update(prevState) {
    * STORY NAVIGATION
    */
   if (!firstDrawComplete) {
-    const dropdown = d3.select(".intro__dropdown").select("select");
-    dropdown.on("change", function(d) {
-      setState({
-        currentStoryKey: d3.event.target.value,
-        currentStoryStepIndex: 0
-      });
-    });
-    dropdown
-      .selectAll("option")
-      .data(storyMenu)
-      .join("option")
-      .attr("value", d => d.key || "")
-      .text(d => d.label);
-
-    d3.select(".interactive__story-restart").on("click", function() {
-      setState({
-        currentStoryKey: DEFAULT,
-        currentStoryStepIndex: 0
-      });
-    });
+    drawStoryMenu(storyMenu, currentStoryKey);
   }
 
   /**
@@ -628,20 +639,24 @@ function update(prevState) {
       currentStoryStepIndex,
       isInteractiveInView
     );
-    if (prevState.currentStoryKey !== currentStoryKey) {
-      d3.select(".interactive")
-        .node()
-        .scrollIntoView({ behavior: "smooth" });
-    } else if (prevState.currentStoryStepIndex !== currentStoryStepIndex) {
-      d3.selectAll(".interactive_g_labels .label")
-        .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
-        .node()
-        .scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "center"
-        });
-    }
+  }
+  if (changedKeys.currentStoryKey) {
+    d3.select(".story-menu_dropdown")
+      .selectAll(".story-menu_dropdown_option")
+      .classed("selected", d => d.key === currentStoryKey);
+    d3.select(".interactive")
+      .node()
+      .scrollIntoView({ behavior: "smooth" });
+  }
+  if (!changedKeys.currentStoryKey && changedKeys.currentStoryStepIndex) {
+    d3.selectAll(".interactive_g_labels .label")
+      .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
+      .node()
+      .scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center"
+      });
   }
 
   /**
@@ -685,7 +700,6 @@ function update(prevState) {
     firstDrawComplete = true;
     afterFirstDraw();
   }
-  console.log(new Date() - start);
 }
 
 export default { init, resize };
