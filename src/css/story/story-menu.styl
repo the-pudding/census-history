@@ -6,6 +6,7 @@
   z-index 1001
   top 0px
   background-color white
+
   .story-menu_dropdown
     outline none
     background-color $palette.blue
@@ -51,3 +52,111 @@
         &:first-child
           height 48px
           line-height 44px
+
+  .interactive__filter-toggle
+    position absolute
+    left 10px
+    top 12px
+    cursor pointer
+    z-index 2
+    opacity 0
+    transition opacity 0.25s
+    &.visible
+      opacity 1
+
+  .interactive__filters
+    position relative
+    width 200px
+    left -200px
+    top -40px
+    transition left 0.5s
+    set-type-size(x-small, true)
+    color-glow($palette.yellow)
+    z-index 1
+    padding 30px 5px 0px 5px
+    @media (max-width: 768px)
+      width 90%
+      left -100%
+      padding-top 40px
+      background-color white
+      &.open
+        left 5px
+    &.open
+      left 5px
+    .interactive__filter
+      position relative
+      display flex
+      flex-direction row
+      outline none
+      &:not(:last-child)
+        border-bottom 1px solid white
+      &_label
+        font-weight bold
+        height 20px
+        position relative
+        width 100%
+        text-align left
+        &:after
+          content ''
+          position absolute
+          right 5px
+          top 7px
+          height 8px
+          width 8px
+          border-left 2px solid black
+          border-top 2px solid black
+          transform rotate(45deg)
+          transition transform 0.25s, top 0.25s
+      &_multiselect
+        position absolute
+        min-height 20px
+        top 20px
+        left 0px
+        width 188px
+        @media (max-width: 768px)
+          width 100%
+        &_option
+          display block
+          position relative
+          transition height, padding
+          transition-duration 0.25s
+          height 0
+          padding 0 10px 0 20px
+          background-color $palette.yellow
+          opacity 0.95
+          overflow hidden
+          text-align left
+          set-type-size(xx-small, true)
+          cursor pointer
+          &:hover
+            filter brightness(1.05)
+          &:before
+            content: ''
+            position absolute
+            left 4px
+            top 3px
+            height 10px
+            width 10px
+            border 1px solid white
+            border-radius 2px
+          &.selected
+            font-weight bold
+            &:after
+              content: ''
+              position absolute
+              left 8px
+              top 3px
+              height 8px
+              width 3px
+              border-left 2px solid white
+              border-top 2px solid white
+              transform rotate(220deg)
+      &:focus
+        z-index 3
+        .interactive__filter_multiselect_option
+          height 20px
+          padding-top 2px
+          border-bottom 1px solid white
+        .interactive__filter_label:after
+          top 4px
+          transform rotate(225deg)

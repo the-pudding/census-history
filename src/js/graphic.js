@@ -35,7 +35,7 @@ const {
   imageFilesLookup
 } = Constants;
 
-let firstDrawComplete = false;
+let firstDraw = true;
 let state = {
   dataQuestions: [],
   dataLinks: [],
@@ -44,7 +44,7 @@ let state = {
 
   currentStoryKey: DEFAULT,
   currentStoryStepIndex: 0,
-  currentYearInView: years[0],
+  currentYearInView: years[0] - 1, // hack to trigger update on 1790
   filters: [
     {
       key: CATEGORIES,
@@ -161,11 +161,7 @@ function init() {
 
 function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
   d3.select(".interactive__filter-toggle")
-    .classed(
-      "visible",
-      currentYearInView > years[0] &&
-        currentYearInView < years[years.length - 1]
-    )
+    .classed("visible", currentYearInView >= years[0])
     .on("click", () => {
       setState({
         isFilterMenuOpen: !isFilterMenuOpen
@@ -310,7 +306,9 @@ function makeStoryStep(story, storyKey, storyStepIndex, isInteractiveInView) {
     .attr("class", "step-dot")
     .classed("current", (_, i) => i === storyStepIndex);
 
-  storyStepEl.select(".interactive__story-step-title").html(storyStep.label);
+  storyStepEl
+    .select(".interactive__story-step-title")
+    .html(`${storyStep.year}: ${storyStep.label}`);
   storyStepEl.select(".interactive__story-step-body").html(storyStep.text);
   storyStepEl.select(".interactive__story-stepper-up").on("click", () => {
     setState({
@@ -334,7 +332,7 @@ function makeLegend(isMobile, currentYearInView) {
     .classed(
       "visible",
       !isMobile &&
-        currentYearInView > years[0] &&
+        currentYearInView >= years[0] &&
         currentYearInView < years[years.length - 1]
     )
     .selectAll(".interactive__legend_tile")
@@ -378,10 +376,10 @@ function onEnterView(el) {
         ? currentStoryStepIndex - 1
         : currentStoryStepIndex;
   }
-  const nextYearInView = isEnter ? d : years[i - 1];
+  const nextYearInView = isEnter ? d : i === 0 ? years[0] - 1 : years[i - 1];
   if (
     (isEnter && d !== currentYearInView) ||
-    (!isEnter && d === currentYearInView && i !== 0)
+    (!isEnter && d === currentYearInView)
   ) {
     setState({
       currentYearInView: nextYearInView,
@@ -439,6 +437,7 @@ function drawStoryMenu(storyMenu, currentStoryKey) {
       setState({
         currentStoryKey: d.key,
         currentStoryStepIndex: 0
+        // TODO set filters corresponding to storyKey
       });
     });
 
@@ -558,7 +557,7 @@ function update(prevState) {
   /**
    * STORY NAVIGATION
    */
-  if (!firstDrawComplete) {
+  if (firstDraw) {
     drawStoryMenu(storyMenu, currentStoryKey);
   }
 
@@ -626,7 +625,7 @@ function update(prevState) {
    * STORY STEP
    */
   if (
-    !firstDrawComplete ||
+    firstDraw ||
     changedKeys.currentStoryKey ||
     changedKeys.currentStoryStepIndex ||
     changedKeys.isInteractiveInView
@@ -638,7 +637,7 @@ function update(prevState) {
       currentStoryStepIndex,
       isInteractiveInView
     );
-    if (!firstDrawComplete) {
+    if (firstDraw) {
       d3.select(".interactive__img").attr(
         "src",
         `assets/images/${currentStoryKey}.jpg`
@@ -671,6 +670,12 @@ function update(prevState) {
    * HISTORY FLAGS
    * VIZ LABELS
    */
+  if (changedKeys.currentYearInView) {
+    d3.selectAll(".interactive_g_labels .label").classed(
+      "current",
+      d => d === currentYearInView
+    );
+  }
   if (changedKeys.appHeight) {
     d3.select(".interactive_g_labels")
       .selectAll("text")
@@ -704,8 +709,8 @@ function update(prevState) {
       );
   }
 
-  if (!firstDrawComplete) {
-    firstDrawComplete = true;
+  if (firstDraw) {
+    firstDraw = false;
     afterFirstDraw();
   }
 }
