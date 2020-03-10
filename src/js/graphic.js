@@ -5,7 +5,6 @@ import Constants from "./constants";
 import {
   currentStorySelector,
   nodesSelector,
-  miniNodesSelector,
   linksSelector
 } from "./selectors";
 import getDynamicFontSize from "./utils/dynamic-font-size";
@@ -26,7 +25,6 @@ const {
   START_YEAR,
   END_YEAR,
   EVENT,
-  MARGIN,
   MOBILE_BREAKPT,
   sortedCategories,
   years,
@@ -75,6 +73,7 @@ let state = {
   isMobile: window.innerWidth < MOBILE_BREAKPT,
   appHeight: 0,
   appWidth: 0,
+  tooltipOffsetHeight: 0,
   isFilterMenuOpen: false,
   isInteractiveInView: false
 };
@@ -87,34 +86,33 @@ function setState(nextState) {
   update(prevState);
 }
 
+function getTooltipOffsetHeight() {
+  return Array.from(document.querySelectorAll(".tooltip-offset")).reduce(
+    (t, v) => t + v.getBoundingClientRect().height,
+    0
+  );
+}
+
 function resize() {
   setState({
     appHeight: window.innerHeight,
     appWidth: window.innerWidth,
-    isMobile: window.innerWidth < MOBILE_BREAKPT
+    isMobile: window.innerWidth < MOBILE_BREAKPT,
+    tooltipOffsetHeight: getTooltipOffsetHeight()
   });
 }
 
 function init() {
   loadData(["questions.csv", "links.csv", "storyMenu.json", "history.csv"])
     .then(([rawQuestions, rawLinks, { storyMenu }, history]) => {
-      rawQuestions
-        .sort(
-          (a, b) =>
-            d3.ascending(+a.Year, +b.Year) ||
-            d3.ascending(
-              sortedCategories.indexOf(a.Categories),
-              sortedCategories.indexOf(b.Categories)
-            )
-        )
-        .forEach(e => {
-          if (e.Categories.indexOf(", ") !== -1) {
-            e.Categories = "[Multiple]";
-          }
-          if (e.Categories.indexOf(" - ") !== -1) {
-            e.Categories = e.Categories.split(" - ")[0];
-          }
-        });
+      rawQuestions.forEach(e => {
+        if (e.Categories.indexOf(", ") !== -1) {
+          e.Categories = "[Multiple]";
+        }
+        if (e.Categories.indexOf(" - ") !== -1) {
+          e.Categories = e.Categories.split(" - ")[0];
+        }
+      });
       let stack = [];
       history
         .sort(
@@ -134,7 +132,16 @@ function init() {
           ...s,
           steps: s.steps.map(p => ({ ...p, year: +p.year }))
         })),
-        dataQuestions: rawQuestions,
+        dataQuestions: rawQuestions
+          .filter(e => e[CATEGORIES] !== "[Admin.]")
+          .sort(
+            (a, b) =>
+              d3.ascending(+a.Year, +b.Year) ||
+              d3.ascending(
+                sortedCategories.indexOf(a.Categories),
+                sortedCategories.indexOf(b.Categories)
+              )
+          ),
         dataLinks: rawLinks,
         dataHistory: history.map(d => ({
           ...d,
@@ -153,7 +160,8 @@ function init() {
         }),
         appHeight: window.innerHeight,
         appWidth: window.innerWidth,
-        isMobile: window.innerWidth < MOBILE_BREAKPT
+        isMobile: window.innerWidth < MOBILE_BREAKPT,
+        tooltipOffsetHeight: getTooltipOffsetHeight()
       });
     })
     .catch(console.error);
@@ -224,7 +232,7 @@ function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
     });
 }
 
-function makeTooltip({ x, y, d }, isMobile) {
+function makeTooltip({ x, y, d }, isMobile, tooltipOffsetHeight) {
   if (d) {
     const { x: svgX } = d3
       .select(".interactive__svg")
@@ -244,7 +252,10 @@ function makeTooltip({ x, y, d }, isMobile) {
       listTitle = "Age categories";
     }
     d3.select(".interactive__tooltip")
-      .style("top", isMobile ? "auto" : y + 200 + state.appHeight / 3 + "px")
+      .style(
+        "top",
+        isMobile ? "auto" : y + tooltipOffsetHeight + 200 + d.r + "px"
+      )
       .style("left", isMobile ? "0px" : x + svgX - 150 + "px")
       .style("border-color", color)
       .style("box-shadow", "0px 0px 3px 0px " + color)
@@ -252,7 +263,11 @@ function makeTooltip({ x, y, d }, isMobile) {
       .html(
         `<div class='interactive__tooltip_question' style='border-bottom-color:${color};${getDynamicFontSize(
           d[QUESTION]
-        )}'>${d[QUESTION]}</div>
+        )}'>${d[QUESTION]}
+          <div class='interactive__tooltip_question_category' style='background-color:${color};'>${
+          d[CATEGORIES]
+        }</div>
+        </div>
         ${
           imageId
             ? `<img class='image-question' src='assets/images/questions/${imageId}' >`
@@ -291,7 +306,7 @@ function makeTooltip({ x, y, d }, isMobile) {
   }
 }
 
-function makeStoryStep(story, storyKey, storyStepIndex, isInteractiveInView) {
+function makeStoryStep(story, storyStepIndex, isInteractiveInView) {
   const storyStepEl = d3.select(".interactive__story-step");
 
   d3.select(".interactive__story-intro").html(story.storyIntro);
@@ -323,11 +338,17 @@ function makeStoryStep(story, storyKey, storyStepIndex, isInteractiveInView) {
   });
 }
 
-function makeLegend(isMobile, currentYearInView) {
+function makeLegend(isMobile, currentYearInView, currentStory) {
+  const currentStoryCategories = currentStory.storyCategories;
   const legendData = colorScale
     .domain()
-    .sort()
-    .map(d => ({ in: d, out: colorScale(d) }));
+    .map(d => ({ in: d, out: colorScale(d) }))
+    .sort((a, b) =>
+      d3.ascending(
+        sortedCategories.indexOf(a.in),
+        sortedCategories.indexOf(b.in)
+      )
+    );
   d3.select(".interactive__legend")
     .classed(
       "visible",
@@ -340,6 +361,11 @@ function makeLegend(isMobile, currentYearInView) {
     .join("div")
     .attr("class", "interactive__legend_tile")
     .style("background-color", d => d.out)
+    .classed(
+      "out-of-story",
+      d =>
+        currentStory.key !== DEFAULT && !~currentStoryCategories.indexOf(d.in)
+    )
     .text(d => d.in);
 }
 
@@ -417,7 +443,7 @@ function afterFirstDraw() {
   });
 }
 
-function drawStoryMenu(storyMenu, currentStoryKey) {
+function makeStoryDropdownMenu(storyMenu, currentStoryKey) {
   const dropdown = d3
     .select(".story-menu_dropdown")
     .on("mousedown", function() {
@@ -437,7 +463,6 @@ function drawStoryMenu(storyMenu, currentStoryKey) {
       setState({
         currentStoryKey: d.key,
         currentStoryStepIndex: 0
-        // TODO set filters corresponding to storyKey
       });
     });
 
@@ -449,7 +474,8 @@ function drawStoryMenu(storyMenu, currentStoryKey) {
   });
 }
 
-function drawCirclesAndLinks(links, nodes, miniNodes) {
+function drawCirclesAndLinks(links, nodes, currentStory) {
+  const currentStoryCategories = currentStory.storyCategories;
   d3.select(".interactive_g_links")
     .selectAll("line")
     .data(links, d => d.Source + d.Target)
@@ -458,18 +484,33 @@ function drawCirclesAndLinks(links, nodes, miniNodes) {
         enter
           .append("line")
           .attr("x1", d => d.sourceX)
-          .attr("x2", d => d.targetX),
+          .attr("y1", d => d.sourceY)
+          .attr("x2", d => d.sourceX)
+          .attr("y2", d => d.sourceY)
+          .call(e =>
+            e
+              .transition()
+              .attr("x2", d => d.targetX)
+              .attr("y2", d => d.targetY)
+          ),
       update =>
-        update.call(update =>
-          update
+        update.call(u =>
+          u
             .transition()
-            .duration(500)
             .attr("x1", d => d.sourceX)
             .attr("x2", d => d.targetX)
+            .attr("x2", d => d.targetX)
+            .attr("y2", d => d.targetY)
+        ),
+      exit =>
+        exit.call(e =>
+          e
+            .transition()
+            .attr("x2", d => d.sourceX)
+            .attr("y2", d => d.sourceY)
+            .remove()
         )
     )
-    .attr("y1", d => d.sourceY)
-    .attr("y2", d => d.targetY)
     .attr("stroke-width", 2)
     .attr("stroke", d => colorScale(d.Category));
 
@@ -483,20 +524,34 @@ function drawCirclesAndLinks(links, nodes, miniNodes) {
           .append("circle")
           .attr("class", "node")
           .attr("cx", d => d.x)
-          .attr("r", d => d.r),
+          .attr("r", 0)
+          .call(e => e.transition().attr("r", d => d.r)),
       update =>
-        update.call(update =>
-          update
+        update.call(u =>
+          u
             .transition()
             .duration(500)
             .attr("cx", d => d.x)
             .attr("r", d => d.r)
+        ),
+      exit =>
+        exit.call(e =>
+          e
+            .transition()
+            .attr("r", 0)
+            .remove()
         )
     )
     .attr("cy", d => d.y)
     .attr("fill", d => (d["Age range"] ? "#ffffff" : colorScale(d[CATEGORIES])))
     .attr("stroke", d => colorScale(d[CATEGORIES]))
     .attr("stroke-width", d => (d["Age range"] ? 2 : 0))
+    .classed(
+      "out-of-story",
+      d =>
+        currentStory.key !== DEFAULT &&
+        !~currentStoryCategories.indexOf(d[CATEGORIES])
+    )
     .on("mouseenter", function(d) {
       const { x, y } = this.getBBox();
       setState({
@@ -510,29 +565,6 @@ function drawCirclesAndLinks(links, nodes, miniNodes) {
     .on("mouseleave", () => {
       setState({ tooltip: { ...state.tooltip, d: null } });
     });
-  circles
-    .selectAll("circle.mininode")
-    .data(miniNodes)
-    .join(
-      enter =>
-        enter
-          .append("circle")
-          .attr("class", "mininode")
-          .attr("cx", d => d.x)
-          .attr("r", d => d.r),
-      update =>
-        update.call(update =>
-          update
-            .transition()
-            .duration(500)
-            .attr("cx", d => d.x)
-            .attr("r", d => d.r)
-        )
-    )
-    .attr("cy", d => d.y)
-    .attr("fill", "none")
-    .attr("stroke", colorScale("[Multiple]"))
-    .attr("stroke-width", 2);
 }
 
 function update(prevState) {
@@ -547,6 +579,7 @@ function update(prevState) {
     storyMenu,
     tooltip,
     isMobile,
+    tooltipOffsetHeight,
     isFilterMenuOpen,
     isInteractiveInView
   } = state;
@@ -558,7 +591,7 @@ function update(prevState) {
    * STORY NAVIGATION
    */
   if (firstDraw) {
-    drawStoryMenu(storyMenu, currentStoryKey);
+    makeStoryDropdownMenu(storyMenu, currentStoryKey, filters);
   }
 
   /**
@@ -570,7 +603,6 @@ function update(prevState) {
     .domain([years[0], years[years.length - 1]])
     .range([appHeight / 6, svgHeight - appHeight / 6]);
   const nodes = nodesSelector(state, { svgWidth, yScale });
-  const miniNodes = miniNodesSelector(state, { svgWidth, yScale });
   const links = linksSelector(state, { svgWidth, yScale });
 
   /**
@@ -588,9 +620,12 @@ function update(prevState) {
     changedKeys.filters ||
     changedKeys.appHeight ||
     changedKeys.appWidth ||
-    changedKeys.isMobile
+    changedKeys.isMobile ||
+    changedKeys.currentYearInView ||
+    changedKeys.currentStoryKey
   ) {
-    drawCirclesAndLinks(links, nodes, miniNodes);
+    const currentStory = currentStorySelector(state);
+    drawCirclesAndLinks(links, nodes, currentStory);
   }
 
   /**
@@ -607,18 +642,27 @@ function update(prevState) {
   /**
    * TOOLTIP
    */
-  if (changedKeys.isMobile || changedKeys.tooltip) {
+  if (
+    changedKeys.isMobile ||
+    changedKeys.tooltip ||
+    changedKeys.tooltipOffsetHeight
+  ) {
     d3.select(".interactive_g_circles")
       .selectAll("circle.node")
       .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID]);
-    makeTooltip(tooltip, isMobile);
+    makeTooltip(tooltip, isMobile, tooltipOffsetHeight);
   }
 
   /**
    * LEGEND
    */
-  if (changedKeys.isMobile || changedKeys.currentYearInView) {
-    makeLegend(isMobile, currentYearInView);
+  if (
+    changedKeys.isMobile ||
+    changedKeys.currentYearInView ||
+    changedKeys.currentStoryKey
+  ) {
+    const currentStory = currentStorySelector(state);
+    makeLegend(isMobile, currentYearInView, currentStory);
   }
 
   /**
@@ -631,12 +675,7 @@ function update(prevState) {
     changedKeys.isInteractiveInView
   ) {
     const currentStory = currentStorySelector(state);
-    makeStoryStep(
-      currentStory,
-      currentStoryKey,
-      currentStoryStepIndex,
-      isInteractiveInView
-    );
+    makeStoryStep(currentStory, currentStoryStepIndex, isInteractiveInView);
     if (firstDraw) {
       d3.select(".interactive__img").attr(
         "src",

@@ -20,29 +20,21 @@ export default {
 
   DEFAULT: "default",
 
+  START_ACS: "2010_ACS",
+
   sortedCategories: [
-    "[Multiple]",
-    "Social Security",
-    "Wealth",
-    "Housing",
+    "[Admin.]",
+    "Occupation",
     "Veteran status",
-    "Fertility",
-    "Citizenship",
     "Immigration",
     "Education",
-    "Marital status",
-    "Sex",
+    "Family",
+    "[Multiple]",
     "Identity",
-    "Age",
     "Race",
     "Disability",
     "National origin",
-    "Language",
-    "Occupation",
-    "Occupation - Job",
-    "Occupation - Income",
-    "Occupation - Unemployment",
-    "Occupation - Commute"
+    "Housing"
   ],
 
   answerTypeLookup: {
@@ -59,6 +51,7 @@ export default {
     "Sampled Individual": "individualS",
     "Reference Individual": "individual",
     Household: "household",
+    "Sampled Household": "householdS",
     "Individual in sampled household": "householdSI"
   },
 

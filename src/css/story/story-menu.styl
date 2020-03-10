@@ -20,6 +20,17 @@
     margin 0 auto
     margin-top 1rem
     text-align center
+    &:after
+      content ''
+      position absolute
+      right 15px
+      top 20px
+      height 8px
+      width 8px
+      border-left 2px solid black
+      border-top 2px solid black
+      transform rotate(45deg)
+      transition transform 0.25s, top 0.25s
     &_option
       display block
       position relative
@@ -31,7 +42,7 @@
       opacity 0.95
       overflow hidden
       text-align center
-      set-type-size(medium, false)
+      set-type-size(small, false)
       cursor pointer
       &.selected
         height 48px
@@ -52,6 +63,9 @@
         &:first-child
           height 48px
           line-height 44px
+      &:after
+        top 16px
+        transform rotate(225deg)
 
   .interactive__filter-toggle
     position absolute
@@ -78,7 +92,6 @@
       width 90%
       left -100%
       padding-top 40px
-      background-color white
       &.open
         left 5px
     &.open

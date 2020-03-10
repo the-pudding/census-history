@@ -2,7 +2,7 @@ import { rollup, max } from "d3-array";
 import { createSelector } from "reselect";
 import getIthPoint from "./utils/get-ith-point";
 import Constants from "./constants";
-const { YEAR, UID, AGE_RANGE, CATEGORIES } = Constants;
+const { YEAR, UID, AGE_RANGE, CATEGORIES, START_ACS } = Constants;
 
 export const dataQuestionsSelector = state => state.dataQuestions;
 export const dataLinksSelector = state => state.dataLinks;
@@ -12,24 +12,29 @@ export const currentStorySelector = state =>
 export const appHeightSelector = state => state.appHeight;
 export const svgWidthSelector = (state, props) => props.svgWidth;
 export const yScaleSelector = (state, props) => props.yScale;
+export const currentYearInViewSelector = state => state.currentYearInView;
 
 export const interimDataQuestionsSelector = createSelector(
   dataQuestionsSelector,
   filtersSelector,
-  (questions, filters) => {
-    const interimDataQuestions = questions
-      .slice()
-      .filter(d =>
+  currentYearInViewSelector,
+  (questions, filters, currentYearInView) => {
+    const interimDataQuestions = questions.slice().filter(
+      d =>
+        d[YEAR] <= currentYearInView + 10 && // stay one decade ahead
         filters.reduce(
           (acc, f) =>
             acc && (d[f.key] === "" || f.selectedValues.indexOf(d[f.key]) > -1),
           true
         )
-      );
+    );
     // only works if dataQuestions is sorted by Year
     let indexByYear = 0;
     let year = questions[0][YEAR];
     interimDataQuestions.forEach(e => {
+      if (e[UID] === START_ACS) {
+        return;
+      }
       if (e[YEAR] === year) {
         e.indexByYear = indexByYear;
       } else {
@@ -62,7 +67,8 @@ export const xScaleSelector = createSelector(
   svgWidthSelector,
   qsByYearLookupSelector,
   (svgWidth, qsByYearLookup) => d =>
-    svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d[YEAR])))
+    0.05 * svgWidth +
+    0.9 * svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d[YEAR])))
 );
 
 // position questions that are in filter
@@ -75,18 +81,31 @@ export const nodesSelector = createSelector(
   yScaleSelector,
   (questions, appHeight, qsByYearLookup, svgWidth, xScale, yScale) =>
     new Map(
-      questions.map(d => [
-        d[UID],
-        {
-          ...d,
-          x: d[UID] === "2010_ACS" ? svgWidth - 10 : xScale(d),
-          y:
-            d[UID] === "2010_ACS"
-              ? yScale(d[YEAR]) - appHeight / 6
-              : yScale(d[YEAR]),
-          r: d[UID] === "2010_ACS" ? 10 : 200 / qsByYearLookup.get(d[YEAR])
+      questions.map(d => {
+        let x, y, r;
+        if (d[UID] === START_ACS) {
+          x = svgWidth - 10;
+          y = yScale(d[YEAR]) - appHeight / 6;
+          r = 10;
+        } else if (d[UID].slice(-2) === "_H") {
+          x = svgWidth - 10;
+          y = yScale(d[YEAR]);
+          r = 10;
+        } else {
+          x = xScale(d);
+          y = yScale(d[YEAR]);
+          r = Math.min(125, 180 / qsByYearLookup.get(d[YEAR]));
         }
-      ])
+        return [
+          d[UID],
+          {
+            ...d,
+            x,
+            y,
+            r
+          }
+        ];
+      })
     )
 );
 
