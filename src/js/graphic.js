@@ -9,6 +9,7 @@ import {
 } from "./selectors";
 import getDynamicFontSize from "./utils/dynamic-font-size";
 import immutableAddRemove from "./utils/immutable-add-remove";
+import makeSvgPath from "./utils/make-svg-path";
 
 import stateChangedKeys from "./utils/state-compare";
 
@@ -477,40 +478,38 @@ function makeStoryDropdownMenu(storyMenu, currentStoryKey) {
 function drawCirclesAndLinks(links, nodes, currentStory) {
   const currentStoryCategories = currentStory.storyCategories;
   d3.select(".interactive_g_links")
-    .selectAll("line")
+    .selectAll(".line")
     .data(links, d => d.Source + d.Target)
     .join(
       enter =>
         enter
-          .append("line")
-          .attr("x1", d => d.sourceX)
-          .attr("y1", d => d.sourceY)
-          .attr("x2", d => d.sourceX)
-          .attr("y2", d => d.sourceY)
-          .call(e =>
-            e
-              .transition()
-              .attr("x2", d => d.targetX)
-              .attr("y2", d => d.targetY)
-          ),
+          .append("path")
+          .attr("d", makeSvgPath)
+          .attr("stroke-dasharray", function() {
+            return this.getTotalLength();
+          })
+          .attr("stroke-dashoffset", function() {
+            return this.getTotalLength();
+          })
+          .call(e => e.transition().attr("stroke-dashoffset", 0)),
       update =>
         update.call(u =>
           u
             .transition()
-            .attr("x1", d => d.sourceX)
-            .attr("x2", d => d.targetX)
-            .attr("x2", d => d.targetX)
-            .attr("y2", d => d.targetY)
+            .attr("d", makeSvgPath)
+            .attr("stroke-dashoffset", 0)
         ),
       exit =>
         exit.call(e =>
           e
             .transition()
-            .attr("x2", d => d.sourceX)
-            .attr("y2", d => d.sourceY)
+            .attr("stroke-dashoffset", function() {
+              return this.getTotalLength();
+            })
             .remove()
         )
     )
+    .attr("class", "line")
     .attr("stroke-width", 2)
     .attr("stroke", d => colorScale(d.Category));
 
@@ -530,7 +529,6 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
         update.call(u =>
           u
             .transition()
-            .duration(500)
             .attr("cx", d => d.x)
             .attr("r", d => d.r)
         ),
