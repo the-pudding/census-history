@@ -130,17 +130,19 @@
     text-align center
 
   .sticky-container
-    display block
+    display grid
+    grid-template-columns 2fr 3fr 2fr
+    grid-column-gap 20px
     position relative
     margin 0 auto
     margin-top 1rem
     text-align center
-    display flex
+    // display flex
 
     .interactive__story-step
       position sticky
-      width 23.33%
-      left 5%
+      left 20px
+      width calc(100% - 20px)
       top 33.33vh
       height 33.33vh
       border-radius 10px
@@ -218,23 +220,24 @@
 
     .interactive__svg
       display block
-      margin 0 0 0 10%
+      // margin 0 0 0 10%
       margin-top 1rem
       text-align center
+      grid-column 2 / 3
 
       .label
-        font-size 200px
-        text-anchor middle
+        font-size 40px
+        // text-anchor middle
         font-family Arial, Helvetica, sans-serif
-        fill #dddddd
+        // fill #dddddd
         transition font-size 0.25s
         &.current
           font-weight 600
-          font-size 220px
-        @media (max-width: 768px)
-          font-size 175px
-          &.current
-            font-size 185px
+          font-size 45px
+        // @media (max-width: 768px)
+        //   font-size 40px
+        //   &.current
+        //     font-size 45px
       .line
         fill none
 
@@ -251,8 +254,9 @@
     .interactive__history
       display block
       position relative
-      margin-left 3.333%
-      width 30%
+      // margin-left 3.333%
+      // width 30%
+      grid-column 3 / 4
       &_flag
         position absolute
         color-glow($palette.blue)

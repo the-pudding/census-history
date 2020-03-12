@@ -1,6 +1,7 @@
 import { rollup, max } from "d3-array";
 import { createSelector } from "reselect";
 import getIthPoint from "./utils/get-ith-point";
+import makeSvgPath from "./utils/make-svg-path";
 import Constants from "./constants";
 const { YEAR, UID, AGE_RANGE, CATEGORIES, START_ACS } = Constants;
 
@@ -67,8 +68,8 @@ export const xScaleSelector = createSelector(
   svgWidthSelector,
   qsByYearLookupSelector,
   (svgWidth, qsByYearLookup) => d =>
-    0.05 * svgWidth +
-    0.9 * svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d[YEAR])))
+    0.15 * svgWidth +
+    0.7 * svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d[YEAR])))
 );
 
 // position questions that are in filter
@@ -84,11 +85,11 @@ export const nodesSelector = createSelector(
       questions.map(d => {
         let x, y, r;
         if (d[UID] === START_ACS) {
-          x = svgWidth - 10;
+          x = 0.9 * svgWidth;
           y = yScale(d[YEAR]) - appHeight / 6;
           r = 10;
         } else if (d[UID].slice(-2) === "_H") {
-          x = svgWidth - 10;
+          x = 0.9 * svgWidth;
           y = yScale(d[YEAR]);
           r = 10;
         } else {
@@ -150,6 +151,13 @@ export const linksSelector = createSelector(
         if (Category.indexOf(" - ") !== -1) {
           Category = Category.split(" - ")[0];
         }
-        return { ...d, sourceX, sourceY, targetX, targetY, Category };
+        const svgPath = makeSvgPath(
+          sourceX,
+          sourceY,
+          targetX,
+          targetY,
+          +d.Target.slice(0, 4) - +d.Source.slice(0, 4) > 10
+        );
+        return { ...d, sourceX, sourceY, targetX, targetY, Category, svgPath };
       })
 );

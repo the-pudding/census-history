@@ -9,7 +9,6 @@ import {
 } from "./selectors";
 import getDynamicFontSize from "./utils/dynamic-font-size";
 import immutableAddRemove from "./utils/immutable-add-remove";
-import makeSvgPath from "./utils/make-svg-path";
 
 import stateChangedKeys from "./utils/state-compare";
 
@@ -264,7 +263,9 @@ function makeTooltip({ x, y, d }, isMobile, tooltipOffsetHeight) {
       .html(
         `<div class='interactive__tooltip_question' style='border-bottom-color:${color};${getDynamicFontSize(
           d[QUESTION]
-        )}'>${d[QUESTION]}
+        )}'>${d[UID]}${
+          d[QUESTION] === "National origin" ? "Nat'l origin" : d[QUESTION]
+        }
           <div class='interactive__tooltip_question_category' style='background-color:${color};'>${
           d[CATEGORIES]
         }</div>
@@ -484,7 +485,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
       enter =>
         enter
           .append("path")
-          .attr("d", makeSvgPath)
+          .attr("d", d => d.svgPath)
           .attr("stroke-dasharray", function() {
             return this.getTotalLength();
           })
@@ -496,7 +497,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
         update.call(u =>
           u
             .transition()
-            .attr("d", makeSvgPath)
+            .attr("d", d => d.svgPath)
             .attr("stroke-dashoffset", 0)
         ),
       exit =>
@@ -582,7 +583,7 @@ function update(prevState) {
     isInteractiveInView
   } = state;
   const svgHeight = 8.333 * appHeight;
-  const svgWidth = isMobile ? appWidth : appWidth / 3;
+  const svgWidth = isMobile ? appWidth : appWidth * (3 / 7);
   const changedKeys = stateChangedKeys(prevState, state);
 
   /**
@@ -719,8 +720,8 @@ function update(prevState) {
       .data(years)
       .join("text")
       .attr("class", "label")
-      .attr("y", d => yScale(d) + 70) // vertically center
-      .attr("x", svgWidth / 2)
+      .attr("y", d => yScale(d) + 15) // vertically center
+      .attr("x", 0)
       .text(d => d);
 
     d3.select(".interactive__history")
