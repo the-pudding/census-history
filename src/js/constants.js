@@ -23,7 +23,6 @@ export default {
   START_ACS: "2010_ACS",
 
   sortedCategories: [
-    "[Admin.]",
     "Occupation",
     "Veteran status",
     "Immigration",
@@ -52,7 +51,7 @@ export default {
     "Reference Individual": "individual",
     Household: "household",
     "Sampled Household": "householdS",
-    "Individual in sampled household": "householdSI"
+    "Indiv. in sampled household": "householdSI"
   },
 
   years: [

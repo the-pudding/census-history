@@ -77,10 +77,11 @@ let state = {
   isFilterMenuOpen: false,
   isInteractiveInView: false
 };
-const colorScale = d3.scaleOrdinal([...d3.schemeSet1, ...d3.schemeSet2]);
+const colorScale = d3
+  .scaleOrdinal([...d3.schemeSet1, ...d3.schemeSet2])
+  .domain(sortedCategories);
 
 function setState(nextState) {
-  // console.log(nextState);
   const prevState = { ...state };
   state = { ...state, ...nextState };
   update(prevState);
@@ -233,42 +234,43 @@ function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
 }
 
 function makeTooltip({ x, y, d }, isMobile, tooltipOffsetHeight) {
-  if (d) {
-    const { x: svgX } = d3
-      .select(".interactive__svg")
-      .node()
-      .getBoundingClientRect();
-    const color = colorScale(d[CATEGORIES]);
-    const imageId = imageFilesLookup[d[UID]];
+  const { x: svgX } = d3
+    .select(".interactive__svg")
+    .node()
+    .getBoundingClientRect();
+  const color = colorScale(d[CATEGORIES]);
+  const imageId = imageFilesLookup[d[UID]];
 
-    let listItems = [];
-    let listTitle = "";
-    // these should be mutually exclusive but may not always be
-    if (d[OPTIONS]) {
-      listItems = d[OPTIONS].split(",");
-      listTitle = "Options provided";
-    } else if (d[AGE_RANGE]) {
-      listItems = d[AGE_RANGE].split(",");
-      listTitle = "Age categories";
+  let listItems = [];
+  let listTitle = "";
+  // these should be mutually exclusive but may not always be
+  if (d[OPTIONS]) {
+    listItems = d[OPTIONS].split(",");
+    if (listItems.length > 11) {
+      listItems = [...listItems.slice(0, 11), "etc."];
     }
-    d3.select(".interactive__tooltip")
-      .style(
-        "top",
-        isMobile ? "auto" : y + tooltipOffsetHeight + 200 + d.r + "px"
-      )
-      .style("left", isMobile ? "0px" : x + svgX - 150 + "px")
-      .style("border-color", color)
-      .style("box-shadow", "0px 0px 3px 0px " + color)
-      .classed("visible", true)
-      .html(
-        `<div class='interactive__tooltip_question' style='border-bottom-color:${color};${getDynamicFontSize(
-          d[QUESTION]
-        )}'>${d[UID]}${
-          d[QUESTION] === "National origin" ? "Nat'l origin" : d[QUESTION]
-        }
+    listTitle = "Options provided";
+  } else if (d[AGE_RANGE]) {
+    listItems = d[AGE_RANGE].split(",");
+    listTitle =
+      "This question was asked of the same demographic group across multiple age categories";
+  }
+  d3.select(".interactive__tooltip")
+    .style(
+      "top",
+      isMobile ? "auto" : y + tooltipOffsetHeight + 200 + d.r + "px"
+    )
+    .style("left", isMobile ? "0px" : x + svgX - 150 + "px")
+    .style("border-color", color)
+    .style("box-shadow", "0px 0px 3px 0px " + color)
+    .classed("visible", true)
+    .html(
+      `<div class='interactive__tooltip_question' style='border-bottom-color:${color};${getDynamicFontSize(
+        d[QUESTION]
+      )}'>${d[QUESTION]}
           <div class='interactive__tooltip_question_category' style='background-color:${color};'>${
-          d[CATEGORIES]
-        }</div>
+        d[CATEGORIES] === "National origin" ? "Nat'l origin" : d[CATEGORIES]
+      }</div>
         </div>
         ${
           imageId
@@ -294,7 +296,7 @@ function makeTooltip({ x, y, d }, isMobile, tooltipOffsetHeight) {
             listItems.length
               ? `<div class='interactive__tooltip_right-col_options'>
               ${listTitle}:
-            <ul class='${listItems.length > 10 ? "wrap" : ""}'>
+            <ul class='${isMobile || listItems.length > 10 ? "wrap" : ""}'>
               ${listItems.map(d => `<li>-${d.trim()}</li>`).join("")}
             </ul>
           </div>`
@@ -302,17 +304,23 @@ function makeTooltip({ x, y, d }, isMobile, tooltipOffsetHeight) {
           }
         </div>
         `
-      );
-  } else {
-    d3.select(".interactive__tooltip").classed("visible", false);
-  }
+    );
 }
 
-function makeStoryStep(story, storyStepIndex, isInteractiveInView) {
+function makeStoryStep(
+  story,
+  storyStepIndex,
+  isInteractiveInView,
+  isMobile,
+  currentYearInView
+) {
   const storyStepEl = d3.select(".interactive__story-step");
 
   d3.select(".interactive__story-intro").html(story.storyIntro);
-  storyStepEl.classed("visible", isInteractiveInView);
+  storyStepEl.classed(
+    "visible",
+    isMobile ? currentYearInView >= years[0] : isInteractiveInView
+  );
 
   const storyStep = story.steps[storyStepIndex];
   storyStepEl
@@ -522,6 +530,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
       enter =>
         enter
           .append("circle")
+          .attr("data-id", d => d[UID])
           .attr("class", "node")
           .attr("cx", d => d.x)
           .attr("r", 0)
@@ -644,12 +653,18 @@ function update(prevState) {
   if (
     changedKeys.isMobile ||
     changedKeys.tooltip ||
-    changedKeys.tooltipOffsetHeight
+    changedKeys.tooltipOffsetHeight ||
+    changedKeys.currentYearInView
   ) {
     d3.select(".interactive_g_circles")
       .selectAll("circle.node")
       .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID]);
-    makeTooltip(tooltip, isMobile, tooltipOffsetHeight);
+    // hide tooltip if user scrolls or clicks away
+    if (changedKeys.currentYearInView || !tooltip.d) {
+      d3.select(".interactive__tooltip").classed("visible", false);
+    } else {
+      makeTooltip(tooltip, isMobile, tooltipOffsetHeight);
+    }
   }
 
   /**
@@ -671,10 +686,18 @@ function update(prevState) {
     firstDraw ||
     changedKeys.currentStoryKey ||
     changedKeys.currentStoryStepIndex ||
-    changedKeys.isInteractiveInView
+    changedKeys.isInteractiveInView ||
+    changedKeys.isMobile ||
+    changedKeys.currentYearInView
   ) {
     const currentStory = currentStorySelector(state);
-    makeStoryStep(currentStory, currentStoryStepIndex, isInteractiveInView);
+    makeStoryStep(
+      currentStory,
+      currentStoryStepIndex,
+      isInteractiveInView,
+      isMobile,
+      currentYearInView
+    );
     if (firstDraw) {
       d3.select(".interactive__img").attr(
         "src",
@@ -682,6 +705,7 @@ function update(prevState) {
       );
     }
     if (changedKeys.currentStoryKey) {
+      console.log("scroll a");
       d3.select(".story-menu_dropdown")
         .selectAll(".story-menu_dropdown_option")
         .classed("selected", d => d.key === currentStoryKey);
@@ -693,6 +717,7 @@ function update(prevState) {
         `assets/images/${currentStoryKey}.jpg`
       );
     } else if (changedKeys.currentStoryStepIndex) {
+      console.log("scroll b");
       d3.selectAll(".interactive_g_labels .label")
         .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
         .node()
@@ -714,14 +739,14 @@ function update(prevState) {
       d => d === currentYearInView
     );
   }
-  if (changedKeys.appHeight) {
+  if (changedKeys.appHeight || changedKeys.isMobile) {
     d3.select(".interactive_g_labels")
       .selectAll("text")
       .data(years)
       .join("text")
       .attr("class", "label")
-      .attr("y", d => yScale(d) + 15) // vertically center
-      .attr("x", 0)
+      .attr("y", d => yScale(d) + (isMobile ? 55 : 15)) // vertically center
+      .attr("x", isMobile ? svgWidth / 2 : 0)
       .text(d => d);
 
     d3.select(".interactive__history")

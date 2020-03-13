@@ -14,6 +14,7 @@ export const appHeightSelector = state => state.appHeight;
 export const svgWidthSelector = (state, props) => props.svgWidth;
 export const yScaleSelector = (state, props) => props.yScale;
 export const currentYearInViewSelector = state => state.currentYearInView;
+export const isMobileSelector = state => state.isMobile;
 
 export const interimDataQuestionsSelector = createSelector(
   dataQuestionsSelector,
@@ -67,9 +68,14 @@ export const maxYearsSelector = createSelector(
 export const xScaleSelector = createSelector(
   svgWidthSelector,
   qsByYearLookupSelector,
-  (svgWidth, qsByYearLookup) => d =>
-    0.15 * svgWidth +
-    0.7 * svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d[YEAR])))
+  isMobileSelector,
+  (svgWidth, qsByYearLookup, isMobile) => {
+    const m1 = isMobile ? 0.05 : 0.15;
+    const m2 = isMobile ? 0.8 : 0.7;
+    return d =>
+      m1 * svgWidth +
+      m2 * svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d[YEAR])));
+  }
 );
 
 // position questions that are in filter
@@ -136,7 +142,8 @@ export const miniNodesSelector = createSelector(
 export const linksSelector = createSelector(
   dataLinksSelector,
   nodesSelector,
-  (links, nodes) =>
+  svgWidthSelector,
+  (links, nodes, svgWidth) =>
     links
       .filter(d => nodes.has(d.Source) && nodes.has(d.Target))
       .map(d => {
@@ -156,7 +163,8 @@ export const linksSelector = createSelector(
           sourceY,
           targetX,
           targetY,
-          +d.Target.slice(0, 4) - +d.Source.slice(0, 4) > 10
+          +d.Target.slice(0, 4) - +d.Source.slice(0, 4) > 10,
+          svgWidth
         );
         return { ...d, sourceX, sourceY, targetX, targetY, Category, svgPath };
       })
