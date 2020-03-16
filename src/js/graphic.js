@@ -5,7 +5,8 @@ import Constants from "./constants";
 import {
   currentStorySelector,
   nodesSelector,
-  linksSelector
+  linksSelector,
+  currentStoryStepYearLookupSelector
 } from "./selectors";
 import getDynamicFontSize from "./utils/dynamic-font-size";
 import immutableAddRemove from "./utils/immutable-add-remove";
@@ -316,46 +317,46 @@ function makeTooltip({ x, y, d }, isMobile, tooltipOffsetHeight) {
     );
 }
 
-function makeStoryStep(
-  story,
-  storyStepIndex,
-  isInteractiveInView,
-  isMobile,
-  currentYearInView
-) {
-  const storyStepEl = d3.select(".interactive__story-step");
+// function makeStoryStep(
+//   story,
+//   storyStepIndex,
+//   isInteractiveInView,
+//   isMobile,
+//   currentYearInView
+// ) {
+//   const storyStepEl = d3.select(".interactive__story-step");
 
-  d3.select(".interactive__story-intro").html(story.storyIntro);
-  storyStepEl.classed(
-    "visible",
-    isMobile ? currentYearInView >= years[0] : isInteractiveInView
-  );
+//   d3.select(".interactive__story-intro").html(story.storyIntro);
+//   storyStepEl.classed(
+//     "visible",
+//     isMobile ? currentYearInView >= years[0] : isInteractiveInView
+//   );
 
-  const storyStep = story.steps[storyStepIndex];
-  storyStepEl
-    .select(".interactive__story-stepper-dots")
-    .selectAll(".step-dot")
-    .data(story.steps, d => d.key)
-    .join("div")
-    .attr("class", "step-dot")
-    .classed("current", (_, i) => i === storyStepIndex);
+//   const storyStep = story.steps[storyStepIndex];
+//   storyStepEl
+//     .select(".interactive__story-stepper-dots")
+//     .selectAll(".step-dot")
+//     .data(story.steps, d => d.key)
+//     .join("div")
+//     .attr("class", "step-dot")
+//     .classed("current", (_, i) => i === storyStepIndex);
 
-  storyStepEl
-    .select(".interactive__story-step-title")
-    .html(`${storyStep.year}: ${storyStep.label}`);
-  storyStepEl.select(".interactive__story-step-body").html(storyStep.text);
-  storyStepEl.select(".interactive__story-stepper-up").on("click", () => {
-    setState({
-      currentStoryStepIndex:
-        (storyStepIndex - 1 + story.steps.length) % story.steps.length
-    });
-  });
-  storyStepEl.select(".interactive__story-stepper-down").on("click", () => {
-    setState({
-      currentStoryStepIndex: (storyStepIndex + 1) % story.steps.length
-    });
-  });
-}
+//   storyStepEl
+//     .select(".interactive__story-step-title")
+//     .html(`${storyStep.year}: ${storyStep.label}`);
+//   storyStepEl.select(".interactive__story-step-body").html(storyStep.text);
+//   storyStepEl.select(".interactive__story-stepper-up").on("click", () => {
+//     setState({
+//       currentStoryStepIndex:
+//         (storyStepIndex - 1 + story.steps.length) % story.steps.length
+//     });
+//   });
+//   storyStepEl.select(".interactive__story-stepper-down").on("click", () => {
+//     setState({
+//       currentStoryStepIndex: (storyStepIndex + 1) % story.steps.length
+//     });
+//   });
+// }
 
 function makeLegend(isMobile, currentYearInView, currentStory) {
   const currentStoryCategories = currentStory.storyCategories;
@@ -560,7 +561,9 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
         )
     )
     .attr("cy", d => d.y)
-    .attr("fill", d => (d["Age range"] ? "#ffffff" : colorScale(d[CATEGORIES])))
+    .attr("fill", d =>
+      d["Age range"] ? "url(#stripe)" : colorScale(d[CATEGORIES])
+    )
     .attr("stroke", d => colorScale(d[CATEGORIES]))
     .attr("stroke-width", d => (d["Age range"] ? 2 : 0))
     .classed(
@@ -582,6 +585,65 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
     .on("mouseleave", () => {
       setState({ tooltip: { ...state.tooltip, d: null } });
     });
+}
+
+function makeLabelsAndStoryStep(
+  yScale,
+  isMobile,
+  svgWidth,
+  story,
+  storyStepIndex,
+  storyStepYearLookup,
+  yearInView
+) {
+  d3.select(".interactive__labels")
+    .selectAll(".label")
+    .data(years)
+    .join("div")
+    .attr("class", "label")
+    .classed("has-story-step", d => storyStepYearLookup.has(d))
+    .classed("current", d => d === yearInView)
+    .style("top", d => yScale(d) - 40 + "px") // vertically center
+    .style("left", isMobile ? svgWidth / 2 : 0 + "px")
+    .html(d => {
+      const storyStep = storyStepYearLookup.has(d)
+        ? storyStepYearLookup.get(d)
+        : null;
+      return `<div>${d}</div>
+      <div class='story-step'>
+        <div class='story-step-header'>
+          ${storyStep && storyStep.label}
+        </div>
+        <div class='story-step-body'>
+          ${storyStep && storyStep.text}
+        </div>
+        <div class='story-step-down'>
+          <img src='assets/images/icons/arrow-down.svg'>
+          Next
+        </div>
+        <div class='story-step-up'>
+          <img src='assets/images/icons/arrow-up.svg'>
+          Back to top
+        </div>
+      </div>
+    `;
+    });
+  d3.selectAll(".story-step-down").on("click", () => {
+    setState({
+      currentStoryStepIndex: Math.min(
+        storyStepIndex + 1,
+        story.steps.length - 1
+      )
+    });
+  });
+  d3.selectAll(".story-step-up").on("click", () => {
+    setState({
+      currentStoryStepIndex: 0
+    });
+    // d3.select(".interactive")
+    //   .node()
+    //   .scrollIntoView({ behavior: "smooth" });
+  });
 }
 
 function update(prevState) {
@@ -697,16 +759,29 @@ function update(prevState) {
     changedKeys.currentStoryStepIndex ||
     changedKeys.isInteractiveInView ||
     changedKeys.isMobile ||
-    changedKeys.currentYearInView
+    changedKeys.currentYearInView ||
+    changedKeys.appHeight
   ) {
     const currentStory = currentStorySelector(state);
-    makeStoryStep(
+    const currentStoryStepYearLookup = currentStoryStepYearLookupSelector(
+      state
+    );
+    makeLabelsAndStoryStep(
+      yScale,
+      isMobile,
+      svgWidth,
       currentStory,
       currentStoryStepIndex,
-      isInteractiveInView,
-      isMobile,
+      currentStoryStepYearLookup,
       currentYearInView
     );
+    // makeStoryStep(
+    //   currentStory,
+    //   currentStoryStepIndex,
+    //   isInteractiveInView,
+    //   isMobile,
+    //   currentYearInView
+    // );
     // if (firstDraw) {
     //   d3.select(".interactive__img").attr(
     //     "src",
@@ -714,25 +789,23 @@ function update(prevState) {
     //   );
     // }
     if (changedKeys.currentStoryKey) {
-      console.log("scroll a");
       d3.select(".story-menu_dropdown")
         .selectAll(".story-menu_dropdown_option")
         .classed("selected", d => d.key === currentStoryKey);
-      d3.select(".interactive")
-        .node()
-        .scrollIntoView({ behavior: "smooth" });
+      // d3.select(".interactive")
+      //   .node()
+      //   .scrollIntoView({ behavior: "smooth", block: "end" });
       // d3.select(".interactive__img").attr(
       //   "src",
       //   `assets/images/${currentStoryKey}.jpg`
       // );
     } else if (changedKeys.currentStoryStepIndex) {
-      console.log("scroll b");
-      d3.selectAll(".interactive_g_labels .label")
+      d3.selectAll(".interactive__labels .label")
         .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
         .node()
         .scrollIntoView({
           behavior: "smooth",
-          block: "center",
+          block: "end",
           inline: "center"
         });
     }
@@ -742,22 +815,10 @@ function update(prevState) {
    * HISTORY FLAGS
    * VIZ LABELS
    */
-  if (changedKeys.currentYearInView) {
-    d3.selectAll(".interactive_g_labels .label").classed(
-      "current",
-      d => d === currentYearInView
-    );
-  }
+  // if (changedKeys.currentYearInView) {
+  //   d3.selectAll(".interactive__labels .label");
+  // }
   if (changedKeys.appHeight || changedKeys.isMobile) {
-    d3.select(".interactive_g_labels")
-      .selectAll("text")
-      .data(years)
-      .join("text")
-      .attr("class", "label")
-      .attr("y", d => yScale(d) + (isMobile ? 55 : 15)) // vertically center
-      .attr("x", isMobile ? svgWidth / 2 : 0)
-      .text(d => d);
-
     d3.select(".interactive__history")
       .selectAll(".interactive__history_flag")
       .data(dataHistory)

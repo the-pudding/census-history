@@ -5,30 +5,26 @@
   height 3rem
   z-index 1001
   top 0px
-  background-color white
 
   .story-menu_dropdown
     outline none
-    background-color $palette.blue
-    border-radius 4px
-    height 100%
-    width 300px
+    width 200px
     line-height 44px
     display block
     position relative
-    margin-right 71.44%
-    margin-left calc(28.56% - 300px)
+    margin-right 73%
+    margin-left auto
     margin-top 1rem
     text-align center
     @media (max-width: 768px)
-      width 260px
+      width 160px
     &:after
       content ''
       position absolute
-      right 15px
+      right 5px
       top 20px
-      height 8px
-      width 8px
+      height 7px
+      width 7px
       border-left 2px solid black
       border-top 2px solid black
       transform rotate(45deg)
@@ -41,34 +37,32 @@
       transition height, padding
       transition-duration 0.25s
       height 0
-      width 300px
+      width 200px
       padding 0 3px
       opacity 0.95
       overflow hidden
-      text-align center
+      text-align left
       set-type-size(small, false)
       cursor pointer
       @media (max-width: 768px)
-        width 260px
+        width 160px
       &.selected
         pointer-events none
-        height 48px
+        height 36px
         line-height 44px
         padding-top 2px
-        border-bottom 1px solid white
-        font-weight bold
+        border-bottom 1px solid black
     &:focus
       .story-menu_dropdown_option
         height 36px
-        line-height 32px
+        line-height 30px
         padding-top 2px
         background-color white
+        border-bottom none
         &:hover
-          background-color $palette.blue
-        &.selected
-          font-weight bold
+          background-color #dddddd
         &:first-child
-          height 48px
+          height 36px
           line-height 44px
       &:after
         top 16px

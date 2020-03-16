@@ -5,7 +5,7 @@
 
   {{!-- sticky --}}
   <div class='sticky-container'>
-    <div class='interactive__story-step'>
+    {{!-- <div class='interactive__story-step'>
       <div class='interactive__story-step-title'></div>
       <div class='interactive__story-step-body'></div>
       <div class='interactive__story-stepper'>
@@ -13,19 +13,26 @@
         <div class='interactive__story-stepper-dots'></div>
         <img inline src='arrow-down.svg' class='interactive__story-stepper-down'>
       </div>
-    </div>
+    </div> --}}
     <svg class='interactive__svg'>
-      <g class='interactive_g_labels'></g>
+      <defs>
+        <pattern id="stripe" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+          <line x1="0" y="0" x2="0" y2="8" stroke="#388e3c" stroke-width="9" />
+          <line x1="8" y="0" x2="8" y2="8" stroke="#4BB650" stroke-width="9" />
+        </pattern>
+      </defs>
+      {{!-- <g class='interactive_g_labels'></g> --}}
       <g class='interactive_g_links'></g>
       <g class='interactive_g_circles'></g>
     </svg>
+    <div class='interactive__labels'></div>
     <div class='interactive__history'></div>
     <div class='interactive__legend'></div>
   </div>
 
-  <div class='interactive__navigation'>
+  {{!-- <div class='interactive__navigation'>
     Read on or choose another story from the menu above.
-  </div>
+  </div> --}}
 
   {{!-- absolute positioned elements --}}
   <div class='interactive__tooltip'></div>

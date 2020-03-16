@@ -78,6 +78,16 @@ export const xScaleSelector = createSelector(
   }
 );
 
+export const currentStoryStepYearLookupSelector = createSelector(
+  currentStorySelector,
+  currentStory =>
+    rollup(
+      currentStory.steps,
+      d => d[0],
+      d => d.year
+    )
+);
+
 // position questions that are in filter
 export const nodesSelector = createSelector(
   interimDataQuestionsSelector,
