@@ -26,6 +26,8 @@ const {
   END_YEAR,
   EVENT,
   MOBILE_BREAKPT,
+  START_ACS,
+  COLORS,
   sortedCategories,
   years,
   answerTypeLookup,
@@ -77,9 +79,7 @@ let state = {
   isFilterMenuOpen: false,
   isInteractiveInView: false
 };
-const colorScale = d3
-  .scaleOrdinal([...d3.schemeSet1, ...d3.schemeSet2])
-  .domain(sortedCategories);
+const colorScale = d3.scaleOrdinal(COLORS).domain(sortedCategories);
 
 function setState(nextState) {
   const prevState = { ...state };
@@ -246,14 +246,13 @@ function makeTooltip({ x, y, d }, isMobile, tooltipOffsetHeight) {
   // these should be mutually exclusive but may not always be
   if (d[OPTIONS]) {
     listItems = d[OPTIONS].split(",");
-    if (listItems.length > 11) {
-      listItems = [...listItems.slice(0, 11), "etc."];
-    }
     listTitle = "Options provided";
   } else if (d[AGE_RANGE]) {
     listItems = d[AGE_RANGE].split(",");
-    listTitle =
-      "This question was asked of the same demographic group across multiple age categories";
+    listTitle = "Asked of the same demographic group by age range";
+  }
+  if (listItems.length > 11) {
+    listItems = [...listItems.slice(0, 11), "etc."];
   }
   d3.select(".interactive__tooltip")
     .style(
@@ -300,6 +299,16 @@ function makeTooltip({ x, y, d }, isMobile, tooltipOffsetHeight) {
               ${listItems.map(d => `<li>-${d.trim()}</li>`).join("")}
             </ul>
           </div>`
+              : ""
+          }
+          ${
+            d[UID] === START_ACS
+              ? `<div class='interactive__tooltip_right-col_notes'>Many questions previously asked on the censes moved to the American Community Survey between 2000 and 2010.</div>`
+              : ""
+          }
+          ${
+            d[UID].slice(-2) === "_H"
+              ? `<div class='interactive__tooltip_right-col_notes'>The long form census included around 40 questions about housing infrastructure, condition, size, and value.</div>`
               : ""
           }
         </div>
@@ -698,12 +707,12 @@ function update(prevState) {
       isMobile,
       currentYearInView
     );
-    if (firstDraw) {
-      d3.select(".interactive__img").attr(
-        "src",
-        `assets/images/${currentStoryKey}.jpg`
-      );
-    }
+    // if (firstDraw) {
+    //   d3.select(".interactive__img").attr(
+    //     "src",
+    //     `assets/images/${currentStoryKey}.jpg`
+    //   );
+    // }
     if (changedKeys.currentStoryKey) {
       console.log("scroll a");
       d3.select(".story-menu_dropdown")
@@ -712,10 +721,10 @@ function update(prevState) {
       d3.select(".interactive")
         .node()
         .scrollIntoView({ behavior: "smooth" });
-      d3.select(".interactive__img").attr(
-        "src",
-        `assets/images/${currentStoryKey}.jpg`
-      );
+      // d3.select(".interactive__img").attr(
+      //   "src",
+      //   `assets/images/${currentStoryKey}.jpg`
+      // );
     } else if (changedKeys.currentStoryStepIndex) {
       console.log("scroll b");
       d3.selectAll(".interactive_g_labels .label")

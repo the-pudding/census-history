@@ -164,7 +164,8 @@ export const linksSelector = createSelector(
           targetX,
           targetY,
           +d.Target.slice(0, 4) - +d.Source.slice(0, 4) > 10,
-          svgWidth
+          svgWidth,
+          d.Target === START_ACS
         );
         return { ...d, sourceX, sourceY, targetX, targetY, Category, svgPath };
       })

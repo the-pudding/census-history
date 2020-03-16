@@ -22,6 +22,20 @@ export default {
 
   START_ACS: "2010_ACS",
 
+  COLORS: [
+    "#d50000",
+    "#f57c00",
+    "#8e24aa",
+    "#ffea00",
+    "#9c5a33",
+    "#448aff",
+    "#388e3c",
+    "#f06292",
+    "#9e9e9e",
+    "#26c6da",
+    "#ffb74d"
+  ],
+
   sortedCategories: [
     "Occupation",
     "Veteran status",

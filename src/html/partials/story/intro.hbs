@@ -4,13 +4,12 @@
 	<p class='intro__byline'>By
 		<a href='{{meta.author.url}}' target='_blank'>
 			<strong>{{meta.author.name}}</strong>
-		</a>
+		</a>, TWO-N
 	</p>
 	<time class='intro__time'>March 2020</time>
 
-	<img class='intro__img' src='../../../assets/images/intro.jpg'>
-
-	<div>
+	<div class='intro__text-parent'>
+		<img class='intro__img' src='../../../assets/images/intro.gif'>
 		{{#each textContent.introPara}}
 		<p class='intro__text'>{{this}}</p>
 		{{/each}}

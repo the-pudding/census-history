@@ -3,16 +3,19 @@
 	padding 6rem 1rem 3rem 1rem
 
 	&__hed
-		max-width 60rem
+		max-width 35rem
 		margin 0 auto
 		text-align center
-		font-family $national-narrow
+		set-type-size(xxx-large)
+		font-family: $tiempos
 
 	&__dek
 		max-width $column-width
 		margin 0 auto
 		margin-top 1rem
 		text-align center
+		set-type-size(small)
+		font-weight 600
 
 	&__byline
 		max-width $column-width
@@ -27,8 +30,13 @@
 		margin-top 1rem
 		text-align center
 
+	&-parent
+		position relative
+
 	&__img
-		display block
+		position absolute
+		top 0px
+		left -50px
 		height 350px
 		max-width $column-width
 		width auto
@@ -43,14 +51,14 @@
 		max-width $column-width
 		margin 0 auto
 		margin-top 1rem
-		text-align justify
+		text-align left
 
 	&__disclaimer
 		display block
 		max-width $column-width
 		margin 0 auto
 		margin-top 1rem
-		text-align justify
+		text-align left
 		text-transform: uppercase
 		font-family $national-narrow
 		set-type-size(small, true)

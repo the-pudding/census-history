@@ -9,18 +9,24 @@
   </div>
   <h2>Credits</h2>
   <div class='conclusion__credits'>
-    <strong>All Media Assets:</strong> U.S. Census Bureau.
+    <p>{{textContent.credits}}</p>
+    <p><strong>All Media Assets:</strong> U.S. Census Bureau.</p>
     <p>
-      Secondary sources for historical context included:
+      Primary sources for census questionnaires and images included:
       <ul>
-        {{#each textContent.sources}}
+        {{#each textContent.primarySources}}
         <li>{{this}}</li>
         {{/each}}
       </ul>
     </p>
-    {{#each textContent.credits}}
-    <p>{{this}}</p>
-    {{/each}}
+    <p>
+      Secondary sources for historical context included:
+      <ul>
+        {{#each textContent.secondarySources}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    </p>
   </div>
   <div class='two-n'>Designed and developed at <a href='http://two-n.com/'><img
         src='../../../assets/images/2n_logo.png'></a></div>
