@@ -6,7 +6,8 @@ import {
   currentStorySelector,
   nodesSelector,
   linksSelector,
-  currentStoryStepYearLookupSelector
+  currentStoryStepYearLookupSelector,
+  legendDataSelector
 } from "./selectors";
 import getDynamicFontSize from "./utils/dynamic-font-size";
 import immutableAddRemove from "./utils/immutable-add-remove";
@@ -260,13 +261,16 @@ function makeTooltip({ x, y, d }, isMobile /*, tooltipOffsetHeight*/) {
     .select(".interactive__tooltip")
     .style(
       "top",
-      isMobile ? "auto" : y + tooltipOffsetHeight + 16 + 2 * d.r + "px"
+      isMobile
+        ? "auto"
+        : y + tooltipOffsetHeight + 16 + Math.max(15, 2 * d.r) + "px"
     )
-    .style("left", isMobile ? "0px" : x + svgX + 2 * d.r + "px")
+    .style("left", isMobile ? "0px" : x + svgX + Math.max(15, 2 * d.r) + "px")
     .style("border-color", color)
     // .style("box-shadow", "0px 0px 3px 0px " + color)
     .classed("visible", true)
-    .html(`<div class='interactive__tooltip_category' style='color:${color};'>
+    .html(`<div class='interactive__tooltip_tail' style='border-color:${color};'></div>
+    <div class='interactive__tooltip_category' style='color:${color};'>
       ${d[CATEGORIES] === "National origin" ? "Nat'l origin" : d[CATEGORIES]}
     </div>
     <div class='interactive__tooltip_question'>
@@ -372,36 +376,36 @@ function makeTooltip({ x, y, d }, isMobile /*, tooltipOffsetHeight*/) {
 //   });
 // }
 
-function makeLegend(isMobile, currentYearInView, currentStory) {
-  const currentStoryCategories = currentStory.storyCategories;
-  const legendData = colorScale
-    .domain()
-    .map(d => ({ in: d, out: colorScale(d) }))
-    .sort((a, b) =>
-      d3.ascending(
-        sortedCategories.indexOf(a.in),
-        sortedCategories.indexOf(b.in)
-      )
-    );
-  d3.select(".interactive__legend")
-    .classed(
-      "visible",
-      !isMobile &&
-        currentYearInView >= years[0] &&
-        currentYearInView < years[years.length - 1]
-    )
-    .selectAll(".interactive__legend_tile")
-    .data(legendData)
-    .join("div")
-    .attr("class", "interactive__legend_tile")
-    .style("background-color", d => d.out)
-    .classed(
-      "out-of-story",
-      d =>
-        currentStory.key !== DEFAULT && !~currentStoryCategories.indexOf(d.in)
-    )
-    .text(d => d.in);
-}
+// function makeLegend(isMobile, currentYearInView, currentStory) {
+//   const currentStoryCategories = currentStory.storyCategories;
+//   const legendData = colorScale
+//     .domain()
+//     .map(d => ({ in: d, out: colorScale(d) }))
+//     .sort((a, b) =>
+//       d3.ascending(
+//         sortedCategories.indexOf(a.in),
+//         sortedCategories.indexOf(b.in)
+//       )
+//     );
+//   d3.select(".interactive__legend")
+//     .classed(
+//       "visible",
+//       !isMobile &&
+//         currentYearInView >= years[0] &&
+//         currentYearInView < years[years.length - 1]
+//     )
+//     .selectAll(".interactive__legend_tile")
+//     .data(legendData)
+//     .join("div")
+//     .attr("class", "interactive__legend_tile")
+//     .style("background-color", d => d.out)
+//     .classed(
+//       "out-of-story",
+//       d =>
+//         currentStory.key !== DEFAULT && !~currentStoryCategories.indexOf(d.in)
+//     )
+//     .text(d => d.in);
+// }
 
 function onEnterView(el) {
   const isEnter = this.direction === "enter";
@@ -608,8 +612,10 @@ function makeLabelsAndStoryStep(
   story,
   storyStepIndex,
   storyStepYearLookup,
-  yearInView
+  yearInView,
+  legendData
 ) {
+  const yearLegendData = legendData.get(yearInView);
   d3.select(".interactive__story-intro")
     .classed("populated", story.key !== DEFAULT)
     .html(story.storyIntro);
@@ -641,6 +647,26 @@ function makeLabelsAndStoryStep(
         <div class='story-step-up'>
           <img src='assets/images/icons/arrow-up.svg'>
           Back to top
+        </div>
+        <div class='step-legend'>
+          ${
+            yearLegendData
+              ? Array.from(yearLegendData.keys())
+                  .map(
+                    k =>
+                      `<div class='step-legend-row'>
+                        <div class='step-legend-row-circle' style='background-color:${colorScale(
+                          k
+                        )};'></div>
+                        <div class='step-legend-row-term'>${k}</div>
+                        <div class='step-legend-row-number'>${yearLegendData.get(
+                          k
+                        )}</div>
+                      </div>`
+                  )
+                  .join("")
+              : ""
+          }
         </div>
       </div>
     `;
@@ -759,14 +785,14 @@ function update(prevState) {
   /**
    * LEGEND
    */
-  if (
-    changedKeys.isMobile ||
-    changedKeys.currentYearInView ||
-    changedKeys.currentStoryKey
-  ) {
-    const currentStory = currentStorySelector(state);
-    makeLegend(isMobile, currentYearInView, currentStory);
-  }
+  // if (
+  //   changedKeys.isMobile ||
+  //   changedKeys.currentYearInView ||
+  //   changedKeys.currentStoryKey
+  // ) {
+  //   const currentStory = currentStorySelector(state);
+  //   makeLegend(isMobile, currentYearInView, currentStory);
+  // }
 
   /**
    * STORY STEP
@@ -784,6 +810,7 @@ function update(prevState) {
     const currentStoryStepYearLookup = currentStoryStepYearLookupSelector(
       state
     );
+    const legendData = legendDataSelector(state);
     makeLabelsAndStoryStep(
       yScale,
       isMobile,
@@ -791,7 +818,8 @@ function update(prevState) {
       currentStory,
       currentStoryStepIndex,
       currentStoryStepYearLookup,
-      currentYearInView
+      currentYearInView,
+      legendData
     );
     // makeStoryStep(
     //   currentStory,

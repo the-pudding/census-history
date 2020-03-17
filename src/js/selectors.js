@@ -102,7 +102,7 @@ export const nodesSelector = createSelector(
         let x, y, r;
         if (d[UID] === START_ACS) {
           x = 0.9 * svgWidth;
-          y = yScale(d[YEAR]) - appHeight / 6;
+          y = yScale(d[YEAR]) - appHeight / 9;
           r = 10;
         } else if (d[UID].slice(-2) === "_H") {
           x = 0.9 * svgWidth;
@@ -126,28 +126,28 @@ export const nodesSelector = createSelector(
     )
 );
 
-export const miniNodesSelector = createSelector(
-  interimDataQuestionsSelector,
-  nodesSelector,
-  (questions, nodes) =>
-    questions
-      .filter(d => d[AGE_RANGE])
-      .map(d => {
-        const range = d[AGE_RANGE].split(",");
-        const n = range.length;
-        const { x, y, r } = nodes.get(d[UID]);
-        return range.map((e, i) => {
-          const [xi, yi] = getIthPoint(i, n, r - r / n);
-          return {
-            value: e.trim(),
-            x: x + xi,
-            y: y + yi,
-            r: r / n
-          };
-        });
-      })
-      .flat()
-);
+// export const miniNodesSelector = createSelector(
+//   interimDataQuestionsSelector,
+//   nodesSelector,
+//   (questions, nodes) =>
+//     questions
+//       .filter(d => d[AGE_RANGE])
+//       .map(d => {
+//         const range = d[AGE_RANGE].split(",");
+//         const n = range.length;
+//         const { x, y, r } = nodes.get(d[UID]);
+//         return range.map((e, i) => {
+//           const [xi, yi] = getIthPoint(i, n, r - r / n);
+//           return {
+//             value: e.trim(),
+//             x: x + xi,
+//             y: y + yi,
+//             r: r / n
+//           };
+//         });
+//       })
+//       .flat()
+// );
 
 export const linksSelector = createSelector(
   dataLinksSelector,
@@ -179,4 +179,15 @@ export const linksSelector = createSelector(
         );
         return { ...d, sourceX, sourceY, targetX, targetY, Category, svgPath };
       })
+);
+
+export const legendDataSelector = createSelector(
+  interimDataQuestionsSelector,
+  questions =>
+    rollup(
+      questions,
+      values => values.length,
+      d => +d[YEAR],
+      d => d[CATEGORIES]
+    )
 );

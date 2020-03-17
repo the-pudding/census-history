@@ -39,6 +39,14 @@
         pointer-events initial // allow click out of tooltip
       &:before
         display: none
+    &_tail
+      position absolute
+      top -13px
+      left -7px
+      height 15px
+      width 0px
+      transform rotate(-45deg)
+      border 1px solid
 
     &_question
       // grid-row 1 / 2
@@ -51,6 +59,7 @@
       position relative
       set-type-size(medium, false)
       font-weight bold
+      margin-bottom 4px
       // padding-right 80px
     &_category
       font-family $national
@@ -296,6 +305,7 @@
             font-weight 600
           &-body
             set-type-size(x-small, true)
+            margin-bottom 15px
           &-up
             position absolute
             top -70px
@@ -312,7 +322,26 @@
               display inline
               width 20px
               height 20px
-
+          .step-legend
+            display block
+            &-row
+              height 20px
+              font-family $national-narrow
+              text-transform uppercase
+              &-circle,
+              &-term,
+              &-number
+                set-type-size(x-small, true)
+                display inline-block
+              &-circle
+                height 8px
+                width 8px
+                border-radius 4px
+              &-number
+                width 20px
+                text-align right
+              &-term
+                width 90px
 
     .interactive__svg
       display block
