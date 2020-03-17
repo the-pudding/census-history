@@ -820,18 +820,27 @@ function update(prevState) {
   // }
   if (changedKeys.appHeight || changedKeys.isMobile) {
     d3.select(".interactive__history")
+      .selectAll(".interactive__history_tick")
+      .data(d3.range(dataHistory[0][START_YEAR], years[years.length - 1]))
+      .join("div")
+      .attr("class", "interactive__history_tick")
+      .style("top", d => yScale(d) + "px");
+    d3.select(".interactive__history")
       .selectAll(".interactive__history_flag")
       .data(dataHistory)
       .join("div")
       .attr("class", "interactive__history_flag")
       .style("top", d => yScale(d[START_YEAR]) + "px")
-      .style("left", d => 15 * d.xIndex + "%")
+      .style("left", d => 10 * d.xIndex + "px")
+      .classed("one-year-only", d => d[START_YEAR] >= d[END_YEAR])
       .style(
         "height",
         d =>
           (d[START_YEAR] >= d[END_YEAR]
-            ? appHeight / 30
-            : yScale(d[END_YEAR]) - yScale(d[START_YEAR])) + "px"
+            ? 0
+            : yScale(d[END_YEAR]) - yScale(d[START_YEAR])) +
+          1 +
+          "px"
       )
       .html(
         d => `<div class='interactive__history_flag_years'>${d[START_YEAR]}${

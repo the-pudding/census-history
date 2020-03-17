@@ -323,29 +323,55 @@
       margin-top 1rem
       &_flag
         position absolute
-        color-glow($palette.blue)
-        border-radius 5px
-        width 10%
+        width 1px
+        border 1px solid #6bcff6
         text-align left
         &_years
-          top -5px
-          set-type-size(x-small, true)
-        &_event
-          top 10px
-          set-type-size(xxx-small, true)
+          top -12px
+          set-type-size(xx-small, true)
           font-weight bold
+        &_event
+          top 2px
+          set-type-size(xxx-small)
+          line-height 10px
+          width 200px
         &_years, &_event
           position absolute
-          color $palette.brown
-          left 110%
+          left 7px
           min-width 120px
-          max-width 150px
           z-index 1
+          background-color #ffffff88
+        &:before
+          position absolute
+          content ''
+          width 4px
+          height 4px
+          top -4px
+          left -4px
+          background-color white
+          border-radius 4px
+          border 2px solid #6bcff6
+        &:not(.one-year-only):after
+          position absolute
+          content ''
+          width 4px
+          height 4px
+          bottom -4px
+          left -4px
+          background-color white
+          border-radius 4px
+          border 2px solid #6bcff6
       @media (max-width: 768px)
         visibility hidden
         position absolute
         width 0
         grid-column 1 / 2
+      &_tick
+        position absolute
+        width 19px
+        height 0px
+        border 0.5px solid #aeaeaa
+        left -9px
 
     .interactive__legend
       position fixed
