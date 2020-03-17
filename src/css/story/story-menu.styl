@@ -5,16 +5,17 @@
   height 3rem
   z-index 1001
   top 0px
+  margin-bottom -40px
 
   .story-menu_dropdown
     outline none
-    width 200px
+    width 270px
     line-height 44px
-    display block
+    display inline-block
     position relative
-    margin-right 73%
-    margin-left auto
-    margin-top 1rem
+    margin-left calc(27% - 270px)
+    margin-right auto
+    // margin-top 1rem
     text-align center
     @media (max-width: 768px)
       width 160px
@@ -37,12 +38,12 @@
       transition height, padding
       transition-duration 0.25s
       height 0
-      width 200px
+      // width 200px
       padding 0 3px
       opacity 0.95
       overflow hidden
       text-align left
-      set-type-size(small, false)
+      set-type-size(medium, false)
       cursor pointer
       @media (max-width: 768px)
         width 160px

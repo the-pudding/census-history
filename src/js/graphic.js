@@ -76,7 +76,7 @@ let state = {
   isMobile: window.innerWidth < MOBILE_BREAKPT,
   appHeight: 0,
   appWidth: 0,
-  tooltipOffsetHeight: 0,
+  // tooltipOffsetHeight: 0,
   isFilterMenuOpen: false,
   isInteractiveInView: false
 };
@@ -99,8 +99,8 @@ function resize() {
   setState({
     appHeight: window.innerHeight,
     appWidth: window.innerWidth,
-    isMobile: window.innerWidth < MOBILE_BREAKPT,
-    tooltipOffsetHeight: getTooltipOffsetHeight()
+    isMobile: window.innerWidth < MOBILE_BREAKPT
+    // tooltipOffsetHeight: getTooltipOffsetHeight()
   });
 }
 
@@ -162,8 +162,8 @@ function init() {
         }),
         appHeight: window.innerHeight,
         appWidth: window.innerWidth,
-        isMobile: window.innerWidth < MOBILE_BREAKPT,
-        tooltipOffsetHeight: getTooltipOffsetHeight()
+        isMobile: window.innerWidth < MOBILE_BREAKPT
+        // tooltipOffsetHeight: getTooltipOffsetHeight()
       });
     })
     .catch(console.error);
@@ -234,87 +234,101 @@ function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
     });
 }
 
-function makeTooltip({ x, y, d }, isMobile, tooltipOffsetHeight) {
+function makeTooltip({ x, y, d }, isMobile /*, tooltipOffsetHeight*/) {
   const { x: svgX } = d3
     .select(".interactive__svg")
     .node()
     .getBoundingClientRect();
   const color = colorScale(d[CATEGORIES]);
   const imageId = imageFilesLookup[d[UID]];
+  const tooltipOffsetHeight = getTooltipOffsetHeight();
 
-  let listItems = [];
-  let listTitle = "";
-  // these should be mutually exclusive but may not always be
-  if (d[OPTIONS]) {
-    listItems = d[OPTIONS].split(",");
-    listTitle = "Options provided";
-  } else if (d[AGE_RANGE]) {
-    listItems = d[AGE_RANGE].split(",");
-    listTitle = "Asked of the same demographic group by age range";
-  }
-  if (listItems.length > 11) {
-    listItems = [...listItems.slice(0, 11), "etc."];
-  }
-  d3.select(".interactive__tooltip")
+  // let listItems = [];
+  // let listTitle = "";
+  // // these should be mutually exclusive but may not always be
+  // if (d[OPTIONS]) {
+  //   listItems = d[OPTIONS].split(",");
+  //   listTitle = "Options provided";
+  // } else if (d[AGE_RANGE]) {
+  //   listItems = d[AGE_RANGE].split(",");
+  //   listTitle = "Asked of the same demographic group by age range";
+  // }
+  // if (listItems.length > 11) {
+  //   listItems = [...listItems.slice(0, 11), "etc."];
+  // }
+  d3
+    .select(".interactive__tooltip")
     .style(
       "top",
-      isMobile ? "auto" : y + tooltipOffsetHeight + 200 + d.r + "px"
+      isMobile ? "auto" : y + tooltipOffsetHeight + 16 + 2 * d.r + "px"
     )
-    .style("left", isMobile ? "0px" : x + svgX - 150 + "px")
+    .style("left", isMobile ? "0px" : x + svgX + 2 * d.r + "px")
     .style("border-color", color)
-    .style("box-shadow", "0px 0px 3px 0px " + color)
+    // .style("box-shadow", "0px 0px 3px 0px " + color)
     .classed("visible", true)
-    .html(
-      `<div class='interactive__tooltip_question' style='border-bottom-color:${color};${getDynamicFontSize(
-        d[QUESTION]
-      )}'>${d[QUESTION]}
-          <div class='interactive__tooltip_question_category' style='background-color:${color};'>${
-        d[CATEGORIES] === "National origin" ? "Nat'l origin" : d[CATEGORIES]
-      }</div>
-        </div>
-        ${
-          imageId
-            ? `<img class='image-question' src='assets/images/questions/${imageId}' >`
-            : ""
-        }
-        <div class='interactive__tooltip_right-col ${imageId ? "" : "dblwide"}'>
-          <div class='interactive__tooltip_right-col_unit'><img class='image-unit' src='assets/images/icons/census_unit_${
-            unitReverseLookup[d[UNIT]]
-          }.png' ><span>${d[UNIT]}</span></div>
-          ${
-            d[ASKED_OF]
-              ? `<div class='interactive__tooltip_right-col_asked-of'>
-                <img class='image-asked-of' src='assets/images/icons/help-circle.svg' >
-                <span>${d[ASKED_OF]}<span>
-              </div>`
-              : ""
-          }
-          <div class='interactive__tooltip_right-col_qtype'><img class='image-qtype' src='assets/images/icons/census_qtype_${
-            d[ANSWER_TYPE]
-          }.png' ><span>${answerTypeLookup[d[ANSWER_TYPE]]}</span></div>
-          ${
-            listItems.length
-              ? `<div class='interactive__tooltip_right-col_options'>
-              ${listTitle}:
-            <ul class='${isMobile || listItems.length > 10 ? "wrap" : ""}'>
-              ${listItems.map(d => `<li>-${d.trim()}</li>`).join("")}
-            </ul>
-          </div>`
-              : ""
-          }
-          ${
-            d[UID] === START_ACS
-              ? `<div class='interactive__tooltip_right-col_notes'>Many questions previously asked on the censes moved to the American Community Survey between 2000 and 2010.</div>`
-              : ""
-          }
-          ${
-            d[UID].slice(-2) === "_H"
-              ? `<div class='interactive__tooltip_right-col_notes'>The long form census included around 40 questions about housing infrastructure, condition, size, and value.</div>`
-              : ""
-          }
-        </div>
-        `
-    );
+    .html(`<div class='interactive__tooltip_category' style='color:${color};'>
+      ${d[CATEGORIES] === "National origin" ? "Nat'l origin" : d[CATEGORIES]}
+    </div>
+    <div class='interactive__tooltip_question'>
+      ${d[QUESTION]}
+    </div>
+    ${
+      imageId
+        ? `<img class='image-question' src='assets/images/questions/${imageId}' >`
+        : ""
+    }
+    `);
+  // .html(
+  //   `<div class='interactive__tooltip_question' style='border-bottom-color:${color};${getDynamicFontSize(
+  //     d[QUESTION]
+  //   )}'>${d[QUESTION]}
+  //       <div class='interactive__tooltip_question_category' style='background-color:${color};'>${
+  //     d[CATEGORIES] === "National origin" ? "Nat'l origin" : d[CATEGORIES]
+  //   }</div>
+  //     </div>
+  //     ${
+  //       imageId
+  //         ? `<img class='image-question' src='assets/images/questions/${imageId}' >`
+  //         : ""
+  //     }
+  //     <div class='interactive__tooltip_right-col ${imageId ? "" : "dblwide"}'>
+  //       <div class='interactive__tooltip_right-col_unit'><img class='image-unit' src='assets/images/icons/census_unit_${
+  //         unitReverseLookup[d[UNIT]]
+  //       }.png' ><span>${d[UNIT]}</span></div>
+  //       ${
+  //         d[ASKED_OF]
+  //           ? `<div class='interactive__tooltip_right-col_asked-of'>
+  //             <img class='image-asked-of' src='assets/images/icons/help-circle.svg' >
+  //             <span>${d[ASKED_OF]}<span>
+  //           </div>`
+  //           : ""
+  //       }
+  //       <div class='interactive__tooltip_right-col_qtype'><img class='image-qtype' src='assets/images/icons/census_qtype_${
+  //         d[ANSWER_TYPE]
+  //       }.png' ><span>${answerTypeLookup[d[ANSWER_TYPE]]}</span></div>
+  //       ${
+  //         listItems.length
+  //           ? `<div class='interactive__tooltip_right-col_options'>
+  //           ${listTitle}:
+  //         <ul class='${isMobile || listItems.length > 10 ? "wrap" : ""}'>
+  //           ${listItems.map(d => `<li>-${d.trim()}</li>`).join("")}
+  //         </ul>
+  //       </div>`
+  //           : ""
+  //       }
+  //       ${
+  //         d[UID] === START_ACS
+  //           ? `<div class='interactive__tooltip_right-col_notes'>Many questions previously asked on the censes moved to the American Community Survey between 2000 and 2010.</div>`
+  //           : ""
+  //       }
+  //       ${
+  //         d[UID].slice(-2) === "_H"
+  //           ? `<div class='interactive__tooltip_right-col_notes'>The long form census included around 40 questions about housing infrastructure, condition, size, and value.</div>`
+  //           : ""
+  //       }
+  //     </div>
+  //     `
+  // );
 }
 
 // function makeStoryStep(
@@ -596,6 +610,9 @@ function makeLabelsAndStoryStep(
   storyStepYearLookup,
   yearInView
 ) {
+  d3.select(".interactive__story-intro")
+    .classed("populated", story.key !== DEFAULT)
+    .html(story.storyIntro);
   d3.select(".interactive__labels")
     .selectAll(".label")
     .data(years)
@@ -658,7 +675,7 @@ function update(prevState) {
     storyMenu,
     tooltip,
     isMobile,
-    tooltipOffsetHeight,
+    // tooltipOffsetHeight,
     isFilterMenuOpen,
     isInteractiveInView
   } = state;
@@ -724,17 +741,18 @@ function update(prevState) {
   if (
     changedKeys.isMobile ||
     changedKeys.tooltip ||
-    changedKeys.tooltipOffsetHeight ||
+    // changedKeys.tooltipOffsetHeight ||
     changedKeys.currentYearInView
   ) {
     d3.select(".interactive_g_circles")
       .selectAll("circle.node")
-      .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID]);
+      .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID])
+      .classed("inactive", d => tooltip.d && d[UID] !== tooltip.d[UID]);
     // hide tooltip if user scrolls or clicks away
     if (changedKeys.currentYearInView || !tooltip.d) {
       d3.select(".interactive__tooltip").classed("visible", false);
     } else {
-      makeTooltip(tooltip, isMobile, tooltipOffsetHeight);
+      makeTooltip(tooltip, isMobile /*, tooltipOffsetHeight */);
     }
   }
 
