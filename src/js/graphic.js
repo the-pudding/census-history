@@ -46,7 +46,7 @@ let state = {
 
   currentStoryKey: DEFAULT,
   currentStoryStepIndex: 0,
-  currentYearInView: years[0] - 1, // hack to trigger update on 1790
+  currentYearInView: years[0], // - 1, // hack to trigger update on 1790
   filters: [
     {
       key: CATEGORIES,
@@ -84,6 +84,7 @@ let state = {
 const colorScale = d3.scaleOrdinal(COLORS).domain(sortedCategories);
 
 function setState(nextState) {
+  // console.log(nextState, state);
   const prevState = { ...state };
   state = { ...state, ...nextState };
   update(prevState);
@@ -440,7 +441,11 @@ function onEnterView(el) {
         ? currentStoryStepIndex - 1
         : currentStoryStepIndex;
   }
-  const nextYearInView = isEnter ? d : i === 0 ? years[0] - 1 : years[i - 1];
+  const nextYearInView = isEnter
+    ? d
+    : i === 0
+    ? years[0] // - 1
+    : years[i - 1];
   if (
     (isEnter && d !== currentYearInView) ||
     (!isEnter && d === currentYearInView)
@@ -612,10 +617,8 @@ function makeLabelsAndStoryStep(
   story,
   storyStepIndex,
   storyStepYearLookup,
-  yearInView,
   legendData
 ) {
-  const yearLegendData = legendData.get(yearInView);
   d3.select(".interactive__story-intro")
     .classed("populated", story.key !== DEFAULT)
     .html(story.storyIntro);
@@ -625,13 +628,13 @@ function makeLabelsAndStoryStep(
     .join("div")
     .attr("class", "label")
     .classed("has-story-step", d => storyStepYearLookup.has(d))
-    .classed("current", d => d === yearInView)
     .style("top", d => yScale(d) - 40 + "px") // vertically center
     .style("left", isMobile ? svgWidth / 2 : 0 + "px")
     .html(d => {
       const storyStep = storyStepYearLookup.has(d)
         ? storyStepYearLookup.get(d)
         : null;
+      const yearLegendData = legendData.get(d);
       return `<div>${d}</div>
       <div class='story-step'>
         <div class='story-step-header'>
@@ -803,7 +806,7 @@ function update(prevState) {
     changedKeys.currentStoryStepIndex ||
     changedKeys.isInteractiveInView ||
     changedKeys.isMobile ||
-    changedKeys.currentYearInView ||
+    // changedKeys.currentYearInView ||
     changedKeys.appHeight
   ) {
     const currentStory = currentStorySelector(state);
@@ -818,7 +821,7 @@ function update(prevState) {
       currentStory,
       currentStoryStepIndex,
       currentStoryStepYearLookup,
-      currentYearInView,
+      // currentYearInView,
       legendData
     );
     // makeStoryStep(
@@ -851,10 +854,15 @@ function update(prevState) {
         .node()
         .scrollIntoView({
           behavior: "smooth",
-          block: "end",
+          block: "center",
           inline: "center"
         });
     }
+  }
+  if (changedKeys.currentYearInView) {
+    d3.select(".interactive__labels")
+      .selectAll(".label")
+      .classed("current", d => d === currentYearInView);
   }
 
   /**
