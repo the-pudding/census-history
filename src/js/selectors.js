@@ -1,9 +1,8 @@
 import { rollup, max } from "d3-array";
 import { createSelector } from "reselect";
-import getIthPoint from "./utils/get-ith-point";
 import makeSvgPath from "./utils/make-svg-path";
 import Constants from "./constants";
-const { YEAR, UID, AGE_RANGE, CATEGORIES, START_ACS } = Constants;
+const { YEAR, UID, CATEGORIES, START_ACS } = Constants;
 
 export const dataQuestionsSelector = state => state.dataQuestions;
 export const dataLinksSelector = state => state.dataLinks;
@@ -125,29 +124,6 @@ export const nodesSelector = createSelector(
       })
     )
 );
-
-// export const miniNodesSelector = createSelector(
-//   interimDataQuestionsSelector,
-//   nodesSelector,
-//   (questions, nodes) =>
-//     questions
-//       .filter(d => d[AGE_RANGE])
-//       .map(d => {
-//         const range = d[AGE_RANGE].split(",");
-//         const n = range.length;
-//         const { x, y, r } = nodes.get(d[UID]);
-//         return range.map((e, i) => {
-//           const [xi, yi] = getIthPoint(i, n, r - r / n);
-//           return {
-//             value: e.trim(),
-//             x: x + xi,
-//             y: y + yi,
-//             r: r / n
-//           };
-//         });
-//       })
-//       .flat()
-// );
 
 export const linksSelector = createSelector(
   dataLinksSelector,

@@ -1,19 +1,8 @@
 <div class='interactive' id='interactive'>
-  {{!-- <h4 class='intro__or-explore tooltip-offset'>or explore on your own below.</h4> --}}
-  {{!-- <img class='interactive__img tooltip-offset'> --}}
   <p class='interactive__story-intro tooltip-offset'></p>
 
   {{!-- sticky --}}
   <div class='sticky-container'>
-    {{!-- <div class='interactive__story-step'>
-      <div class='interactive__story-step-title'></div>
-      <div class='interactive__story-step-body'></div>
-      <div class='interactive__story-stepper'>
-        <img inline src='arrow-up.svg' class='interactive__story-stepper-up'>
-        <div class='interactive__story-stepper-dots'></div>
-        <img inline src='arrow-down.svg' class='interactive__story-stepper-down'>
-      </div>
-    </div> --}}
     <svg class='interactive__svg'>
       <defs>
         <pattern id="stripe" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
@@ -21,7 +10,6 @@
           <line x1="8" y="0" x2="8" y2="8" stroke="#4BB650" stroke-width="9" />
         </pattern>
       </defs>
-      {{!-- <g class='interactive_g_labels'></g> --}}
       <g class='interactive_g_links'></g>
       <g class='interactive_g_circles'></g>
     </svg>
@@ -29,10 +17,6 @@
     <div class='interactive__history'></div>
     <div class='interactive__legend'></div>
   </div>
-
-  {{!-- <div class='interactive__navigation'>
-    Read on or choose another story from the menu above.
-  </div> --}}
 
   {{!-- absolute positioned elements --}}
   <div class='interactive__tooltip'></div>

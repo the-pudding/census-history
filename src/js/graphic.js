@@ -9,7 +9,6 @@ import {
   currentStoryStepYearLookupSelector,
   legendDataSelector
 } from "./selectors";
-import getDynamicFontSize from "./utils/dynamic-font-size";
 import immutableAddRemove from "./utils/immutable-add-remove";
 
 import stateChangedKeys from "./utils/state-compare";
@@ -21,19 +20,15 @@ const {
   ANSWER_TYPE,
   UID,
   QUESTION,
-  AGE_RANGE,
-  OPTIONS,
   DEFAULT,
   START_YEAR,
   END_YEAR,
   EVENT,
   MOBILE_BREAKPT,
-  START_ACS,
   COLORS,
   sortedCategories,
   years,
   answerTypeLookup,
-  unitReverseLookup,
   imageFilesLookup
 } = Constants;
 
@@ -46,7 +41,7 @@ let state = {
 
   currentStoryKey: DEFAULT,
   currentStoryStepIndex: 0,
-  currentYearInView: years[0], // - 1, // hack to trigger update on 1790
+  currentYearInView: years[0],
   filters: [
     {
       key: CATEGORIES,
@@ -77,7 +72,6 @@ let state = {
   isMobile: window.innerWidth < MOBILE_BREAKPT,
   appHeight: 0,
   appWidth: 0,
-  // tooltipOffsetHeight: 0,
   isFilterMenuOpen: false,
   isInteractiveInView: false
 };
@@ -102,7 +96,6 @@ function resize() {
     appHeight: window.innerHeight,
     appWidth: window.innerWidth,
     isMobile: window.innerWidth < MOBILE_BREAKPT
-    // tooltipOffsetHeight: getTooltipOffsetHeight()
   });
 }
 
@@ -165,7 +158,6 @@ function init() {
         appHeight: window.innerHeight,
         appWidth: window.innerWidth,
         isMobile: window.innerWidth < MOBILE_BREAKPT
-        // tooltipOffsetHeight: getTooltipOffsetHeight()
       });
     })
     .catch(console.error);
@@ -236,7 +228,7 @@ function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
     });
 }
 
-function makeTooltip({ x, y, d }, isMobile /*, tooltipOffsetHeight*/) {
+function makeTooltip({ x, y, d }, isMobile) {
   const { x: svgX } = d3
     .select(".interactive__svg")
     .node()
@@ -245,19 +237,6 @@ function makeTooltip({ x, y, d }, isMobile /*, tooltipOffsetHeight*/) {
   const imageId = imageFilesLookup[d[UID]];
   const tooltipOffsetHeight = getTooltipOffsetHeight();
 
-  // let listItems = [];
-  // let listTitle = "";
-  // // these should be mutually exclusive but may not always be
-  // if (d[OPTIONS]) {
-  //   listItems = d[OPTIONS].split(",");
-  //   listTitle = "Options provided";
-  // } else if (d[AGE_RANGE]) {
-  //   listItems = d[AGE_RANGE].split(",");
-  //   listTitle = "Asked of the same demographic group by age range";
-  // }
-  // if (listItems.length > 11) {
-  //   listItems = [...listItems.slice(0, 11), "etc."];
-  // }
   d3
     .select(".interactive__tooltip")
     .style(
@@ -268,7 +247,6 @@ function makeTooltip({ x, y, d }, isMobile /*, tooltipOffsetHeight*/) {
     )
     .style("left", isMobile ? "0px" : x + svgX + Math.max(15, 2 * d.r) + "px")
     .style("border-color", color)
-    // .style("box-shadow", "0px 0px 3px 0px " + color)
     .classed("visible", true)
     .html(`<div class='interactive__tooltip_tail' style='border-color:${color};'></div>
     <div class='interactive__tooltip_category' style='color:${color};'>
@@ -283,130 +261,7 @@ function makeTooltip({ x, y, d }, isMobile /*, tooltipOffsetHeight*/) {
         : ""
     }
     `);
-  // .html(
-  //   `<div class='interactive__tooltip_question' style='border-bottom-color:${color};${getDynamicFontSize(
-  //     d[QUESTION]
-  //   )}'>${d[QUESTION]}
-  //       <div class='interactive__tooltip_question_category' style='background-color:${color};'>${
-  //     d[CATEGORIES] === "National origin" ? "Nat'l origin" : d[CATEGORIES]
-  //   }</div>
-  //     </div>
-  //     ${
-  //       imageId
-  //         ? `<img class='image-question' src='assets/images/questions/${imageId}' >`
-  //         : ""
-  //     }
-  //     <div class='interactive__tooltip_right-col ${imageId ? "" : "dblwide"}'>
-  //       <div class='interactive__tooltip_right-col_unit'><img class='image-unit' src='assets/images/icons/census_unit_${
-  //         unitReverseLookup[d[UNIT]]
-  //       }.png' ><span>${d[UNIT]}</span></div>
-  //       ${
-  //         d[ASKED_OF]
-  //           ? `<div class='interactive__tooltip_right-col_asked-of'>
-  //             <img class='image-asked-of' src='assets/images/icons/help-circle.svg' >
-  //             <span>${d[ASKED_OF]}<span>
-  //           </div>`
-  //           : ""
-  //       }
-  //       <div class='interactive__tooltip_right-col_qtype'><img class='image-qtype' src='assets/images/icons/census_qtype_${
-  //         d[ANSWER_TYPE]
-  //       }.png' ><span>${answerTypeLookup[d[ANSWER_TYPE]]}</span></div>
-  //       ${
-  //         listItems.length
-  //           ? `<div class='interactive__tooltip_right-col_options'>
-  //           ${listTitle}:
-  //         <ul class='${isMobile || listItems.length > 10 ? "wrap" : ""}'>
-  //           ${listItems.map(d => `<li>-${d.trim()}</li>`).join("")}
-  //         </ul>
-  //       </div>`
-  //           : ""
-  //       }
-  //       ${
-  //         d[UID] === START_ACS
-  //           ? `<div class='interactive__tooltip_right-col_notes'>Many questions previously asked on the censes moved to the American Community Survey between 2000 and 2010.</div>`
-  //           : ""
-  //       }
-  //       ${
-  //         d[UID].slice(-2) === "_H"
-  //           ? `<div class='interactive__tooltip_right-col_notes'>The long form census included around 40 questions about housing infrastructure, condition, size, and value.</div>`
-  //           : ""
-  //       }
-  //     </div>
-  //     `
-  // );
 }
-
-// function makeStoryStep(
-//   story,
-//   storyStepIndex,
-//   isInteractiveInView,
-//   isMobile,
-//   currentYearInView
-// ) {
-//   const storyStepEl = d3.select(".interactive__story-step");
-
-//   d3.select(".interactive__story-intro").html(story.storyIntro);
-//   storyStepEl.classed(
-//     "visible",
-//     isMobile ? currentYearInView >= years[0] : isInteractiveInView
-//   );
-
-//   const storyStep = story.steps[storyStepIndex];
-//   storyStepEl
-//     .select(".interactive__story-stepper-dots")
-//     .selectAll(".step-dot")
-//     .data(story.steps, d => d.key)
-//     .join("div")
-//     .attr("class", "step-dot")
-//     .classed("current", (_, i) => i === storyStepIndex);
-
-//   storyStepEl
-//     .select(".interactive__story-step-title")
-//     .html(`${storyStep.year}: ${storyStep.label}`);
-//   storyStepEl.select(".interactive__story-step-body").html(storyStep.text);
-//   storyStepEl.select(".interactive__story-stepper-up").on("click", () => {
-//     setState({
-//       currentStoryStepIndex:
-//         (storyStepIndex - 1 + story.steps.length) % story.steps.length
-//     });
-//   });
-//   storyStepEl.select(".interactive__story-stepper-down").on("click", () => {
-//     setState({
-//       currentStoryStepIndex: (storyStepIndex + 1) % story.steps.length
-//     });
-//   });
-// }
-
-// function makeLegend(isMobile, currentYearInView, currentStory) {
-//   const currentStoryCategories = currentStory.storyCategories;
-//   const legendData = colorScale
-//     .domain()
-//     .map(d => ({ in: d, out: colorScale(d) }))
-//     .sort((a, b) =>
-//       d3.ascending(
-//         sortedCategories.indexOf(a.in),
-//         sortedCategories.indexOf(b.in)
-//       )
-//     );
-//   d3.select(".interactive__legend")
-//     .classed(
-//       "visible",
-//       !isMobile &&
-//         currentYearInView >= years[0] &&
-//         currentYearInView < years[years.length - 1]
-//     )
-//     .selectAll(".interactive__legend_tile")
-//     .data(legendData)
-//     .join("div")
-//     .attr("class", "interactive__legend_tile")
-//     .style("background-color", d => d.out)
-//     .classed(
-//       "out-of-story",
-//       d =>
-//         currentStory.key !== DEFAULT && !~currentStoryCategories.indexOf(d.in)
-//     )
-//     .text(d => d.in);
-// }
 
 function onEnterView(el) {
   const isEnter = this.direction === "enter";
@@ -441,11 +296,7 @@ function onEnterView(el) {
         ? currentStoryStepIndex - 1
         : currentStoryStepIndex;
   }
-  const nextYearInView = isEnter
-    ? d
-    : i === 0
-    ? years[0] // - 1
-    : years[i - 1];
+  const nextYearInView = isEnter ? d : i === 0 ? years[0] : years[i - 1];
   if (
     (isEnter && d !== currentYearInView) ||
     (!isEnter && d === currentYearInView)
@@ -686,9 +537,6 @@ function makeLabelsAndStoryStep(
     setState({
       currentStoryStepIndex: 0
     });
-    // d3.select(".interactive")
-    //   .node()
-    //   .scrollIntoView({ behavior: "smooth" });
   });
 }
 
@@ -704,7 +552,6 @@ function update(prevState) {
     storyMenu,
     tooltip,
     isMobile,
-    // tooltipOffsetHeight,
     isFilterMenuOpen,
     isInteractiveInView
   } = state;
@@ -770,7 +617,6 @@ function update(prevState) {
   if (
     changedKeys.isMobile ||
     changedKeys.tooltip ||
-    // changedKeys.tooltipOffsetHeight ||
     changedKeys.currentYearInView
   ) {
     d3.select(".interactive_g_circles")
@@ -781,21 +627,9 @@ function update(prevState) {
     if (changedKeys.currentYearInView || !tooltip.d) {
       d3.select(".interactive__tooltip").classed("visible", false);
     } else {
-      makeTooltip(tooltip, isMobile /*, tooltipOffsetHeight */);
+      makeTooltip(tooltip, isMobile);
     }
   }
-
-  /**
-   * LEGEND
-   */
-  // if (
-  //   changedKeys.isMobile ||
-  //   changedKeys.currentYearInView ||
-  //   changedKeys.currentStoryKey
-  // ) {
-  //   const currentStory = currentStorySelector(state);
-  //   makeLegend(isMobile, currentYearInView, currentStory);
-  // }
 
   /**
    * STORY STEP
@@ -806,7 +640,6 @@ function update(prevState) {
     changedKeys.currentStoryStepIndex ||
     changedKeys.isInteractiveInView ||
     changedKeys.isMobile ||
-    // changedKeys.currentYearInView ||
     changedKeys.appHeight
   ) {
     const currentStory = currentStorySelector(state);
@@ -821,33 +654,12 @@ function update(prevState) {
       currentStory,
       currentStoryStepIndex,
       currentStoryStepYearLookup,
-      // currentYearInView,
       legendData
     );
-    // makeStoryStep(
-    //   currentStory,
-    //   currentStoryStepIndex,
-    //   isInteractiveInView,
-    //   isMobile,
-    //   currentYearInView
-    // );
-    // if (firstDraw) {
-    //   d3.select(".interactive__img").attr(
-    //     "src",
-    //     `assets/images/${currentStoryKey}.jpg`
-    //   );
-    // }
     if (changedKeys.currentStoryKey) {
       d3.select(".story-menu_dropdown")
         .selectAll(".story-menu_dropdown_option")
         .classed("selected", d => d.key === currentStoryKey);
-      // d3.select(".interactive")
-      //   .node()
-      //   .scrollIntoView({ behavior: "smooth", block: "end" });
-      // d3.select(".interactive__img").attr(
-      //   "src",
-      //   `assets/images/${currentStoryKey}.jpg`
-      // );
     } else if (changedKeys.currentStoryStepIndex) {
       d3.selectAll(".interactive__labels .label")
         .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
@@ -869,9 +681,6 @@ function update(prevState) {
    * HISTORY FLAGS
    * VIZ LABELS
    */
-  // if (changedKeys.currentYearInView) {
-  //   d3.selectAll(".interactive__labels .label");
-  // }
   if (changedKeys.appHeight || changedKeys.isMobile) {
     d3.select(".interactive__history")
       .selectAll(".interactive__history_tick")
