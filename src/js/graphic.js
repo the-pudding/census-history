@@ -502,7 +502,7 @@ function makeLabelsAndStoryStep(
         ? storyStepYearLookup.get(d)
         : null;
       const yearLegendData = legendData.get(d);
-      return `<div>${d}</div>
+      return `<div class='year'>${d}</div>
       <div class='story-step'>
         <div class='story-step-header'>
           ${storyStep && storyStep.label}

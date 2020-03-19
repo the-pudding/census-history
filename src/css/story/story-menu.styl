@@ -6,6 +6,8 @@
   z-index 1001
   top 0px
   margin-bottom -40px
+  @media (max-width: 768px)
+    margin-bottom 0px
 
   .story-menu_dropdown
     outline none
@@ -15,10 +17,13 @@
     position relative
     margin-left calc(27% - 270px)
     margin-right auto
-    // margin-top 1rem
     text-align center
     @media (max-width: 768px)
-      width 160px
+      display block
+      margin 0px auto
+      padding 0px 5px 10px 5px
+      width 100vw
+      background-color white
     &:after
       content ''
       position absolute
@@ -38,7 +43,6 @@
       transition height, padding
       transition-duration 0.25s
       height 0
-      // width 200px
       padding 0 5px
       opacity 0.95
       overflow hidden
@@ -46,7 +50,9 @@
       set-type-size(medium, false)
       cursor pointer
       @media (max-width: 768px)
-        width 160px
+        set-type-size(small)
+        width calc(100vw - 10px)
+        text-align center
       &.selected
         pointer-events none
         height 36px
@@ -54,17 +60,14 @@
         padding-top 2px
         border-bottom 1px solid black
     &:focus
+      box-shadow 0px 0px 3px 1px #dddddd
       .story-menu_dropdown_option
         height 36px
         line-height 44px
         padding-top 2px
         background-color white
-        // border-bottom none
         &:hover
           background-color #dddddd
-        // &:first-child
-        //   height 36px
-        //   line-height 44px
       &:after
         top 16px
         transform rotate(225deg)
@@ -79,6 +82,8 @@
     transition opacity 0.25s
     &.visible
       opacity 1
+      @media (max-width: 768px)
+        opacity 0
 
   .interactive__filters
     position relative

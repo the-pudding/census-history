@@ -105,16 +105,18 @@
       left 0px
       grid-column 2/3
       margin-top 1rem
+      @media (max-width: 768px)
+        z-index 2
+        pointer-events none
       .label
         position absolute
-        font-size 40px
-        line-height 40px
-        font-family $tiempos
         width 100%
         left 0px
         text-align left
         border-bottom 1px solid black
         transition transform 0.5s 0.25s, width 0.5s 0.25s
+        @media (max-width: 768px)
+          border-bottom 1px solid #00000028
         &.current.has-story-step
           transform translateX(-250px)
           width calc(100% + 250px)
@@ -123,11 +125,20 @@
             opacity 1
             transition opacity 0.5s 0.25s
         @media (max-width: 768px)
-          opacity 0.4
-          font-size 140px
-          text-anchor middle
           &.current
+            &.has-story-step
+              transform translateX(0px)
+              width 100%
+
+        .year
+          font-size 40px
+          line-height 40px
+          font-family $tiempos
+          @media (max-width: 768px)
+            opacity 0.2
             font-size 150px
+            text-anchor middle
+            line-height 23px
         .story-step
           position absolute
           top 40px
@@ -136,12 +147,20 @@
           z-index 5
           pointer-events none // overlap with circles
           transition opacity 0.25s 0s
+          @media (max-width: 768px)
+            padding 5px
+            top 75px
+            width 100vw
+            background-color #ffffffbb
           &-header
             set-type-size(small, false)
             font-weight 600
           &-body
             set-type-size(x-small, true)
             margin-bottom 15px
+            @media (max-width: 768px)
+              set-type-size(xx-small, true)
+              margin-bottom 0px
           &-up
             position absolute
             top -70px
@@ -153,6 +172,8 @@
             text-transform uppercase
             set-type-size(x-small, true)
             pointer-events initial
+            @media (max-width: 768px)
+              display none
             img
               cursor pointer
               display inline
@@ -164,11 +185,16 @@
               height 20px
               font-family $national-narrow
               text-transform uppercase
+              @media (max-width: 768px)
+                display inline-block
+                margin-right 10px
               &-circle,
               &-term,
               &-number
                 set-type-size(x-small, true)
                 display inline-block
+                @media (max-width: 768px)
+                  set-type-size(xx-small, true)
               &-circle
                 height 8px
                 width 8px
@@ -176,8 +202,13 @@
               &-number
                 width 20px
                 text-align right
+                @media (max-width: 768px)
+                  width auto
+                  font-weight bold
               &-term
                 width 90px
+                @media (max-width: 768px)
+                  width auto
 
     .interactive__svg
       display block
@@ -278,10 +309,3 @@
         display inline-block
         &.out-of-story
           opacity 0.3
-
-.conclusion
-  display block
-  max-width $column-width
-  margin 0 auto
-  margin-top 1rem
-  text-align center
