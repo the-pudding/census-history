@@ -10,7 +10,7 @@ import {
   legendDataSelector
 } from "./selectors";
 import immutableAddRemove from "./utils/immutable-add-remove";
-
+import isMobileUtil from "./utils/is-mobile";
 import stateChangedKeys from "./utils/state-compare";
 
 const {
@@ -69,7 +69,7 @@ let state = {
     y: 0,
     d: null
   },
-  isMobile: window.innerWidth < MOBILE_BREAKPT,
+  isMobile: window.innerWidth < MOBILE_BREAKPT || isMobileUtil.any(),
   appHeight: 0,
   appWidth: 0,
   isFilterMenuOpen: false,
@@ -95,7 +95,7 @@ function resize() {
   setState({
     appHeight: window.innerHeight,
     appWidth: window.innerWidth,
-    isMobile: window.innerWidth < MOBILE_BREAKPT
+    isMobile: window.innerWidth < MOBILE_BREAKPT || isMobileUtil.any()
   });
 }
 
@@ -115,7 +115,7 @@ function init() {
         .sort(
           (a, b) =>
             d3.ascending(a[START_YEAR], b[START_YEAR]) ||
-            d3.ascending(a[END_YEAR], b[END_YEAR])
+            d3.ascending(b[END_YEAR], a[END_YEAR])
         )
         .forEach(e => {
           const i = stack.findIndex(
@@ -157,7 +157,7 @@ function init() {
         }),
         appHeight: window.innerHeight,
         appWidth: window.innerWidth,
-        isMobile: window.innerWidth < MOBILE_BREAKPT
+        isMobile: window.innerWidth < MOBILE_BREAKPT || isMobileUtil.any()
       });
     })
     .catch(console.error);
@@ -228,6 +228,7 @@ function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
     });
 }
 
+const tooltipConstant = r => r + (r / 2) * Math.sqrt(2) + 8 * Math.sqrt(2);
 function makeTooltip({ x, y, d }, isMobile) {
   const { x: svgX } = d3
     .select(".interactive__svg")
@@ -243,9 +244,9 @@ function makeTooltip({ x, y, d }, isMobile) {
       "top",
       isMobile
         ? "auto"
-        : y + tooltipOffsetHeight + 16 + Math.max(15, 2 * d.r) + "px"
+        : y + tooltipOffsetHeight + 16 + tooltipConstant(d.r) + "px"
     )
-    .style("left", isMobile ? "0px" : x + svgX + Math.max(15, 2 * d.r) + "px")
+    .style("left", isMobile ? "0px" : x + svgX + tooltipConstant(d.r) + "px")
     .style("border-color", color)
     .classed("visible", true)
     .html(`<div class='interactive__tooltip_tail' style='border-color:${color};'></div>
@@ -370,6 +371,7 @@ function makeStoryDropdownMenu(storyMenu, currentStoryKey) {
 
 function drawCirclesAndLinks(links, nodes, currentStory) {
   const currentStoryCategories = currentStory.storyCategories;
+  console.log(currentStoryCategories, currentStory.key);
   d3.select(".interactive_g_links")
     .selectAll(".line")
     .data(links, d => d.Source + d.Target)
@@ -389,6 +391,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
             e
               .transition()
               .duration(500)
+              .delay(d => (d.indexByYear || 1) * 3)
               .attr("stroke-dashoffset", 0)
           ),
       update =>
@@ -396,6 +399,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
           u
             .transition()
             .duration(500)
+            .delay(d => (d.indexByYear || 1) * 3)
             .attr("d", d => d.svgPath)
             .attr("stroke-dashoffset", 0)
         ),
@@ -404,6 +408,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
           e
             .transition()
             .duration(500)
+            .delay(d => (d.indexByYear || 1) * 3)
             .attr("stroke-dashoffset", function() {
               return this.getTotalLength();
             })
@@ -429,6 +434,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
             e
               .transition()
               .duration(500)
+              .delay(d => (d.indexByYear || 1) * 3)
               .attr("r", d => d.r)
           ),
       update =>
@@ -436,6 +442,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
           u
             .transition()
             .duration(500)
+            .delay(d => (d.indexByYear || 1) * 3)
             .attr("cx", d => d.x)
             .attr("r", d => d.r)
         ),
@@ -444,6 +451,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
           e
             .transition()
             .duration(500)
+            .delay(d => (d.indexByYear || 1) * 3)
             .attr("r", 0)
             .remove()
         )
@@ -454,12 +462,13 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
     )
     .attr("stroke", d => colorScale(d[CATEGORIES]))
     .attr("stroke-width", d => (d["Age range"] ? 2 : 0))
-    .classed(
-      "out-of-story",
-      d =>
-        currentStory.key !== DEFAULT &&
-        !~currentStoryCategories.indexOf(d[CATEGORIES])
-    )
+    // TODO decide if we want this
+    // .classed(
+    //   "out-of-story",
+    //   d =>
+    //     currentStory.key !== DEFAULT &&
+    //     !~currentStoryCategories.indexOf(d[CATEGORIES])
+    // )
     .on("mouseenter", function(d) {
       const { x, y } = this.getBBox();
       setState({
@@ -485,9 +494,13 @@ function makeLabelsAndStoryStep(
   yearInView,
   legendData
 ) {
+  const keys = Array.from(storyStepYearLookup.keys());
   d3.select(".interactive__story-intro")
     .classed("populated", story.key !== DEFAULT)
     .html(story.storyIntro);
+  d3.select(".interactive__img")
+    .classed("populated", story.key !== DEFAULT)
+    .attr("src", `assets/images/${story.key}.jpg`);
   d3.select(".interactive__labels")
     .selectAll(".label")
     .data(years)
@@ -496,7 +509,6 @@ function makeLabelsAndStoryStep(
     .classed("has-story-step", d => storyStepYearLookup.has(d))
     .classed("current", d => d === yearInView) // initialize
     .style("top", d => yScale(d) - 40 + "px") // vertically center
-    .style("left", isMobile ? svgWidth / 2 : 0 + "px")
     .html(d => {
       const storyStep = storyStepYearLookup.has(d)
         ? storyStepYearLookup.get(d)
@@ -510,14 +522,22 @@ function makeLabelsAndStoryStep(
         <div class='story-step-body'>
           ${storyStep && storyStep.text}
         </div>
-        <div class='story-step-down'>
+        ${
+          d !== keys[keys.length - 1]
+            ? `<div class='story-step-down'>
           <img src='assets/images/icons/arrow-down.svg'>
           Next
-        </div>
-        <div class='story-step-up'>
+        </div>`
+            : ""
+        }
+        ${
+          d !== keys[0]
+            ? `<div class='story-step-up'>
           <img src='assets/images/icons/arrow-up.svg'>
           Back to top
-        </div>
+        </div>`
+            : ""
+        }
         <div class='step-legend'>
           ${
             yearLegendData
@@ -551,7 +571,8 @@ function makeLabelsAndStoryStep(
   });
   d3.selectAll(".story-step-up").on("click", () => {
     setState({
-      currentStoryStepIndex: 0
+      currentStoryStepIndex: 0,
+      currentYearInView: years[0]
     });
   });
 }
@@ -686,6 +707,13 @@ function update(prevState) {
       d3.select(".story-menu_dropdown")
         .selectAll(".story-menu_dropdown_option")
         .classed("selected", d => d.key === currentStoryKey);
+      d3.select(".interactive__story-intro")
+        .node()
+        .scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center"
+        });
     } else if (changedKeys.currentStoryStepIndex) {
       d3.selectAll(".interactive__labels .label")
         .filter(d => d === currentStory.steps[currentStoryStepIndex].year)

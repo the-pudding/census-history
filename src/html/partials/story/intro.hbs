@@ -2,14 +2,12 @@
 	<h1 class='intro__hed'>{{meta.title}}</h1>
 	<p class='intro__dek'>{{meta.description}}</p>
 	<p class='intro__byline'>By
-		<a href='{{meta.author.url}}' target='_blank'>
-			<strong>{{meta.author.name}}</strong>
-		</a>, TWO-N
+		<a href='{{meta.author.url}}' target='_blank'><strong>{{meta.author.name}}</strong></a>, TWO-N
 	</p>
-	<time class='intro__time'>March 2020</time>
+	<time class='intro__time'>April 2020</time>
 
 	<div class='intro__text-parent'>
-		<img class='intro__img' src='../../../assets/images/intro.gif'>
+		<img class='intro__img' src='../../../assets/images/default.jpg'>
 		{{#each textContent.introPara}}
 		<p class='intro__text'>{{this}}</p>
 		{{/each}}

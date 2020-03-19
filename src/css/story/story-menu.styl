@@ -11,12 +11,12 @@
 
   .story-menu_dropdown
     outline none
-    width 270px
     line-height 44px
-    display inline-block
     position relative
-    margin-left calc(27% - 270px)
-    margin-right auto
+    width 270px
+    display block
+    margin-right calc(50% + 20rem + 10px)
+    margin-left auto
     text-align center
     @media (max-width: 768px)
       display block
@@ -50,7 +50,6 @@
       set-type-size(medium, false)
       cursor pointer
       @media (max-width: 768px)
-        set-type-size(small)
         width calc(100vw - 10px)
         text-align center
       &.selected

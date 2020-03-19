@@ -32,15 +32,11 @@
 		margin-top 1rem
 		text-align center
 
-	&-parent
-		position relative
-
 	&__img
 		position absolute
-		top 0px
-		left -50px
-		height 350px
-		max-width $column-width
+		top -6px
+		right calc(50% + 20rem + 20px)
+		height 200px
 		width auto
 		margin 0 auto
 		margin-top 1rem
@@ -54,6 +50,8 @@
 		margin 0 auto
 		margin-top 1rem
 		text-align left
+		&-parent
+			position relative
 
 	&__disclaimer
 		display block
@@ -63,4 +61,5 @@
 		text-align left
 		text-transform: uppercase
 		font-family $national-narrow
-		set-type-size(small, true)
+		set-type-size(small)
+		line-height 16px

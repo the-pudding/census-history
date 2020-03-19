@@ -23,6 +23,7 @@ export const interimDataQuestionsSelector = createSelector(
     const interimDataQuestions = questions.slice().filter(
       d =>
         d[YEAR] <= currentYearInView + 10 && // stay one decade ahead
+        d[YEAR] >= currentYearInView - 30 && // and three decades behind
         filters.reduce(
           (acc, f) =>
             acc && (d[f.key] === "" || f.selectedValues.indexOf(d[f.key]) > -1),
@@ -70,7 +71,7 @@ export const xScaleSelector = createSelector(
   isMobileSelector,
   (svgWidth, qsByYearLookup, isMobile) => {
     const m1 = isMobile ? 0.05 : 0.15;
-    const m2 = isMobile ? 0.8 : 0.7;
+    const m2 = isMobile ? 0.9 : 0.8;
     return d =>
       m1 * svgWidth +
       m2 * svgWidth * ((1 + d.indexByYear) / (1 + qsByYearLookup.get(d[YEAR])));
@@ -100,11 +101,11 @@ export const nodesSelector = createSelector(
       questions.map(d => {
         let x, y, r;
         if (d[UID] === START_ACS) {
-          x = 0.9 * svgWidth;
+          x = 0.95 * svgWidth;
           y = yScale(d[YEAR]) - appHeight / 9;
           r = 10;
         } else if (d[UID].slice(-2) === "_H") {
-          x = 0.9 * svgWidth;
+          x = 0.95 * svgWidth;
           y = yScale(d[YEAR]);
           r = 10;
         } else {
@@ -134,9 +135,12 @@ export const linksSelector = createSelector(
       .filter(d => nodes.has(d.Source) && nodes.has(d.Target))
       .map(d => {
         // use Category from source node instead of Links file
-        const { x: sourceX, y: sourceY, [CATEGORIES]: Category } = nodes.get(
-          d.Source
-        );
+        const {
+          x: sourceX,
+          y: sourceY,
+          [CATEGORIES]: Category,
+          indexByYear
+        } = nodes.get(d.Source);
         const { x: targetX, y: targetY } = nodes.get(d.Target);
         if (Category.indexOf(", ") !== -1) {
           Category = "[Multiple]";
@@ -153,7 +157,16 @@ export const linksSelector = createSelector(
           svgWidth,
           d.Target === START_ACS
         );
-        return { ...d, sourceX, sourceY, targetX, targetY, Category, svgPath };
+        return {
+          ...d,
+          sourceX,
+          sourceY,
+          targetX,
+          targetY,
+          Category,
+          svgPath,
+          indexByYear
+        };
       })
 );
 

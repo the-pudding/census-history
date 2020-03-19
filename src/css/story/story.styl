@@ -30,9 +30,9 @@
         display: none
     &_tail
       position absolute
-      top -13px
-      left -7px
-      height 15px
+      top -14px
+      left -8px
+      height 16px
       width 0px
       transform rotate(-45deg)
       border 1px solid
@@ -61,21 +61,22 @@
 
   &__img
     display block
-    height 300px
+    position absolute
+    height 200px
     width auto
-    border 1px solid black
-    max-width $column-width
-    margin 0 auto
-    margin-top 1rem
-    text-align center
+    top 40px
+    right calc(50% + 20rem + 10px)
+    opacity 0
+    transition opacity 0.25s
+    &.populated
+      opacity 1
     @media (max-width: 768px)
-      height 250px
+      opacity 0
 
   &__story-intro
     display block
     max-width $column-width
     margin 0 auto
-    text-align justify
     height 0
     opacity 0
     transition opacity 0.5s, height 0.5s
@@ -114,21 +115,19 @@
         left 0px
         text-align left
         border-bottom 1px solid black
-        transition transform 0.5s 0.25s, width 0.5s 0.25s
-        @media (max-width: 768px)
-          border-bottom 1px solid #00000028
+        transition left 0.5s 0.25s, width 0.5s 0.25s
         &.current.has-story-step
-          transform translateX(-250px)
+          left -250px
           width calc(100% + 250px)
-          transition transform 0.5s 0s, width 0.5s 0s
+          transition left 0.5s 0s, width 0.5s 0s
           .story-step
             opacity 1
             transition opacity 0.5s 0.25s
         @media (max-width: 768px)
-          &.current
-            &.has-story-step
-              transform translateX(0px)
-              width 100%
+          border-bottom 1px solid #00000028
+          &.current.has-story-step
+            left 0px
+            width 100%
 
         .year
           font-size 40px
@@ -155,11 +154,17 @@
           &-header
             set-type-size(small, false)
             font-weight 600
+            margin-top: 10px
+            @media (max-width: 768px)
+              margin-top 0px
           &-body
-            set-type-size(x-small, true)
+            set-type-size(x-small)
+            line-height 16px
             margin-bottom 15px
+            margin-top: 10px
             @media (max-width: 768px)
               set-type-size(xx-small, true)
+              margin-top 0px
               margin-bottom 0px
           &-up
             position absolute
@@ -181,6 +186,9 @@
               height 20px
           .step-legend
             display block
+            margin-top: 10px
+            @media (max-width: 768px)
+              margin-top 0px
             &-row
               height 20px
               font-family $national-narrow
@@ -230,8 +238,8 @@
           stroke black
         &.inactive
           fill #aeaeae
-        &.out-of-story
-          filter grayscale(100%)
+        // &.out-of-story
+        //   filter grayscale(100%)
       @media (max-width: 768px)
         margin 0
 
