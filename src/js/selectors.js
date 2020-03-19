@@ -157,11 +157,25 @@ export const linksSelector = createSelector(
       })
 );
 
+// not exactly interimDataQuestions
+// because these should cover ALL years
+// not just years below currentYearInView
+// but still respond to filter
 export const legendDataSelector = createSelector(
-  interimDataQuestionsSelector,
-  questions =>
+  dataQuestionsSelector,
+  filtersSelector,
+  (questions, filters) =>
     rollup(
-      questions,
+      questions
+        .slice()
+        .filter(d =>
+          filters.reduce(
+            (acc, f) =>
+              acc &&
+              (d[f.key] === "" || f.selectedValues.indexOf(d[f.key]) > -1),
+            true
+          )
+        ),
       values => values.length,
       d => +d[YEAR],
       d => d[CATEGORIES]

@@ -377,6 +377,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
       enter =>
         enter
           .append("path")
+          .attr("class", "line")
           .attr("d", d => d.svgPath)
           .attr("stroke-dasharray", function() {
             return this.getTotalLength();
@@ -384,11 +385,17 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
           .attr("stroke-dashoffset", function() {
             return this.getTotalLength();
           })
-          .call(e => e.transition().attr("stroke-dashoffset", 0)),
+          .call(e =>
+            e
+              .transition()
+              .duration(500)
+              .attr("stroke-dashoffset", 0)
+          ),
       update =>
         update.call(u =>
           u
             .transition()
+            .duration(500)
             .attr("d", d => d.svgPath)
             .attr("stroke-dashoffset", 0)
         ),
@@ -396,13 +403,13 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
         exit.call(e =>
           e
             .transition()
+            .duration(500)
             .attr("stroke-dashoffset", function() {
               return this.getTotalLength();
             })
             .remove()
         )
     )
-    .attr("class", "line")
     .attr("stroke-width", 2)
     .attr("stroke", d => colorScale(d.Category));
 
@@ -418,11 +425,17 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
           .attr("class", "node")
           .attr("cx", d => d.x)
           .attr("r", 0)
-          .call(e => e.transition().attr("r", d => d.r)),
+          .call(e =>
+            e
+              .transition()
+              .duration(500)
+              .attr("r", d => d.r)
+          ),
       update =>
         update.call(u =>
           u
             .transition()
+            .duration(500)
             .attr("cx", d => d.x)
             .attr("r", d => d.r)
         ),
@@ -430,6 +443,7 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
         exit.call(e =>
           e
             .transition()
+            .duration(500)
             .attr("r", 0)
             .remove()
         )
@@ -468,6 +482,7 @@ function makeLabelsAndStoryStep(
   story,
   storyStepIndex,
   storyStepYearLookup,
+  yearInView,
   legendData
 ) {
   d3.select(".interactive__story-intro")
@@ -479,6 +494,7 @@ function makeLabelsAndStoryStep(
     .join("div")
     .attr("class", "label")
     .classed("has-story-step", d => storyStepYearLookup.has(d))
+    .classed("current", d => d === yearInView) // initialize
     .style("top", d => yScale(d) - 40 + "px") // vertically center
     .style("left", isMobile ? svgWidth / 2 : 0 + "px")
     .html(d => {
@@ -623,6 +639,15 @@ function update(prevState) {
       .selectAll("circle.node")
       .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID])
       .classed("inactive", d => tooltip.d && d[UID] !== tooltip.d[UID]);
+    d3.select(".interactive_g_links")
+      .selectAll("path.line")
+      .classed(
+        "inactive",
+        d =>
+          tooltip.d &&
+          d.Source !== tooltip.d[UID] &&
+          d.Target !== tooltip.d[UID]
+      );
     // hide tooltip if user scrolls or clicks away
     if (changedKeys.currentYearInView || !tooltip.d) {
       d3.select(".interactive__tooltip").classed("visible", false);
@@ -654,6 +679,7 @@ function update(prevState) {
       currentStory,
       currentStoryStepIndex,
       currentStoryStepYearLookup,
+      currentYearInView,
       legendData
     );
     if (changedKeys.currentStoryKey) {
