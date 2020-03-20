@@ -72,14 +72,13 @@ let state = {
   },
   isMobile: window.innerWidth < MOBILE_BREAKPT || isMobileUtil.any(),
   appHeight: 0,
-  appWidth: 0,
-  isFilterMenuOpen: false,
-  isInteractiveInView: false
+  appWidth: 0
+  // isFilterMenuOpen: false
 };
 const colorScale = d3.scaleOrdinal(COLORS).domain(sortedCategories);
 
 function setState(nextState) {
-  // console.log(nextState);
+  console.log(nextState);
   const prevState = { ...state };
   state = { ...state, ...nextState };
   update(prevState);
@@ -164,70 +163,70 @@ function init() {
     .catch(console.error);
 }
 
-function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
-  d3.select(".interactive__filter-toggle")
-    .classed("visible", currentYearInView >= years[0])
-    .on("click", () => {
-      setState({
-        isFilterMenuOpen: !isFilterMenuOpen
-      });
-    });
-  const filtersEl = d3
-    .select(".interactive__filters")
-    .classed("open", isFilterMenuOpen);
-  const category = filtersEl
-    .selectAll(".interactive__filter")
-    .data(filters, d => d.key)
-    .join(enter => {
-      enter = enter.append("div").attr("class", "interactive__filter");
-      enter
-        .append("div")
-        .attr("class", "interactive__filter_label")
-        .text(d => d.key);
-      enter.append("div").attr("class", "interactive__filter_multiselect");
-      return enter;
-    })
-    .attr("class", "interactive__filter")
-    .attr("tabIndex", -1)
-    .on("mousedown", function() {
-      if (this === document.activeElement) {
-        d3.event.preventDefault();
-        this.blur();
-      }
-    });
-  category
-    .select(".interactive__filter_multiselect")
-    .selectAll(".interactive__filter_multiselect_option")
-    .data(d =>
-      d.allValues.map(e => ({
-        label: d.key === ANSWER_TYPE ? answerTypeLookup[e] : e,
-        value: e,
-        selected: !!~d.selectedValues.indexOf(e),
-        key: d.key
-      }))
-    )
-    .join("div")
-    .attr("class", "interactive__filter_multiselect_option")
-    .classed("selected", d => d.selected)
-    .text(d => d.label)
-    .on("mousedown", function(d) {
-      d3.event.stopPropagation();
-      const filterIndex = filters.findIndex(f => f.key === d.key);
-      setState({
-        filters: [
-          ...filters.slice(0, filterIndex),
-          {
-            ...filters[filterIndex],
-            selectedValues: immutableAddRemove(
-              filters[filterIndex].selectedValues,
-              d.value
-            )
-          },
-          ...filters.slice(filterIndex + 1)
-        ]
-      });
-    });
-}
+// function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
+//   d3.select(".interactive__filter-toggle")
+//     .classed("visible", currentYearInView >= years[0])
+//     .on("click", () => {
+//       setState({
+//         isFilterMenuOpen: !isFilterMenuOpen
+//       });
+//     });
+//   const filtersEl = d3
+//     .select(".interactive__filters")
+//     .classed("open", isFilterMenuOpen);
+//   const category = filtersEl
+//     .selectAll(".interactive__filter")
+//     .data(filters, d => d.key)
+//     .join(enter => {
+//       enter = enter.append("div").attr("class", "interactive__filter");
+//       enter
+//         .append("div")
+//         .attr("class", "interactive__filter_label")
+//         .text(d => d.key);
+//       enter.append("div").attr("class", "interactive__filter_multiselect");
+//       return enter;
+//     })
+//     .attr("class", "interactive__filter")
+//     .attr("tabIndex", -1)
+//     .on("mousedown", function() {
+//       if (this === document.activeElement) {
+//         d3.event.preventDefault();
+//         this.blur();
+//       }
+//     });
+//   category
+//     .select(".interactive__filter_multiselect")
+//     .selectAll(".interactive__filter_multiselect_option")
+//     .data(d =>
+//       d.allValues.map(e => ({
+//         label: d.key === ANSWER_TYPE ? answerTypeLookup[e] : e,
+//         value: e,
+//         selected: !!~d.selectedValues.indexOf(e),
+//         key: d.key
+//       }))
+//     )
+//     .join("div")
+//     .attr("class", "interactive__filter_multiselect_option")
+//     .classed("selected", d => d.selected)
+//     .text(d => d.label)
+//     .on("mousedown", function(d) {
+//       d3.event.stopPropagation();
+//       const filterIndex = filters.findIndex(f => f.key === d.key);
+//       setState({
+//         filters: [
+//           ...filters.slice(0, filterIndex),
+//           {
+//             ...filters[filterIndex],
+//             selectedValues: immutableAddRemove(
+//               filters[filterIndex].selectedValues,
+//               d.value
+//             )
+//           },
+//           ...filters.slice(filterIndex + 1)
+//         ]
+//       });
+//     });
+// }
 
 const tooltipConstant = r => r + (r / 2) * Math.sqrt(2) + 8 * Math.sqrt(2);
 function makeTooltip({ x, y, d }, isMobile, storyKey) {
@@ -308,36 +307,23 @@ function onEnterView(el) {
   }
   const nextYearInView = isEnter ? d : i === 0 ? years[0] : years[i - 1];
   if (
-    (isEnter && d !== currentYearInView) ||
-    (!isEnter && d === currentYearInView)
+    (isEnter && d > currentYearInView) ||
+    (!isEnter && d < currentYearInView)
   ) {
+    // only update state with new year
+    // if scrolling has entered a later year
+    // or exited an earlier year
     setState({
       currentYearInView: nextYearInView,
       ...(nextStoryStepIndex === currentStoryStepIndex
         ? {}
-        : { currentStoryStepIndex: nextStoryStepIndex }),
-      ...(nextYearInView === years[0] ? { isFilterMenuOpen: false } : {})
+        : { currentStoryStepIndex: nextStoryStepIndex })
+      // ...(nextYearInView === years[0] ? { isFilterMenuOpen: false } : {})
     });
   }
 }
 
 function afterFirstDraw() {
-  enterView({
-    selector: ".interactive",
-    enter: function() {
-      if (state.isInteractiveInView) return;
-      setState({
-        isInteractiveInView: true
-      });
-    },
-    exit: function() {
-      if (!state.isInteractiveInView) return;
-      setState({
-        isInteractiveInView: false
-      });
-    },
-    once: false
-  });
   enterView({
     selector: ".label",
     enter: onEnterView.bind({ direction: "enter" }),
@@ -494,8 +480,6 @@ function drawCirclesAndLinks(links, nodes, currentStory) {
 
 function makeLabelsAndStoryStep(
   yScale,
-  isMobile,
-  svgWidth,
   story,
   storyStepIndex,
   storyStepYearLookup,
@@ -513,7 +497,7 @@ function makeLabelsAndStoryStep(
     .selectAll(".label")
     .data(years)
     .join("div")
-    .attr("class", "label")
+    .attr("class", d => `label year-${d}`)
     .classed("has-story-step", d => storyStepYearLookup.has(d))
     .classed("current", d => d === yearInView) // initialize
     .style("top", d => yScale(d) - 40 + "px") // vertically center
@@ -578,10 +562,13 @@ function makeLabelsAndStoryStep(
     });
   });
   d3.selectAll(".story-step-up").on("click", () => {
-    setState({
-      currentStoryStepIndex: 0,
-      currentYearInView: years[0]
-    });
+    d3.select(`.interactive__labels .label.year-${years[0]}`)
+      .node()
+      .scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center"
+      });
   });
 }
 
@@ -620,7 +607,6 @@ function makeHistory(dataHistory, yScale) {
 }
 
 function update(prevState) {
-  const start = new Date();
   const {
     currentStoryKey,
     currentStoryStepIndex,
@@ -631,9 +617,7 @@ function update(prevState) {
     appWidth,
     storyMenu,
     tooltip,
-    isMobile,
-    isFilterMenuOpen,
-    isInteractiveInView
+    isMobile
   } = state;
   const svgHeight = 8.333 * appHeight;
   const svgWidth = isMobile ? appWidth : appWidth * (3 / 7);
@@ -681,17 +665,6 @@ function update(prevState) {
   }
 
   /**
-   * FILTERS
-   */
-  if (
-    changedKeys.filters ||
-    changedKeys.isFilterMenuOpen ||
-    changedKeys.currentYearInView
-  ) {
-    makeFilters(filters, isFilterMenuOpen, currentYearInView);
-  }
-
-  /**
    * TOOLTIP
    */
   if (
@@ -719,7 +692,6 @@ function update(prevState) {
       makeTooltip(tooltip, isMobile, currentStoryKey);
     }
   }
-
   /**
    * STORY STEP
    */
@@ -727,7 +699,6 @@ function update(prevState) {
     firstDraw ||
     changedKeys.currentStoryKey ||
     changedKeys.currentStoryStepIndex ||
-    changedKeys.isInteractiveInView ||
     changedKeys.isMobile ||
     changedKeys.appHeight
   ) {
@@ -738,8 +709,6 @@ function update(prevState) {
     const legendData = legendDataSelector(state);
     makeLabelsAndStoryStep(
       yScale,
-      isMobile,
-      svgWidth,
       currentStory,
       currentStoryStepIndex,
       currentStoryStepYearLookup,
@@ -757,9 +726,16 @@ function update(prevState) {
           block: "center",
           inline: "center"
         });
-    } else if (changedKeys.currentStoryStepIndex) {
-      d3.selectAll(".interactive__labels .label")
-        .filter(d => d === currentStory.steps[currentStoryStepIndex].year)
+    } else if (
+      changedKeys.currentStoryStepIndex &&
+      !changedKeys.currentYearInView
+    ) {
+      // only scroll to next story
+      // when state change triggered by clicking Next
+      // not after scrolling a new year into view
+      d3.select(
+        `.interactive__labels .label.year-${currentStory.steps[currentStoryStepIndex].year}`
+      )
         .node()
         .scrollIntoView({
           behavior: "smooth",
@@ -786,7 +762,6 @@ function update(prevState) {
     firstDraw = false;
     afterFirstDraw();
   }
-  console.log(new Date() - start);
 }
 
 export default { init, resize };

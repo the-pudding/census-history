@@ -13,9 +13,9 @@
     outline none
     line-height 44px
     position relative
-    width 270px
+    width 240px
     display block
-    margin-right calc(50% + 20rem + 10px)
+    margin-right calc(50% + 20rem + 20px)
     margin-left auto
     text-align center
     @media (max-width: 768px)
@@ -47,7 +47,7 @@
       opacity 0.95
       overflow hidden
       text-align left
-      set-type-size(medium, false)
+      set-type-size(small, false)
       cursor pointer
       @media (max-width: 768px)
         width calc(100vw - 10px)
@@ -55,6 +55,7 @@
       &.selected
         pointer-events none
         height 36px
+        font-weight bold
         line-height 44px
         padding-top 2px
         border-bottom 1px solid black
