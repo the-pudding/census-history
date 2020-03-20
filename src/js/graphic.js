@@ -21,6 +21,7 @@ const {
   UID,
   QUESTION,
   DEFAULT,
+  AGE_RANGE,
   START_YEAR,
   END_YEAR,
   EVENT,
@@ -78,7 +79,7 @@ let state = {
 const colorScale = d3.scaleOrdinal(COLORS).domain(sortedCategories);
 
 function setState(nextState) {
-  // console.log(nextState, state);
+  // console.log(nextState);
   const prevState = { ...state };
   state = { ...state, ...nextState };
   update(prevState);
@@ -229,7 +230,7 @@ function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
 }
 
 const tooltipConstant = r => r + (r / 2) * Math.sqrt(2) + 8 * Math.sqrt(2);
-function makeTooltip({ x, y, d }, isMobile) {
+function makeTooltip({ x, y, d }, isMobile, storyKey) {
   const { x: svgX } = d3
     .select(".interactive__svg")
     .node()
@@ -237,6 +238,7 @@ function makeTooltip({ x, y, d }, isMobile) {
   const color = colorScale(d[CATEGORIES]);
   const imageId = imageFilesLookup[d[UID]];
   const tooltipOffsetHeight = getTooltipOffsetHeight();
+  const yMargins = storyKey === DEFAULT ? 16 : 32;
 
   d3
     .select(".interactive__tooltip")
@@ -244,7 +246,7 @@ function makeTooltip({ x, y, d }, isMobile) {
       "top",
       isMobile
         ? "auto"
-        : y + tooltipOffsetHeight + 16 + tooltipConstant(d.r) + "px"
+        : y + tooltipOffsetHeight + yMargins + tooltipConstant(d.r) + "px"
     )
     .style("left", isMobile ? "0px" : x + svgX + tooltipConstant(d.r) + "px")
     .style("border-color", color)
@@ -253,6 +255,13 @@ function makeTooltip({ x, y, d }, isMobile) {
     <div class='interactive__tooltip_category' style='color:${color};'>
       ${d[CATEGORIES] === "National origin" ? "Nat'l origin" : d[CATEGORIES]}
     </div>
+    ${
+      d[AGE_RANGE]
+        ? `<div class='interactive__tooltip_category' style='color:${color};'>By age range (${
+            d[AGE_RANGE].split(",").length
+          } brackets)</div>`
+        : ""
+    }
     <div class='interactive__tooltip_question'>
       ${d[QUESTION]}
     </div>
@@ -371,7 +380,6 @@ function makeStoryDropdownMenu(storyMenu, currentStoryKey) {
 
 function drawCirclesAndLinks(links, nodes, currentStory) {
   const currentStoryCategories = currentStory.storyCategories;
-  console.log(currentStoryCategories, currentStory.key);
   d3.select(".interactive_g_links")
     .selectAll(".line")
     .data(links, d => d.Source + d.Target)
@@ -577,7 +585,42 @@ function makeLabelsAndStoryStep(
   });
 }
 
+function makeHistory(dataHistory, yScale) {
+  d3.select(".interactive__history")
+    .selectAll(".interactive__history_tick")
+    .data(d3.range(dataHistory[0][START_YEAR], years[years.length - 1]))
+    .join("div")
+    .attr("class", "interactive__history_tick")
+    .style("top", d => yScale(d) + "px");
+  d3.select(".interactive__history")
+    .selectAll(".interactive__history_flag")
+    .data(dataHistory)
+    .join("div")
+    .attr("class", "interactive__history_flag")
+    .style("top", d => yScale(d[START_YEAR]) + "px")
+    .style("left", d => 10 * d.xIndex + "px")
+    .classed("one-year-only", d => d[START_YEAR] >= d[END_YEAR])
+    .classed("y-offset", d => d[START_YEAR] === 1990 && d[END_YEAR] === 1991)
+    .style(
+      "height",
+      d =>
+        (d[START_YEAR] >= d[END_YEAR]
+          ? 0
+          : yScale(d[END_YEAR]) - yScale(d[START_YEAR])) +
+        1 +
+        "px"
+    )
+    .html(
+      d => `<div class='interactive__history_flag_years'>${d[START_YEAR]}${
+        d[END_YEAR] > d[START_YEAR] ? ` - ${d[END_YEAR]}` : ""
+      }</div>
+            <div class='interactive__history_flag_event'>${d[EVENT]}</div>
+      `
+    );
+}
+
 function update(prevState) {
+  const start = new Date();
   const {
     currentStoryKey,
     currentStoryStepIndex,
@@ -669,11 +712,11 @@ function update(prevState) {
           d.Source !== tooltip.d[UID] &&
           d.Target !== tooltip.d[UID]
       );
-    // hide tooltip if user scrolls or clicks away
+    // hide tooltip if user scrolls (mobile) or taps/mouses away
     if (changedKeys.currentYearInView || !tooltip.d) {
       d3.select(".interactive__tooltip").classed("visible", false);
     } else {
-      makeTooltip(tooltip, isMobile);
+      makeTooltip(tooltip, isMobile, currentStoryKey);
     }
   }
 
@@ -736,42 +779,14 @@ function update(prevState) {
    * VIZ LABELS
    */
   if (changedKeys.appHeight || changedKeys.isMobile) {
-    d3.select(".interactive__history")
-      .selectAll(".interactive__history_tick")
-      .data(d3.range(dataHistory[0][START_YEAR], years[years.length - 1]))
-      .join("div")
-      .attr("class", "interactive__history_tick")
-      .style("top", d => yScale(d) + "px");
-    d3.select(".interactive__history")
-      .selectAll(".interactive__history_flag")
-      .data(dataHistory)
-      .join("div")
-      .attr("class", "interactive__history_flag")
-      .style("top", d => yScale(d[START_YEAR]) + "px")
-      .style("left", d => 10 * d.xIndex + "px")
-      .classed("one-year-only", d => d[START_YEAR] >= d[END_YEAR])
-      .style(
-        "height",
-        d =>
-          (d[START_YEAR] >= d[END_YEAR]
-            ? 0
-            : yScale(d[END_YEAR]) - yScale(d[START_YEAR])) +
-          1 +
-          "px"
-      )
-      .html(
-        d => `<div class='interactive__history_flag_years'>${d[START_YEAR]}${
-          d[END_YEAR] > d[START_YEAR] ? ` - ${d[END_YEAR]}` : ""
-        }</div>
-            <div class='interactive__history_flag_event'>${d[EVENT]}</div>
-      `
-      );
+    makeHistory(dataHistory, yScale);
   }
 
   if (firstDraw) {
     firstDraw = false;
     afterFirstDraw();
   }
+  console.log(new Date() - start);
 }
 
 export default { init, resize };
