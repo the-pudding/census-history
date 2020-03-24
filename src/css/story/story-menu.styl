@@ -67,8 +67,11 @@
         line-height 44px
         padding-top 2px
         background-color white
+        box-shadow 3px 0px 3px -1px #dddddd, -3px 0px 3px -1px #dddddd
+        &:last-child
+          box-shadow 3px 0px 3px -1px #dddddd, -3px 0px 3px -1px #dddddd, 0px 3px 3px -1px #dddddd
         &:hover
-          background-color #dddddd
+          border-bottom 1px solid black
       &:after
         top 18px
         transform rotate(225deg)
@@ -152,6 +155,11 @@
           font-family $national-narrow
           text-transform uppercase
           cursor pointer
+          .icon
+            display inline-block
+            vertical-align text-bottom
+            height 16px
+            width 16px
           .checkbox
             position absolute
             left 0px

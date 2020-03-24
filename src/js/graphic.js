@@ -30,7 +30,8 @@ const {
   sortedCategories,
   years,
   answerTypeLookup,
-  imageFilesLookup
+  imageFilesLookup,
+  unitReverseLookup
 } = Constants;
 
 let firstDraw = true;
@@ -227,6 +228,15 @@ function makeFilterView(
           : "black"
       };'></div>
       ${d.label}
+      ${
+        d.key === UNIT
+          ? `<img class='icon' src='assets/images/icons/census_unit_${
+              unitReverseLookup[d.label]
+            }.png'>`
+          : d.key === ANSWER_TYPE
+          ? ` <img class='icon' src='assets/images/icons/census_qtype_${d.value}.png' >`
+          : ""
+      }
     </div>`
     )
     .on("click", d => {
@@ -316,6 +326,12 @@ function makeTooltip({ x, y, d }, isMobile, storyKey) {
     .html(`<div class='interactive__tooltip_tail' style='border-color:${color};'></div>
     <div class='interactive__tooltip_category' style='color:${color};'>
       ${d[CATEGORIES] === "National origin" ? "Nat'l origin" : d[CATEGORIES]}
+      <img class='icon' src='assets/images/icons/census_unit_${
+        unitReverseLookup[d[UNIT]]
+      }.png' >
+      <img class='icon' src='assets/images/icons/census_qtype_${
+        d[ANSWER_TYPE]
+      }.png' >
     </div>
     ${
       d[AGE_RANGE]
