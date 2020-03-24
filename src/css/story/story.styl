@@ -53,11 +53,11 @@
       object-fit contain
       align-self center
       justify-self center
-      max-width 100%
-      max-height 300px
-      height auto
-      @media (max-width: 768px)
-        opacity 0
+      // max-width 100%
+      // max-height 300px
+      height calc(100% - 37px)
+      // @media (max-width: 768px)
+      //   opacity 0
 
   &__img
     display block
@@ -136,7 +136,7 @@
           @media (max-width: 768px)
             opacity 0.2
             font-size 150px
-            text-anchor middle
+            text-align center
             line-height 23px
         .story-step
           position absolute
@@ -217,6 +217,30 @@
                 width 90px
                 @media (max-width: 768px)
                   width auto
+
+    .annotations
+      position absolute
+      width 100%
+      @media (max-width: 768px)
+        opacity 0
+      .annotation
+        position absolute
+        color #aeaeae
+        font-family $national-narrow
+        text-transform uppercase
+        text-align center
+        set-type-size(x-small)
+        transition opacity 0.5s
+        &:nth-child(1)
+          top 80px
+          left calc(50%)
+        &:nth-child(2)
+          top 250px
+          left calc(34%)
+          width 120px
+        &:nth-child(3)
+          top 309px
+          left 15%
 
     .interactive__svg
       display block

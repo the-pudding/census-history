@@ -78,7 +78,7 @@ let state = {
 const colorScale = d3.scaleOrdinal(COLORS).domain(sortedCategories);
 
 function setState(nextState) {
-  console.log(nextState);
+  // console.log(nextState);
   const prevState = { ...state };
   state = { ...state, ...nextState };
   update(prevState);
@@ -364,8 +364,8 @@ function makeStoryDropdownMenu(storyMenu, currentStoryKey) {
   });
 }
 
-function drawCirclesAndLinks(links, nodes, currentStory) {
-  const currentStoryCategories = currentStory.storyCategories;
+function drawCirclesAndLinks(links, nodes /*, currentStory*/) {
+  // const currentStoryCategories = currentStory.storyCategories;
   d3.select(".interactive_g_links")
     .selectAll(".line")
     .data(links, d => d.Source + d.Target)
@@ -492,7 +492,7 @@ function makeLabelsAndStoryStep(
     .html(story.storyIntro);
   d3.select(".interactive__img")
     .classed("populated", story.key !== DEFAULT)
-    .attr("src", `assets/images/${story.key}.jpg`);
+    .attr("src", story.img && `assets/images/${story.img}.jpg`);
   d3.select(".interactive__labels")
     .selectAll(".label")
     .data(years)
@@ -657,11 +657,11 @@ function update(prevState) {
     changedKeys.appHeight ||
     changedKeys.appWidth ||
     changedKeys.isMobile ||
-    changedKeys.currentYearInView ||
-    changedKeys.currentStoryKey
+    changedKeys.currentYearInView
+    // || changedKeys.currentStoryKey
   ) {
-    const currentStory = currentStorySelector(state);
-    drawCirclesAndLinks(links, nodes, currentStory);
+    // const currentStory = currentStorySelector(state);
+    drawCirclesAndLinks(links, nodes /*, currentStory*/);
   }
 
   /**
@@ -672,6 +672,7 @@ function update(prevState) {
     changedKeys.tooltip ||
     changedKeys.currentYearInView
   ) {
+    d3.selectAll(".annotation").style("opacity", 0);
     d3.select(".interactive_g_circles")
       .selectAll("circle.node")
       .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID])
@@ -685,9 +686,18 @@ function update(prevState) {
           d.Source !== tooltip.d[UID] &&
           d.Target !== tooltip.d[UID]
       );
-    // hide tooltip if user scrolls (mobile) or taps/mouses away
+    // if user scrolls (mobile) or taps/mouses away,
+    // hide tooltip and reset nodes
     if (changedKeys.currentYearInView || !tooltip.d) {
+      console.log("here");
       d3.select(".interactive__tooltip").classed("visible", false);
+      d3.select(".interactive_g_links")
+        .selectAll("path.line")
+        .classed("inactive", false);
+      d3.select(".interactive_g_circles")
+        .selectAll("circle.node")
+        .classed("active", false)
+        .classed("inactive", false);
     } else {
       makeTooltip(tooltip, isMobile, currentStoryKey);
     }

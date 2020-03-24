@@ -32,7 +32,7 @@
 		margin-top 1rem
 		text-align center
 
-	&__img
+	&__imgs
 		position absolute
 		top -6px
 		right calc(50% + 20rem + 20px)
@@ -41,8 +41,13 @@
 		margin 0 auto
 		margin-top 1rem
 		text-align center
+		img
+			position absolute
+			left 0px
+			top 0px
+			apply-animation()
 		@media (max-width: 768px)
-			height 250px
+			display none
 
 	&__text
 		display block
