@@ -14,22 +14,13 @@ export const svgWidthSelector = (state, props) => props.svgWidth;
 export const yScaleSelector = (state, props) => props.yScale;
 export const currentYearInViewSelector = state => state.currentYearInView;
 export const isMobileSelector = state => state.isMobile;
+export const useCurrentYearFilterSelector = (state, props) =>
+  props.useCurrentYearFilter;
 
 export const interimDataQuestionsSelector = createSelector(
   dataQuestionsSelector,
-  filtersSelector,
-  currentYearInViewSelector,
-  (questions, filters, currentYearInView) => {
-    const interimDataQuestions = questions.slice().filter(
-      d =>
-        d[YEAR] <= currentYearInView + 10 && // stay one decade ahead
-        d[YEAR] >= currentYearInView - 30 && // and three decades behind
-        filters.reduce(
-          (acc, f) =>
-            acc && (d[f.key] === "" || f.selectedValues.indexOf(d[f.key]) > -1),
-          true
-        )
-    );
+  questions => {
+    const interimDataQuestions = questions.slice();
     // only works if dataQuestions is sorted by Year
     let indexByYear = 0;
     let year = questions[0][YEAR];
@@ -96,33 +87,62 @@ export const nodesSelector = createSelector(
   svgWidthSelector,
   xScaleSelector,
   yScaleSelector,
-  (questions, appHeight, qsByYearLookup, svgWidth, xScale, yScale) =>
+  filtersSelector,
+  currentYearInViewSelector,
+  useCurrentYearFilterSelector,
+  (
+    questions,
+    appHeight,
+    qsByYearLookup,
+    svgWidth,
+    xScale,
+    yScale,
+    filters,
+    currentYearInView,
+    useCurrentYearFilter
+  ) =>
     new Map(
-      questions.map(d => {
-        let x, y, r;
-        if (d[UID] === START_ACS) {
-          x = 0.95 * svgWidth;
-          y = yScale(d[YEAR]) - appHeight / 9;
-          r = 10;
-        } else if (d[UID].slice(-2) === "_H") {
-          x = 0.95 * svgWidth;
-          y = yScale(d[YEAR]);
-          r = 10;
-        } else {
-          x = xScale(d);
-          y = yScale(d[YEAR]);
-          r = Math.min(125, 180 / qsByYearLookup.get(d[YEAR]));
-        }
-        return [
-          d[UID],
-          {
-            ...d,
-            x,
-            y,
-            r
+      questions
+        // if useCurrentYearFilter flag is true,
+        // stay one decade ahead and three decades behind
+        .filter(
+          d =>
+            !useCurrentYearFilter ||
+            (d[YEAR] <= currentYearInView + 10 &&
+              d[YEAR] >= currentYearInView - 30)
+        )
+        .map(d => {
+          const inFilter = filters.reduce(
+            (acc, f) =>
+              acc &&
+              (d[f.key] === "" || f.selectedValues.indexOf(d[f.key]) > -1),
+            true
+          );
+          let x, y, r;
+          if (d[UID] === START_ACS) {
+            x = 0.95 * svgWidth;
+            y = yScale(d[YEAR] - 3);
+            r = 10;
+          } else if (d[UID].slice(-2) === "_H") {
+            x = 0.95 * svgWidth;
+            y = yScale(d[YEAR]);
+            r = 10;
+          } else {
+            x = xScale(d);
+            y = yScale(d[YEAR]);
+            r = Math.min(125, 180 / qsByYearLookup.get(d[YEAR]));
           }
-        ];
-      })
+          return [
+            d[UID],
+            {
+              ...d,
+              x,
+              y,
+              r,
+              inFilter
+            }
+          ];
+        })
     )
 );
 
@@ -139,9 +159,12 @@ export const linksSelector = createSelector(
           x: sourceX,
           y: sourceY,
           [CATEGORIES]: Category,
-          indexByYear
+          indexByYear,
+          inFilter: sourceInFilter
         } = nodes.get(d.Source);
-        const { x: targetX, y: targetY } = nodes.get(d.Target);
+        const { x: targetX, y: targetY, inFilter: targetInFilter } = nodes.get(
+          d.Target
+        );
         if (Category.indexOf(", ") !== -1) {
           Category = "[Multiple]";
         }
@@ -165,30 +188,17 @@ export const linksSelector = createSelector(
           targetY,
           Category,
           svgPath,
-          indexByYear
+          indexByYear,
+          inFilter: sourceInFilter || targetInFilter
         };
       })
 );
 
-// not exactly interimDataQuestions
-// because these should cover ALL years
-// not just years below currentYearInView
-// but still respond to filter
 export const legendDataSelector = createSelector(
   dataQuestionsSelector,
-  filtersSelector,
-  (questions, filters) =>
+  questions =>
     rollup(
-      questions
-        .slice()
-        .filter(d =>
-          filters.reduce(
-            (acc, f) =>
-              acc &&
-              (d[f.key] === "" || f.selectedValues.indexOf(d[f.key]) > -1),
-            true
-          )
-        ),
+      questions,
       values => values.length,
       d => +d[YEAR],
       d => d[CATEGORIES]

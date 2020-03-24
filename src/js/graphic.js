@@ -55,12 +55,12 @@ let state = {
       selectedValues: []
     },
     {
-      key: ASKED_OF,
+      key: ANSWER_TYPE,
       allValues: [],
       selectedValues: []
     },
     {
-      key: ANSWER_TYPE,
+      key: ASKED_OF,
       allValues: [],
       selectedValues: []
     }
@@ -72,8 +72,8 @@ let state = {
   },
   isMobile: window.innerWidth < MOBILE_BREAKPT || isMobileUtil.any(),
   appHeight: 0,
-  appWidth: 0
-  // isFilterMenuOpen: false
+  appWidth: 0,
+  isFilterMenuOpen: false
 };
 const colorScale = d3.scaleOrdinal(COLORS).domain(sortedCategories);
 
@@ -147,8 +147,20 @@ function init() {
         })),
         filters: state.filters.map(f => {
           let allValues = Array.from(
-            new Set(rawQuestions.map(d => d[f.key]).filter(d => !!d))
-          ).sort();
+            new Set(
+              rawQuestions
+                .filter(e => e[CATEGORIES] !== "[Admin.]")
+                .map(d => d[f.key])
+                .filter(d => !!d)
+            )
+          ).sort((a, b) =>
+            f.key === CATEGORIES
+              ? d3.ascending(
+                  sortedCategories.indexOf(a),
+                  sortedCategories.indexOf(b)
+                )
+              : d3.ascending(a, b)
+          );
           return {
             ...f,
             allValues,
@@ -163,70 +175,121 @@ function init() {
     .catch(console.error);
 }
 
-// function makeFilters(filters, isFilterMenuOpen, currentYearInView) {
-//   d3.select(".interactive__filter-toggle")
-//     .classed("visible", currentYearInView >= years[0])
-//     .on("click", () => {
-//       setState({
-//         isFilterMenuOpen: !isFilterMenuOpen
-//       });
-//     });
-//   const filtersEl = d3
-//     .select(".interactive__filters")
-//     .classed("open", isFilterMenuOpen);
-//   const category = filtersEl
-//     .selectAll(".interactive__filter")
-//     .data(filters, d => d.key)
-//     .join(enter => {
-//       enter = enter.append("div").attr("class", "interactive__filter");
-//       enter
-//         .append("div")
-//         .attr("class", "interactive__filter_label")
-//         .text(d => d.key);
-//       enter.append("div").attr("class", "interactive__filter_multiselect");
-//       return enter;
-//     })
-//     .attr("class", "interactive__filter")
-//     .attr("tabIndex", -1)
-//     .on("mousedown", function() {
-//       if (this === document.activeElement) {
-//         d3.event.preventDefault();
-//         this.blur();
-//       }
-//     });
-//   category
-//     .select(".interactive__filter_multiselect")
-//     .selectAll(".interactive__filter_multiselect_option")
-//     .data(d =>
-//       d.allValues.map(e => ({
-//         label: d.key === ANSWER_TYPE ? answerTypeLookup[e] : e,
-//         value: e,
-//         selected: !!~d.selectedValues.indexOf(e),
-//         key: d.key
-//       }))
-//     )
-//     .join("div")
-//     .attr("class", "interactive__filter_multiselect_option")
-//     .classed("selected", d => d.selected)
-//     .text(d => d.label)
-//     .on("mousedown", function(d) {
-//       d3.event.stopPropagation();
-//       const filterIndex = filters.findIndex(f => f.key === d.key);
-//       setState({
-//         filters: [
-//           ...filters.slice(0, filterIndex),
-//           {
-//             ...filters[filterIndex],
-//             selectedValues: immutableAddRemove(
-//               filters[filterIndex].selectedValues,
-//               d.value
-//             )
-//           },
-//           ...filters.slice(filterIndex + 1)
-//         ]
-//       });
-//     });
-// }
+function makeFilterView(
+  isFilterMenuOpen,
+  filters,
+  nodelets,
+  linklets,
+  appHeight,
+  svgWidthlet,
+  yScalelet
+) {
+  d3.select(".interactive__filter-toggle")
+    .classed("is-filter-menu-open", isFilterMenuOpen)
+    .on("click", () => {
+      setState({
+        isFilterMenuOpen: !isFilterMenuOpen
+      });
+    });
+  const filtersEl = d3.select(".interactive__filters");
+  filtersEl.classed("visible", isFilterMenuOpen);
+  const filter = filtersEl
+    .selectAll(".interactive__filters_filter")
+    .data(filters, d => d.key)
+    .join("div")
+    .attr("class", "interactive__filters_filter")
+    .html(
+      d => `<div class='filter-label'>Filter questions by <strong>${d.key.toLowerCase()}</strong></div>
+      <div class='filter-options'></div>`
+    );
+  filter
+    .select(".filter-options")
+    .selectAll(".filter-option")
+    .data((d, i) =>
+      d.allValues.map(e => ({
+        label: d.key === ANSWER_TYPE ? answerTypeLookup[e] : e,
+        value: e,
+        selected: !!~d.selectedValues.indexOf(e),
+        key: d.key,
+        filterIndex: i
+      }))
+    )
+    .join("div")
+    .attr("class", "filter-option")
+    .classed("selected", d => d.selected)
+    .html(
+      d => `<div>
+      <div class='checkbox' style='background-color:${
+        !d.selected
+          ? "white"
+          : d.key === CATEGORIES
+          ? colorScale(d.label)
+          : "black"
+      };'></div>
+      ${d.label}
+    </div>`
+    )
+    .on("click", d => {
+      setState({
+        filters: [
+          ...filters.slice(0, d.filterIndex),
+          {
+            ...filters[d.filterIndex],
+            selectedValues: immutableAddRemove(
+              filters[d.filterIndex].selectedValues,
+              d.value
+            )
+          },
+          ...filters.slice(d.filterIndex + 1)
+        ]
+      });
+    });
+  const svg = filtersEl
+    .select("svg")
+    .attr("height", appHeight - 48)
+    .attr("width", svgWidthlet);
+  svg
+    .select(".filters_g_years")
+    .selectAll("text")
+    .data(years)
+    .join("text")
+    .attr("y", d => yScalelet(d) - 2)
+    .classed("big-font", d => d % 50 === 0)
+    .text(d => d);
+  svg
+    .select(".filters_g_years")
+    .selectAll("line")
+    .attr("class", "underline")
+    .data(years)
+    .join("line")
+    .attr("y1", d => yScalelet(d))
+    .attr("y2", d => yScalelet(d))
+    .attr("x1", 0)
+    .attr("x2", svgWidthlet);
+  svg
+    .select(".filters_g_links")
+    .selectAll(".line")
+    .data(linklets, d => d.Source + d.Target)
+    .join("path")
+    .attr("d", d => d.svgPath)
+    .attr("stroke-dasharray", d =>
+      +d.Target.slice(0, 4) - +d.Source.slice(0, 4) > 10 ? "2 2" : ""
+    )
+    .attr("class", "line")
+    .classed("inactive", d => !d.inFilter)
+    .attr("stroke", d => colorScale(d.Category));
+  svg
+    .select(".filters_g_circles")
+    .selectAll("circle.node")
+    .data(Array.from(nodelets.values()), d => d.UID)
+    .join("circle")
+    .attr("class", "node")
+    .attr("r", d => (d.r > 10 ? 6 : d.r > 5 ? 4 : 2))
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    .attr("fill", d => colorScale(d[CATEGORIES]))
+    .classed("inactive", d => !d.inFilter);
+}
 
 const tooltipConstant = r => r + (r / 2) * Math.sqrt(2) + 8 * Math.sqrt(2);
 function makeTooltip({ x, y, d }, isMobile, storyKey) {
@@ -314,11 +377,11 @@ function onEnterView(el) {
     // if scrolling has entered a later year
     // or exited an earlier year
     setState({
+      isFilterMenuOpen: false, // always
       currentYearInView: nextYearInView,
       ...(nextStoryStepIndex === currentStoryStepIndex
         ? {}
         : { currentStoryStepIndex: nextStoryStepIndex })
-      // ...(nextYearInView === years[0] ? { isFilterMenuOpen: false } : {})
     });
   }
 }
@@ -364,8 +427,7 @@ function makeStoryDropdownMenu(storyMenu, currentStoryKey) {
   });
 }
 
-function drawCirclesAndLinks(links, nodes /*, currentStory*/) {
-  // const currentStoryCategories = currentStory.storyCategories;
+function drawCirclesAndLinks(links, nodes) {
   d3.select(".interactive_g_links")
     .selectAll(".line")
     .data(links, d => d.Source + d.Target)
@@ -456,13 +518,6 @@ function drawCirclesAndLinks(links, nodes /*, currentStory*/) {
     )
     .attr("stroke", d => colorScale(d[CATEGORIES]))
     .attr("stroke-width", d => (d["Age range"] ? 2 : 0))
-    // TODO decide if we want this
-    // .classed(
-    //   "out-of-story",
-    //   d =>
-    //     currentStory.key !== DEFAULT &&
-    //     !~currentStoryCategories.indexOf(d[CATEGORIES])
-    // )
     .on("mouseenter", function(d) {
       const { x, y } = this.getBBox();
       setState({
@@ -617,7 +672,8 @@ function update(prevState) {
     appWidth,
     storyMenu,
     tooltip,
-    isMobile
+    isMobile,
+    isFilterMenuOpen
   } = state;
   const svgHeight = 8.333 * appHeight;
   const svgWidth = isMobile ? appWidth : appWidth * (3 / 7);
@@ -638,8 +694,16 @@ function update(prevState) {
     .scaleLinear()
     .domain([years[0], years[years.length - 1]])
     .range([appHeight / 6, svgHeight - appHeight / 6]);
-  const nodes = nodesSelector(state, { svgWidth, yScale });
-  const links = linksSelector(state, { svgWidth, yScale });
+  const nodes = nodesSelector(state, {
+    svgWidth,
+    yScale,
+    useCurrentYearFilter: true
+  });
+  const links = linksSelector(state, {
+    svgWidth,
+    yScale,
+    useCurrentYearFilter: true
+  });
 
   /**
    * DRAWING VIZ
@@ -658,10 +722,8 @@ function update(prevState) {
     changedKeys.appWidth ||
     changedKeys.isMobile ||
     changedKeys.currentYearInView
-    // || changedKeys.currentStoryKey
   ) {
-    // const currentStory = currentStorySelector(state);
-    drawCirclesAndLinks(links, nodes /*, currentStory*/);
+    drawCirclesAndLinks(links, nodes);
   }
 
   /**
@@ -689,7 +751,6 @@ function update(prevState) {
     // if user scrolls (mobile) or taps/mouses away,
     // hide tooltip and reset nodes
     if (changedKeys.currentYearInView || !tooltip.d) {
-      console.log("here");
       d3.select(".interactive__tooltip").classed("visible", false);
       d3.select(".interactive_g_links")
         .selectAll("path.line")
@@ -758,6 +819,13 @@ function update(prevState) {
     d3.select(".interactive__labels")
       .selectAll(".label")
       .classed("current", d => d === currentYearInView);
+    d3.select(".interactive__filter-toggle")
+      .classed("visible", currentYearInView > years[0])
+      .on("click", () => {
+        setState({
+          isFilterMenuOpen: !isFilterMenuOpen
+        });
+      });
   }
 
   /**
@@ -766,6 +834,40 @@ function update(prevState) {
    */
   if (changedKeys.appHeight || changedKeys.isMobile) {
     makeHistory(dataHistory, yScale);
+  }
+
+  /**
+   * FILTER VIEW
+   */
+  if (
+    changedKeys.isFilterMenuOpen ||
+    changedKeys.filters ||
+    changedKeys.appHeight
+  ) {
+    const yScalelet = d3
+      .scaleLinear()
+      .domain([years[0], years[years.length - 1]])
+      .range([10, appHeight - 68]); // header height - 20
+    const svgWidthlet = 0.7 * appWidth * (3 / 7); // sync CSS width, margin
+    const nodelets = nodesSelector(state, {
+      svgWidth: svgWidthlet,
+      yScale: yScalelet,
+      useCurrentYearFilter: false
+    });
+    const linklets = linksSelector(state, {
+      svgWidth: svgWidthlet,
+      yScale: yScalelet,
+      useCurrentYearFilter: false
+    });
+    makeFilterView(
+      isFilterMenuOpen,
+      filters,
+      nodelets,
+      linklets,
+      appHeight,
+      svgWidthlet,
+      yScalelet
+    );
   }
 
   if (firstDraw) {
