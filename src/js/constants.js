@@ -19,6 +19,8 @@ export default {
   MOBILE_BREAKPT: 768,
 
   DEFAULT: "default",
+  HOUSING: "housing",
+  IMMIGRATION: "immigration",
 
   START_ACS: "2010_ACS",
 

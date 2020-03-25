@@ -21,6 +21,8 @@ const {
   UID,
   QUESTION,
   DEFAULT,
+  HOUSING,
+  IMMIGRATION,
   AGE_RANGE,
   START_YEAR,
   END_YEAR,
@@ -79,7 +81,7 @@ let state = {
 const colorScale = d3.scaleOrdinal(COLORS).domain(sortedCategories);
 
 function setState(nextState) {
-  // console.log(nextState);
+  console.log(nextState);
   const prevState = { ...state };
   state = { ...state, ...nextState };
   update(prevState);
@@ -301,8 +303,8 @@ function makeFilterView(
     .classed("inactive", d => !d.inFilter);
 }
 
-const tooltipConstant = r => r + (r / 2) * Math.sqrt(2) + 8 * Math.sqrt(2);
-function makeTooltip({ x, y, d }, isMobile, storyKey) {
+const tooltipConstant = r => (r / 2) * Math.sqrt(2) + 8 * Math.sqrt(2);
+function makeTooltip({ x, y, d }, isMobile, storyKey, svgWidth) {
   const { x: svgX } = d3
     .select(".interactive__svg")
     .node()
@@ -311,6 +313,7 @@ function makeTooltip({ x, y, d }, isMobile, storyKey) {
   const imageId = imageFilesLookup[d[UID]];
   const tooltipOffsetHeight = getTooltipOffsetHeight();
   const yMargins = storyKey === DEFAULT ? 16 : 32;
+  const flip = x > 0.5 * svgWidth;
 
   d3
     .select(".interactive__tooltip")
@@ -318,11 +321,27 @@ function makeTooltip({ x, y, d }, isMobile, storyKey) {
       "top",
       isMobile
         ? "auto"
-        : y + tooltipOffsetHeight + yMargins + tooltipConstant(d.r) + "px"
+        : y + tooltipOffsetHeight + yMargins + tooltipConstant(d.r) + d.r + "px"
     )
-    .style("left", isMobile ? "0px" : x + svgX + tooltipConstant(d.r) + "px")
+    .style(
+      "left",
+      isMobile
+        ? "0px"
+        : flip
+        ? "auto"
+        : svgX + x + tooltipConstant(d.r) + d.r + "px"
+    )
+    .style(
+      "right",
+      isMobile
+        ? "0px"
+        : flip
+        ? svgX + svgWidth - x + tooltipConstant(d.r) - d.r + "px"
+        : "auto"
+    )
     .style("border-color", color)
     .classed("visible", true)
+    .classed("flip", flip)
     .html(`<div class='interactive__tooltip_tail' style='border-color:${color};'></div>
     <div class='interactive__tooltip_category' style='color:${color};'>
       ${d[CATEGORIES] === "National origin" ? "Nat'l origin" : d[CATEGORIES]}
@@ -353,7 +372,12 @@ function makeTooltip({ x, y, d }, isMobile, storyKey) {
 
 function onEnterView(el) {
   const isEnter = this.direction === "enter";
-  const { currentYearInView, currentStoryKey, currentStoryStepIndex } = state;
+  const {
+    currentYearInView,
+    currentStoryKey,
+    currentStoryStepIndex,
+    isFilterMenuOpen
+  } = state;
   const currentStory = currentStorySelector(state);
   const [d] = d3.select(el).data();
   const i = years.indexOf(d);
@@ -386,18 +410,18 @@ function onEnterView(el) {
   }
   const nextYearInView = isEnter ? d : i === 0 ? years[0] : years[i - 1];
   if (
-    (isEnter && d > currentYearInView) ||
-    (!isEnter && d < currentYearInView)
+    (isEnter && nextYearInView > currentYearInView) ||
+    (!isEnter && nextYearInView < currentYearInView)
   ) {
     // only update state with new year
     // if scrolling has entered a later year
     // or exited an earlier year
     setState({
-      isFilterMenuOpen: false, // always
       currentYearInView: nextYearInView,
       ...(nextStoryStepIndex === currentStoryStepIndex
         ? {}
-        : { currentStoryStepIndex: nextStoryStepIndex })
+        : { currentStoryStepIndex: nextStoryStepIndex }),
+      ...(isFilterMenuOpen ? { isFilterMenuOpen: false } : {})
     });
   }
 }
@@ -558,12 +582,28 @@ function makeLabelsAndStoryStep(
   legendData
 ) {
   const keys = Array.from(storyStepYearLookup.keys());
+  const isDefaultStory = story.key === DEFAULT;
   d3.select(".interactive__story-intro")
-    .classed("populated", story.key !== DEFAULT)
+    .classed("populated", !isDefaultStory)
     .html(story.storyIntro);
   d3.select(".interactive__img")
-    .classed("populated", story.key !== DEFAULT)
+    .classed("populated", !isDefaultStory)
     .attr("src", story.img && `assets/images/${story.img}.jpg`);
+  d3.select(".interactive__step-start")
+    .html(
+      story.key === HOUSING || story.key === IMMIGRATION
+        ? `<img src='assets/images/icons/arrow-down.svg'>Start`
+        : ""
+    )
+    .on("click", () => {
+      d3.select(`.interactive__labels .label.year-${story.steps[0].year}`)
+        .node()
+        .scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center"
+        });
+    });
   d3.select(".interactive__labels")
     .selectAll(".label")
     .data(years)
@@ -748,9 +788,9 @@ function update(prevState) {
   if (
     changedKeys.isMobile ||
     changedKeys.tooltip ||
-    changedKeys.currentYearInView
+    changedKeys.currentYearInView ||
+    changedKeys.appWidth
   ) {
-    d3.selectAll(".annotation").style("opacity", 0);
     d3.select(".interactive_g_circles")
       .selectAll("circle.node")
       .classed("active", d => tooltip.d && d[UID] === tooltip.d[UID])
@@ -776,7 +816,7 @@ function update(prevState) {
         .classed("active", false)
         .classed("inactive", false);
     } else {
-      makeTooltip(tooltip, isMobile, currentStoryKey);
+      makeTooltip(tooltip, isMobile, currentStoryKey, svgWidth);
     }
   }
   /**
@@ -832,6 +872,7 @@ function update(prevState) {
     }
   }
   if (changedKeys.currentYearInView) {
+    d3.selectAll(".annotation").style("opacity", 0);
     d3.select(".interactive__labels")
       .selectAll(".label")
       .classed("current", d => d === currentYearInView);

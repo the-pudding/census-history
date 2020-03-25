@@ -7,9 +7,10 @@
     height auto
     width auto
     min-width 300px
+    max-width 600px
     border 2px solid
     padding 4px
-    transition top 0.5s, left 0.5s, opacity 0.25s
+    transition top 0.5s, left 0.5s, right 0.5s, opacity 0.25s
     pointer-events none
     opacity 0
     background-color white
@@ -36,12 +37,17 @@
       width 0px
       transform rotate(-45deg)
       border 1px solid
+    &.flip .interactive__tooltip_tail
+      left auto
+      right -8px
+      transform rotate(45deg)
 
     &_question
       position relative
       set-type-size(medium, false)
       font-weight bold
       margin-bottom 4px
+      white-space nowrap
     &_category
       font-family $national
       text-transform uppercase
@@ -80,6 +86,24 @@
       top auto
       right auto
       margin 0 auto
+  &__step-start
+    position absolute
+    display flex
+    align-items center
+    font-family $national
+    text-transform uppercase
+    set-type-size(x-small, true)
+    pointer-events initial
+    right calc(50% + 20rem + 210px)
+    top 235px
+    z-index 2
+    @media (max-width: 768px)
+      display none
+    img
+      cursor pointer
+      display inline
+      width 20px
+      height 20px
 
   &__story-intro
     display block
@@ -246,9 +270,6 @@
           top 250px
           left calc(34%)
           width 120px
-        &:nth-child(3)
-          top 309px
-          left 15%
 
     .interactive__svg
       display block
