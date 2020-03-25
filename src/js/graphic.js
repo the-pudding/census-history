@@ -81,7 +81,7 @@ let state = {
 const colorScale = d3.scaleOrdinal(COLORS).domain(sortedCategories);
 
 function setState(nextState) {
-  console.log(nextState);
+  // console.log(nextState);
   const prevState = { ...state };
   state = { ...state, ...nextState };
   update(prevState);
@@ -122,7 +122,7 @@ function init() {
         )
         .forEach(e => {
           const i = stack.findIndex(
-            s => s[END_YEAR] <= e[START_YEAR] && s[START_YEAR] < e[START_YEAR]
+            s => s[END_YEAR] < e[START_YEAR] && s[START_YEAR] < e[START_YEAR]
           );
           e.xIndex = i === -1 ? stack.length : i;
           stack[e.xIndex] = e;
@@ -698,14 +698,19 @@ function makeHistory(dataHistory, yScale) {
     .style("top", d => yScale(d[START_YEAR]) + "px")
     .style("left", d => 10 * d.xIndex + "px")
     .classed("one-year-only", d => d[START_YEAR] >= d[END_YEAR])
-    .classed("y-offset", d => d[START_YEAR] === 1990 && d[END_YEAR] === 1991)
+    .classed(
+      "y-offset",
+      d =>
+        (d[START_YEAR] === 1990 && d[END_YEAR] === 1991) ||
+        (d[START_YEAR] === 2001 && d[END_YEAR] > 2001)
+    )
     .style(
       "height",
       d =>
         (d[START_YEAR] >= d[END_YEAR]
           ? 0
           : yScale(d[END_YEAR]) - yScale(d[START_YEAR])) +
-        1 +
+        2 +
         "px"
     )
     .html(
