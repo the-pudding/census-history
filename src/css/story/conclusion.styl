@@ -4,7 +4,7 @@
   margin 0 auto
   margin-top 1rem
   text-align center
-  @media (max-width: 768px)
+  @media (max-width: $mobile-sm)
     margin-top 3rem
 
   .underline
@@ -12,15 +12,17 @@
 
 .conclusion > p
   text-align left
-  @media (max-width: 768px)
+  @media (max-width: $mobile-sm)
     padding 0px 5px
+  &.fill-it-out
+    set-type-size(small)
 
 .conclusion__methodology > *,
 .conclusion__credits > *
   set-type-size(small)
   word-wrap break-word
   text-align left
-  @media (max-width: 768px)
+  @media (max-width: $mobile-sm)
     padding 0px 5px
 .conclusion__credits ul li
   position relative

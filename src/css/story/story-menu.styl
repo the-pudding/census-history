@@ -6,7 +6,7 @@
   z-index 1001
   top 0px
   margin-bottom -40px
-  @media (max-width: 768px)
+  @media (max-width: $mobile-lg)
     margin-bottom 0px
 
   .story-menu_dropdown
@@ -22,12 +22,14 @@
     transition opacity 0.25s
     &.hidden
       opacity 0
-    @media (max-width: 768px)
+    @media (max-width: $mobile-lg)
       display block
       margin 0px auto
       padding 0px 5px 10px 5px
-      width 100vw
+      width $column-width
       background-color white
+    @media (max-width $mobile-sm)
+      width 100vw
     &:after
       content ''
       position absolute
@@ -39,7 +41,7 @@
       border-top 2px solid black
       transform rotate(45deg)
       transition transform 0.25s, top 0.25s
-      @media (max-width: 768px)
+      @media (max-width: $mobile-sm)
         right 10px
     &_option
       display block
@@ -53,7 +55,7 @@
       text-align left
       set-type-size(small, false)
       cursor pointer
-      @media (max-width: 768px)
+      @media (max-width: $mobile-sm)
         width calc(100vw - 10px)
         text-align center
       &.selected
@@ -92,7 +94,7 @@
       &.is-filter-menu-open
         polygon
           fill #282828
-      @media (max-width: 968px) // larger than mobile
+      @media (max-width: $mobile-lg) // larger than mobile
         opacity 0
 
   .interactive__filters
@@ -107,7 +109,7 @@
     background-color white
     transition opacity 0.5s
     pointer-events none
-    @media (max-width: 768px)
+    @media (max-width: $mobile-sm)
       width 0
     &.visible
       opacity 1
@@ -147,7 +149,7 @@
       grid-row 3 / 7
     &_filter
       padding 10px
-      @media (max-width: 768px)
+      @media (max-width: $mobile-sm)
         width 0px
       .filter-label
         set-type-size(small)

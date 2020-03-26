@@ -18,7 +18,7 @@
     z-index 1002
     &.visible
       opacity 0.95
-    @media (max-width: 768px)
+    @media (max-width: $mobile-sm)
       border-radius 0px
       position fixed
       bottom 0px
@@ -66,7 +66,7 @@
       object-fit contain
       max-width 100%
       max-height 390px
-      @media (max-width: 768px)
+      @media (max-width: $mobile-sm)
         opacity 0
 
   &__img
@@ -80,7 +80,12 @@
     transition opacity 0.25s
     &.populated
       opacity 1
-    @media (max-width: 768px)
+    @media (max-width: $mobile-lg)
+      position relative
+      top auto
+      right auto
+      margin 0 auto
+    @media (max-width: $mobile-sm)
       position relative
       top auto
       right auto
@@ -96,7 +101,7 @@
     right calc(50% + 20rem + 210px)
     top 235px
     z-index 2
-    @media (max-width: 768px)
+    @media (max-width: $mobile-sm)
       display none
     img
       cursor pointer
@@ -114,7 +119,7 @@
     &.populated
       height auto
       opacity 1
-    @media (max-width: 768px)
+    @media (max-width: $mobile-sm)
       padding 0px 10px
 
   .sticky-container
@@ -125,7 +130,7 @@
     margin 0 auto
     margin-top 1rem
     text-align center
-    @media (max-width: 768px)
+    @media (max-width: $mobile-sm)
       grid-template-columns 0fr 1fr 0fr
       grid-column-gap 0px
 
@@ -137,7 +142,7 @@
       left 0px
       grid-column 2/3
       margin-top 1rem
-      @media (max-width: 768px)
+      @media (max-width: $mobile-sm)
         z-index 2
         pointer-events none
       .label
@@ -154,7 +159,7 @@
           .story-step
             opacity 1
             transition opacity 0.5s 0.25s
-        @media (max-width: 768px)
+        @media (max-width: $mobile-sm)
           border-bottom 1px solid #00000028
           &.current.has-story-step
             left 0px
@@ -164,7 +169,7 @@
           font-size 40px
           line-height 40px
           font-family $tiempos
-          @media (max-width: 768px)
+          @media (max-width: $mobile-sm)
             opacity 0.2
             font-size 150px
             text-align center
@@ -177,7 +182,7 @@
           z-index 5
           pointer-events none // overlap with circles
           transition opacity 0.25s 0s
-          @media (max-width: 768px)
+          @media (max-width: $mobile-sm)
             padding 5px
             top 75px
             width 100vw
@@ -186,14 +191,14 @@
             set-type-size(small, false)
             font-weight 600
             margin-top: 10px
-            @media (max-width: 768px)
+            @media (max-width: $mobile-sm)
               margin-top 0px
           &-body
             set-type-size(x-small)
             line-height 16px
             margin-bottom 15px
             margin-top: 10px
-            @media (max-width: 768px)
+            @media (max-width: $mobile-sm)
               set-type-size(xx-small, true)
               margin-top 0px
               margin-bottom 0px
@@ -209,7 +214,7 @@
             text-transform uppercase
             set-type-size(x-small, true)
             pointer-events initial
-            @media (max-width: 768px)
+            @media (max-width: $mobile-sm)
               display none
             img
               cursor pointer
@@ -219,14 +224,14 @@
           .step-legend
             display block
             margin-top: 10px
-            @media (max-width: 768px)
+            @media (max-width: $mobile-sm)
               margin-top 0px
               line-height 16px
             &-row
               height 20px
               font-family $national-narrow
               text-transform uppercase
-              @media (max-width: 768px)
+              @media (max-width: $mobile-sm)
                 display inline-block
                 margin-right 10px
                 height 16px
@@ -235,7 +240,7 @@
               &-number
                 set-type-size(x-small, true)
                 display inline-block
-                @media (max-width: 768px)
+                @media (max-width: $mobile-sm)
                   set-type-size(xx-small, true)
               &-circle
                 height 8px
@@ -244,18 +249,18 @@
               &-number
                 width 20px
                 text-align right
-                @media (max-width: 768px)
+                @media (max-width: $mobile-sm)
                   width auto
                   font-weight bold
               &-term
                 width 90px
-                @media (max-width: 768px)
+                @media (max-width: $mobile-sm)
                   width auto
 
     .annotations
       position absolute
       width 100%
-      @media (max-width: 768px)
+      @media (max-width: $mobile-sm)
         opacity 0
       .annotation
         position absolute
@@ -293,7 +298,7 @@
           stroke black
         &.inactive
           fill #aeaeae
-      @media (max-width: 768px)
+      @media (max-width: $mobile-sm)
         margin 0
 
     .interactive__history
@@ -345,7 +350,7 @@
           .interactive__history_flag_years,
           .interactive__history_flag_event
             transform translateY(24px)
-      @media (max-width: 768px)
+      @media (max-width: $mobile-sm)
         visibility hidden
         position absolute
         width 0
