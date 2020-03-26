@@ -82,7 +82,6 @@ export const currentStoryStepYearLookupSelector = createSelector(
 // position questions that are in filter
 export const nodesSelector = createSelector(
   interimDataQuestionsSelector,
-  appHeightSelector,
   qsByYearLookupSelector,
   svgWidthSelector,
   xScaleSelector,
@@ -92,7 +91,6 @@ export const nodesSelector = createSelector(
   useCurrentYearFilterSelector,
   (
     questions,
-    appHeight,
     qsByYearLookup,
     svgWidth,
     xScale,

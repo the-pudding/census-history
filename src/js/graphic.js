@@ -187,6 +187,7 @@ function makeFilterView(
   svgWidthlet,
   yScalelet
 ) {
+  d3.select(".story-menu_dropdown").classed("hidden", isFilterMenuOpen);
   d3.select(".interactive__filter-toggle")
     .classed("is-filter-menu-open", isFilterMenuOpen)
     .on("click", () => {
@@ -203,8 +204,25 @@ function makeFilterView(
     .attr("class", "interactive__filters_filter")
     .html(
       d => `<div class='filter-label'>Filter questions by <strong>${d.key.toLowerCase()}</strong></div>
-      <div class='filter-options'></div>`
+      <div class='filter-options'></div>
+      <div class='select-all ${
+        d.selectedValues.length === d.allValues.length ? "disabled" : ""
+      }'>Select All</div>`
     );
+  filter.selectAll(".select-all").on("click", function() {
+    const d = d3.select(this.parentNode).data()[0];
+    const filterIndex = filters.findIndex(e => e.key === d.key);
+    setState({
+      filters: [
+        ...filters.slice(0, filterIndex),
+        {
+          ...filters[filterIndex],
+          selectedValues: filters[filterIndex].allValues
+        },
+        ...filters.slice(filterIndex + 1)
+      ]
+    });
+  });
   filter
     .select(".filter-options")
     .selectAll(".filter-option")
@@ -239,18 +257,23 @@ function makeFilterView(
           ? ` <img class='icon' src='assets/images/icons/census_qtype_${d.value}.png' >`
           : ""
       }
+      <div class='check-only'>only</div>
     </div>`
     )
     .on("click", d => {
+      // sleight of hand to avoid multiple click events
+      const checkOnly = d3.event.toElement.className === "check-only";
       setState({
         filters: [
           ...filters.slice(0, d.filterIndex),
           {
             ...filters[d.filterIndex],
-            selectedValues: immutableAddRemove(
-              filters[d.filterIndex].selectedValues,
-              d.value
-            )
+            selectedValues: checkOnly
+              ? [d.value]
+              : immutableAddRemove(
+                  filters[d.filterIndex].selectedValues,
+                  d.value
+                )
           },
           ...filters.slice(d.filterIndex + 1)
         ]
