@@ -1,0 +1,663 @@
+Year,QID,UID,Question,Age range,Categories,Unit,Answer Type,Asked of
+1790,1,1790_1,Name of head of household,,Identity,Individual,FT,All respondents
+1790,2,1790_2,Professions and Occupations,,Occupation - Job,Individual,FT,All respondents
+1790,3-4,1790_3-4,Free white males,2,"Age, Race, Sex",Household,FN,All respondents
+1790,5,1790_5,Free white females,,"Age, Race, Sex",Household,FN,All respondents
+1790,7,1790_7,Slaves,,"Age, Race, Enslavement",Household,FN,All respondents
+1790,6,1790_6,Other free persons,,"Age, Race, Enslavement",Household,FN,All respondents
+1800,1,1800_1,Name of head of household,,Identity,Individual,FT,All respondents
+1800,2-6,1800_2-6,Free white males,5,"Age, Race, Sex",Household,FN,All respondents
+1800,7-11,1800_7-11,Free white females,5,"Age, Race, Sex",Household,FN,All respondents
+1800,13,1800_13,Slaves,,"Age, Race, Enslavement",Household,FN,All respondents
+1800,12,1800_12,Other free persons,,"Age, Race, Enslavement",Household,FN,All respondents
+1810,1,1810_1,Name of head of household,,Identity,Individual,FT,All respondents
+1810,2-6,1810_2-6,Free white males,5,"Age, Race, Sex",Household,FN,All respondents
+1810,7-11,1810_7-11,Free white females,5,"Age, Race, Sex",Household,FN,All respondents
+1810,13,1810_13,Slaves,,"Age, Race, Enslavement",Household,FN,All respondents
+1810,12,1810_12,Other free persons,,"Age, Race, Enslavement",Household,FN,All respondents
+1820,1,1820_1,Name of head of household,,Identity,Individual,FT,All respondents
+1820,2-6,1820_2-6,Free white males,5,"Age, Race, Sex",Household,FN,All respondents
+1820,7-11,1820_7-11,Free white females,5,"Age, Race, Sex",Household,FN,All respondents
+1820,12-15,1820_12-15,Male slaves,4,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1820,16-19,1820_16-19,Female slaves,4,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1820,20-23,1820_20-23,Free colored males,4,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1820,24-27,1820_24-27,Free colored females,4,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1820,28,1820_28,People not naturalized,,Immigration,Household,FN,All respondents
+1820,29,1820_29,People engaged in Agriculture,,Occupation - Job,Household,FN,All respondents
+1820,30,1820_30,People engaged in Commerce,,Occupation - Job,Household,FN,All respondents
+1820,31,1820_31,People engaged in Manufactures,,Occupation - Job,Household,FN,All respondents
+1830,1,1830_1,Name of head of household,,Identity,Individual,FT,All respondents
+1830,2-14,1830_2-14,Free white males,13,"Age, Race, Sex",Household,FN,All respondents
+1830,15-27,1830_15-27,Free white females,13,"Age, Race, Sex",Household,FN,All respondents
+1830,28-33,1830_28-33,Male slaves,6,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1830,34-39,1830_34-39,Female slaves,6,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1830,40-45,1830_40-45,Free colored males,6,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1830,46-51,1830_46-51,Free colored females,6,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1830,52-54,1830_52-54,White people who are deaf/dumb,3,"Age, Race, Disability",Household,FN,All respondents
+1830,55,1830_55,White people who are blind,,"Race, Disability",Household,FN,All respondents
+1830,56,1830_56,White foreigners not naturalized,,"Citizenship, Race",Household,FN,All respondents
+1830,57-59,1830_57-59,Deaf/dumb slaves and colored people,3,"Age, Race, Disability",Household,FN,All respondents
+1830,60,1830_60,Blind slaves and colored people,,"Age, Race, Disability",Household,FN,All respondents
+1840,1,1840_1,Name of head of household,,Identity,Individual,FT,All respondents
+1840,2-14,1840_2-14,Free white males,13,"Age, Race, Sex",Household,FN,All respondents
+1840,15-27,1840_15-27,Free white females,13,"Age, Race, Sex",Household,FN,All respondents
+1840,40-45,1840_40-45,Male slaves,6,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1840,46-51,1840_46-51,Female slaves,6,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1840,28-33,1840_28-33,Free colored males,6,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1840,34-39,1840_34-39,Free colored females,6,"Age, Race, Sex, Enslavement",Household,FN,All respondents
+1840,52,1840_52,People engaged in Mining,,Occupation - Job,Household,FN,All respondents
+1840,53,1840_53,People engaged in Agriculture,,Occupation - Job,Household,FN,All respondents
+1840,54,1840_54,People engaged in Commerce,,Occupation - Job,Household,FN,All respondents
+1840,55,1840_55,People engaged in Manufacture and Trade,,Occupation - Job,Household,FN,All respondents
+1840,56,1840_56,People engaged in Navigation of the Ocean,,Occupation - Job,Household,FN,All respondents
+1840,57,1840_57,"People engaged in Navigation of Canals, Lakes, and Rivers",,Occupation - Job,Household,FN,All respondents
+1840,58,1840_58,People engaged in Learned Professions and Engineers,,Occupation - Job,Household,FN,All respondents
+1840,59-60,1840_59-60,Pensioners for Revolutionary service,,Veteran status,Household,FT,All respondents
+1840,61-63,1840_61-63,White people who are deaf/dumb,3,"Age, Race, Disability",Household,FN,All respondents
+1840,64,1840_64,White people who are blind,,"Race, Disability",Household,FN,All respondents
+1840,65,1840_65,White people with intellectual disability at private charge,,"Race, Disability",Household,FN,All respondents
+1840,66,1840_66,White people with intellectual disability at public charge,,"Race, Disability",Household,FN,All respondents
+1840,67,1840_67,Colored people who are deaf/dumb,,"Race, Disability",Household,FN,All respondents
+1840,68,1840_68,Colored people who are blind,,"Race, Disability",Household,FN,All respondents
+1840,69,1840_69,Colored people with intellectual disability at private charge,,"Race, Disability",Household,FN,All respondents
+1840,70,1840_70,Colored people with intellectual disability at public charge,,"Race, Disability",Household,FN,All respondents
+1840,71,1840_71,Students at colleges or universities,,Education,Household,FN,All respondents
+1840,72,1840_72,Students associated with grammar schools,,Education,Household,FN,All respondents
+1840,73,1840_73,Students associated with primary schools,,Education,Household,FN,All respondents
+1840,74,1840_74,Students at primary schools at public charge,,Education,Household,FN,All respondents
+1840,75,1840_75,White adults who cannot read and write,,"Age, Race, Education",Household,FN,All respondents
+1850,3,1850_3,Name,,Identity,Individual,FT,All respondents
+1850,5,1850_5,Sex,,Identity,Individual,FT,All respondents
+1850,4,1850_4,Age,,Identity,Individual,FN,All respondents
+1850,6,1850_6,Color,,Race,Individual,CC,All respondents
+1850,7,1850_7,"Profession, occupation, or trade",,Occupation - Job,Individual,FT,"16 or over, male"
+1850,8,1850_8,Value of real estate,,Housing,Individual,FN,All respondents
+1850,9,1850_9,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1850,10,1850_10,Married in the last year,,Family,Individual,BN,All respondents
+1850,11,1850_11,At school in the last year,,Education,Individual,BN,All respondents
+1850,12,1850_12,"Over 20, unable to read and write",,Education,Individual,BN,All respondents
+1850,13,1850_13,People with disabilities and dependencies,,Disability,Individual,FT,All respondents
+1860,3,1860_3,Name,,Identity,Individual,FT,All respondents
+1860,5,1860_5,Sex,,Identity,Individual,FT,All respondents
+1860,4,1860_4,Age,,Identity,Individual,FN,All respondents
+1860,6,1860_6,Color,,Race,Individual,CC,All respondents
+1860,7,1860_7,"Profession, occupation, or trade of each person",,Occupation - Job,Individual,FT,16 or over
+1860,8,1860_8,Value of real estate,,Housing,Individual,FN,All respondents
+1860,9,1860_9,Value of personal estate,,Housing,Individual,FN,All respondents
+1860,10,1860_10,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1860,11,1860_11,Married in the last year,,Family,Individual,BN,All respondents
+1860,12,1860_12,At school in the last year,,Education,Individual,BN,All respondents
+1860,13,1860_13,"Over 20, unable to read and write",,Education,Individual,BN,All respondents
+1860,14,1860_14,People with disabilities and dependencies,,Disability,Individual,FT,All respondents
+1870,3,1870_3,Name,,Identity,Individual,FT,All respondents
+1870,5,1870_5,Sex,,Identity,Individual,CC,All respondents
+1870,4,1870_4,Age,,Identity,Individual,FN,All respondents
+1870,6,1870_6,Color,,Race,Individual,CC,All respondents
+1870,7,1870_7,"Profession, occupation, or trade of each person",,Occupation - Job,Individual,FT,No infants
+1870,8,1870_8,Value of real estate,,Housing,Individual,FN,All respondents
+1870,9,1870_9,Value of personal estate,,Housing,Individual,FN,All respondents
+1870,10,1870_10,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1870,11,1870_11,Father of foreign birth,,National origin,Individual,BN,All respondents
+1870,12,1870_12,Mother of foreign birth,,National origin,Individual,BN,All respondents
+1870,13,1870_13,"If born in last year, what month?",,Identity,Individual,FD,All respondents
+1870,14,1870_14,"If married in last year, what month?",,Family,Individual,FD,All respondents
+1870,15,1870_15,At school in the last year,,Education,Individual,BN,All respondents
+1870,16,1870_16,Unable to read,,Education,Individual,BN,No infants
+1870,17,1870_17,Unable to write,,Education,Individual,BN,No infants
+1870,18,1870_18,"""Deaf/dumb, blind, insane, or idiotic""",,Disability,Individual,FT,All respondents
+1870,19,1870_19,Male citizen 21 years or older,,Immigration,Individual,BN,"21 or over, male"
+1870,20,1870_20,Male adult denied right to vote,,Immigration,Individual,BN,"21 or over, male"
+1880,3,1880_3,Name,,Identity,Individual,FT,All respondents
+1880,4,1880_4,Color,,Race,Individual,CC,All respondents
+1880,5,1880_5,Sex,,Identity,Individual,CC,All respondents
+1880,6,1880_6,Age,,Identity,Individual,FN,All respondents
+1880,7,1880_7,"If born in last year, what month?",,Identity,Individual,FD,All respondents
+1880,8,1880_8,Relationship to head of family,,Family,Individual,CC,All respondents
+1880,9,1880_9,Single,,Family,Individual,BN,All respondents
+1880,10,1880_10,Married,,Family,Individual,BN,All respondents
+1880,11,1880_11,Widowed / Divorced,,Family,Individual,BN,All respondents
+1880,12,1880_12,Married in the last year,,Family,Individual,BN,All respondents
+1880,13,1880_13,"Profession, occupation, or trade of each person",,Occupation - Job,Individual,FT,10 or over
+1880,14,1880_14,Months unemployed in Census year,,Occupation - Unemployment,Individual,FN,10 or over
+1880,15,1880_15,Sick or temporarily disabled,,Disability,Individual,FT,All respondents
+1880,16,1880_16,Blind,,Disability,Individual,BN,All respondents
+1880,17,1880_17,Deaf/dumb,,Disability,Individual,BN,All respondents
+1880,18,1880_18,Idiotic,,Disability,Individual,BN,All respondents
+1880,19,1880_19,Insane,,Disability,Individual,BN,All respondents
+1880,20,1880_20,Physical disability,,Disability,Individual,BN,All respondents
+1880,21,1880_21,At school in the last year,,Education,Individual,BN,All respondents
+1880,22,1880_22,Unable to read,,Education,Individual,BN,10 or over
+1880,23,1880_23,Unable to write,,Education,Individual,BN,10 or over
+1880,24,1880_24,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1880,25,1880_25,Father place of birth,,National origin,Individual,FT,All respondents
+1880,26,1880_26,Mother place of birth,,National origin,Individual,FT,All respondents
+1890,1,1890_1,Name,,Identity,Individual,FT,All respondents
+1890,2,1890_2,Soldier in Civil War or widow of one,,Veteran status,Individual,FT,All respondents
+1890,3,1890_3,Relationship to head of family,,Family,Individual,FT,All respondents
+1890,4,1890_4,Race,,Race,Individual,CC,All respondents
+1890,5,1890_5,Sex,,Identity,Individual,FT,All respondents
+1890,6,1890_6,Age,,Identity,Individual,FN,All respondents
+1890,7,1890_7,"Single, married, widowed, or divorced",,Family,Individual,CC,All respondents
+1890,8,1890_8,Married in the last year,,Family,Individual,BN,All respondents
+1890,9,1890_9,Mother of how many children and number living,,Family,Individual,FN,All respondents
+1890,10,1890_10,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1890,11,1890_11,Father place of birth,,National origin,Individual,FT,All respondents
+1890,12,1890_12,Mother place of birth,,National origin,Individual,FT,All respondents
+1890,13,1890_13,Years in US,,Immigration,Individual,FN,All respondents
+1890,14,1890_14,Naturalized,,Immigration,Individual,BN,All respondents
+1890,15,1890_15,Naturalization papers taken out,,Immigration,Individual,BN,All respondents
+1890,16,1890_16,"Profession, occupation, or trade",,Occupation - Job,Individual,FT,All respondents
+1890,17,1890_17,Months unemployed in Census year,,Occupation - Unemployment,Individual,FN,All respondents
+1890,18,1890_18,Months in school in the last year,,Education,Individual,FN,All respondents
+1890,19,1890_19,Able to read,,Education,Individual,BN,All respondents
+1890,20,1890_20,Able to write,,Education,Individual,BN,All respondents
+1890,21,1890_21,"Able to speak English, if not language spoken",,National origin,Individual,FT,All respondents
+1890,22,1890_22,Acute or chronic disease,,Disability,Individual,FT,All respondents
+1890,23,1890_23,Physical and intellectual disability,,Disability,Individual,FT,All respondents
+1890,24,1890_24,"""Prisoner, convict, homeless child, pauper""",,Disability,Individual,FT,All respondents
+1890,26,1890_26,Rent or own,,Housing,Household,FT,All respondents
+1890,27,1890_27,"If owned, mortgaged",,Housing,Household,FT,All respondents
+1890,28,1890_28,"If farmer, rent or own",,Housing,Household,FT,All respondents
+1890,29,1890_29,"If farm owned, mortgaged",,Housing,Household,BN,All respondents
+1890,30,1890_30,Address of owner,,Housing,Household,FT,All respondents
+1900,3,1900_3,Name,,Identity,Individual,FT,All respondents
+1900,4,1900_4,Relationship to head of family,,Family,Individual,FT,All respondents
+1900,5,1900_5,Color or race,,Race,Individual,FT,All respondents
+1900,6,1900_6,Sex,,Identity,Individual,FT,All respondents
+1900,7,1900_7,Birth date,,Identity,Individual,FD,All respondents
+1900,8,1900_8,Age,,Identity,Individual,FN,All respondents
+1900,9,1900_9,"Single, married, widowed, or divorced",,Family,Individual,CC,All respondents
+1900,10,1900_10,Years married,,Family,Individual,FN,All respondents
+1900,11,1900_11,Mother of how many children,,Family,Individual,FN,All respondents
+1900,12,1900_12,Mother of how many children living,,Family,Individual,FN,All respondents
+1900,13,1900_13,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1900,14,1900_14,Father place of birth,,National origin,Individual,FT,All respondents
+1900,15,1900_15,Mother place of birth,,National origin,Individual,FT,All respondents
+1900,16,1900_16,Year of immigration to US,,Immigration,Individual,FD,All respondents
+1900,17,1900_17,Years in US,,Immigration,Individual,FN,All respondents
+1900,18,1900_18,Naturalized,,Immigration,Individual,BN,All respondents
+1900,19,1900_19,"Profession, occupation, or trade",,Occupation - Job,Individual,FT,10 or over
+1900,20,1900_20,Months not employed,,Occupation - Unemployment,Individual,FN,10 or over
+1900,21,1900_21,Months in school in the last year,,Education,Individual,FN,All respondents
+1900,22,1900_22,Able to read,,Education,Individual,BN,All respondents
+1900,23,1900_23,Able to write,,Education,Individual,BN,All respondents
+1900,24,1900_24,Able to speak English,,National origin,Individual,BN,All respondents
+1900,25,1900_25,Rent or own,,Housing,Individual,CC,All respondents
+1900,26,1900_26,"If owned, mortgaged",,Housing,Individual,BN,All respondents
+1900,27,1900_27,Farm or house,,Housing,Individual,CC,All respondents
+1910,3,1910_3,Name,,Identity,Individual,FT,All respondents
+1910,4,1910_4,Relationship to head of family,,Family,Individual,FT,All respondents
+1910,5,1910_5,Sex,,Identity,Individual,FT,All respondents
+1910,6,1910_6,Color or race,,Race,Individual,FT,All respondents
+1910,7,1910_7,Age,,Identity,Individual,FN,All respondents
+1910,8,1910_8,"Single, married, widowed, or divorced",,Family,Individual,CC,All respondents
+1910,9,1910_9,Years married,,Family,Individual,FN,All respondents
+1910,10,1910_10,Mother of how many children,,Family,Individual,FN,All respondents
+1910,11,1910_11,Mother of how many children living,,Family,Individual,FN,All respondents
+1910,12,1910_12,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1910,13,1910_13,Father place of birth,,National origin,Individual,FT,All respondents
+1910,14,1910_14,Mother place of birth,,National origin,Individual,FT,All respondents
+1910,15,1910_15,Year of immigration to US,,Immigration,Individual,FD,All respondents
+1910,16,1910_16,Naturalized,,Immigration,Individual,CC,All respondents
+1910,17,1910_17,"Able to speak English, if not language spoken",,National origin,Individual,FT,All respondents
+1910,18,1910_18,"Profession, occupation, or trade",,Occupation - Job,Individual,FT,All respondents
+1910,19,1910_19,Industry,,Occupation - Job,Individual,FT,All respondents
+1910,20,1910_20,"Employer, employee, or self-employed",,Occupation - Job,Individual,CC,All respondents
+1910,21,1910_21,"If employee, unemployed on April 15",,Occupation - Unemployment,Individual,BN,All respondents
+1910,22,1910_22,Weeks unemployed previous year,,Occupation - Unemployment,Individual,FN,All respondents
+1910,25,1910_25,At school in the last year,,Education,Individual,BN,All respondents
+1910,23,1910_23,Able to read,,Education,Individual,BN,All respondents
+1910,24,1910_24,Able to write,,Education,Individual,BN,All respondents
+1910,26,1910_26,Rent or own,,Housing,Individual,CC,All respondents
+1910,27,1910_27,"If owned, mortgaged",,Housing,Individual,BN,All respondents
+1910,28,1910_28,Farm or house,,Housing,Individual,CC,All respondents
+1910,30,1910_30,Soldier in Civil War,,Veteran status,Individual,BN,All respondents
+1910,31,1910_31,Blind,,Disability,Individual,BN,All respondents
+1910,32,1910_32,Deaf/dumb,,Disability,Individual,BN,All respondents
+1920,5,1920_5,Name,,Identity,Individual,FT,All respondents
+1920,6,1920_6,Relationship to head of family,,Family,Individual,FT,All respondents
+1920,7,1920_7,Rent or own,,Housing,Individual,CC,All respondents
+1920,8,1920_8,"If owned, mortgaged",,Housing,Individual,BN,All respondents
+1920,9,1920_9,Sex,,Identity,Individual,FT,All respondents
+1920,10,1920_10,Color or race,,Race,Individual,FT,All respondents
+1920,11,1920_11,Age,,Identity,Individual,FN,All respondents
+1920,12,1920_12,"Single, married, widowed, or divorced",,Family,Individual,CC,All respondents
+1920,13,1920_13,Year of immigration to US,,Immigration,Individual,FD,All respondents
+1920,14,1920_14,Naturalized,,Immigration,Individual,CC,All respondents
+1920,15,1920_15,"If naturalized, year of naturalization",,Immigration,Individual,FD,All respondents
+1920,16,1920_16,At school in the last year,,Education,Individual,BN,All respondents
+1920,17,1920_17,Able to read,,Education,Individual,BN,All respondents
+1920,18,1920_18,Able to write,,Education,Individual,BN,All respondents
+1920,19,1920_19,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1920,24,1920_24,Mother mother tongue,,National origin,Individual,FT,All respondents
+1920,21,1920_21,Father place of birth,,National origin,Individual,FT,All respondents
+1920,22,1920_22,Father mother tongue,,National origin,Individual,FT,All respondents
+1920,23,1920_23,Mother place of birth,,National origin,Individual,FT,All respondents
+1920,20,1920_20,Mother tongue,,National origin,Individual,FT,All respondents
+1920,25,1920_25,Able to speak English,,National origin,Individual,BN,All respondents
+1920,26,1920_26,"Profession, occupation, or trade",,Occupation - Job,Individual,FT,All respondents
+1920,27,1920_27,Industry,,Occupation - Job,Individual,FT,All respondents
+1920,28,1920_28,"Employer, employee, or self-employed",,Occupation - Job,Individual,CC,All respondents
+1930,5,1930_5,Name,,Identity,Individual,FT,All respondents
+1930,6,1930_6,Relationship to head of family,,Family,Individual,FT,All respondents
+1930,7,1930_7,Rent or own,,Housing,Individual,CC,Head of family
+1930,8,1930_8,Home value or monthly rent,,Housing,Individual,FM,Head of family
+1930,9,1930_9,Radio set,,Housing,Individual,CC,Head of family
+1930,10,1930_10,Farm,,Housing,Individual,BN,Head of family
+1930,11,1930_11,Sex,,Identity,Individual,CC,All respondents
+1930,12,1930_12,Color or race,,Race,Individual,CC,All respondents
+1930,13,1930_13,Age,,Identity,Individual,FN,All respondents
+1930,14,1930_14,Marital status,,Family,Individual,CC,All respondents
+1930,15,1930_15,Age at first marriage,,Family,Individual,FN,Ever married
+1930,16,1930_16,At school in the last year,,Education,Individual,BN,All respondents
+1930,17,1930_17,Able to read and write,,Education,Individual,BN,10 or over
+1930,18,1930_18,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1930,19,1930_19,Father place of birth,,National origin,Individual,FT,All respondents
+1930,20,1930_20,Mother place of birth,,National origin,Individual,FT,All respondents
+1930,21,1930_21,Mother tongue,,National origin,Individual,FT,Foreign born
+1930,22,1930_22,Year of immigration to US,,Immigration,Individual,FD,All respondents
+1930,23,1930_23,Naturalized,,Immigration,Individual,CC,All respondents
+1930,24,1930_24,Able to speak English,,National origin,Individual,BN,10 or over
+1930,25,1930_25,"Profession, occupation, or trade",,Occupation - Job,Individual,FT,All respondents
+1930,26,1930_26,Industry,,Occupation - Job,Individual,FT,Employed
+1930,27,1930_27,Class of worker,,Occupation - Job,Individual,CC,Employed
+1930,28,1930_28,At work last work day,,Occupation - Unemployment,Individual,BN,Employed
+1930,30,1930_30,Veteran,,Veteran status,Individual,BN,"21 or over, male"
+1930,31,1930_31,What war or expedition,,Veteran status,Individual,CC,All respondents
+1940,4,1940_4,Rent or own,,Housing,Individual,CC,All respondents
+1940,5,1940_5,Home value or monthly rent,,Housing,Individual,FM,All respondents
+1940,6,1940_6,Farm,,Housing,Individual,BN,All respondents
+1940,7,1940_7,Name,,Identity,Individual,FT,All respondents
+1940,8,1940_8,Relationship to head of family,,Family,Individual,FT,All respondents
+1940,9,1940_9,Sex,,Identity,Individual,CC,All respondents
+1940,10,1940_10,Color or race,,Race,Individual,CC,All respondents
+1940,11,1940_11,Age,,Identity,Individual,FN,All respondents
+1940,12,1940_12,Marital status,,Family,Individual,CC,All respondents
+1940,13,1940_13,At school in the last year,,Education,Individual,BN,All respondents
+1940,14,1940_14,Education level completed,,Education,Individual,CC,All respondents
+1940,15,1940_15,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1940,16,1940_16,Citizenship of foreign born,,Immigration,Individual,CC,Foreign born
+1940,17_18_19_20,1940_17_18_19_20,Residence in 1935,,Housing,Individual,FT,All respondents
+1940,21,1940_21,At work last week (private/non-emergency),,Occupation - Unemployment,Individual,BN,14 or over
+1940,22,1940_22,At work last week (public emergency),,Occupation - Unemployment,Individual,BN,14 or over
+1940,23,1940_23,Seeking work,,Occupation - Unemployment,Individual,BN,14 or over
+1940,24,1940_24,Have a job,,Occupation - Job,Individual,BN,14 or over
+1940,25,1940_25,Occupation other than work,,Occupation - Unemployment,Individual,CC,14 or over
+1940,26,1940_26,"If private work, hours per week",,Occupation - Unemployment,Individual,FN,14 or over
+1940,27,1940_27,Duration of unemployment,,Occupation - Unemployment,Individual,FN,14 or over
+1940,28,1940_28,"Profession, occupation, or trade",,Occupation - Job,Individual,FT,14 or over
+1940,29,1940_29,Industry,,Occupation - Job,Individual,FT,14 or over
+1940,30,1940_30,Class of worker,,Occupation - Job,Individual,CC,14 or over
+1940,31,1940_31,Weeks of work in 1939,,Occupation,Individual,FN,14 or over
+1940,32,1940_32,1939 salary,,Occupation - Income,Individual,FN,14 or over
+1940,33,1940_33,1939 outside income,,Occupation - Income,Individual,BN,14 or over
+1940,36,1940_36,Father place of birth,,National origin,Sampled Individual,FT,All respondents
+1940,37,1940_37,Mother place of birth,,National origin,Sampled Individual,FT,All respondents
+1940,38,1940_38,Mother tongue,,National origin,Sampled Individual,FT,All respondents
+1940,39,1940_39,"Veteran, widow, or child of veteran",,Veteran status,Sampled Individual,BN,All respondents
+1940,40,1940_40,"If child, is father dead",,Veteran status,Sampled Individual,BN,All respondents
+1940,41,1940_41,War or military service,,Veteran status,Sampled Individual,CC,All respondents
+1940,42,1940_42,Has SSN,,Occupation - Income,Sampled Individual,BN,14 or over
+1940,43,1940_43,Retirement deductions made in 1939,,Occupation - Income,Sampled Individual,BN,14 or over
+1940,44,1940_44,"If so, how much deducted?",,Occupation - Income,Sampled Individual,CC,14 or over
+1940,45,1940_45,"Profession, occupation, or trade",,Occupation - Job,Sampled Individual,FT,14 or over
+1940,46,1940_46,Industry,,Occupation - Job,Sampled Individual,FT,14 or over
+1940,47,1940_47,Class of worker,,Occupation - Job,Sampled Individual,CC,14 or over
+1940,48,1940_48,Married more than once,,Family,Sampled Individual,BN,"Ever married, women"
+1940,49,1940_49,Age at first marriage,,Family,Sampled Individual,FN,"Ever married, women"
+1940,50,1940_50,Mother of how many children,,Family,Sampled Individual,FN,"Ever married, women"
+1940,H,1940_H,Housing questionnaire,,Housing,Sampled Household,CC,All respondents
+1950,4,1950_4,House on a farm or ranch,,Housing,Individual,BN,All respondents
+1950,5,1950_5,House on 3+ acres,,Housing,Individual,BN,All respondents
+1950,7,1950_7,Name,,Identity,Individual,FT,All respondents
+1950,8,1950_8,Relationship to head of family,,Family,Individual,FT,All respondents
+1950,9,1950_9,Race,,Race,Individual,CC,All respondents
+1950,10,1950_10,Sex,,Identity,Individual,FT,All respondents
+1950,11,1950_11,Age,,Identity,Individual,FN,All respondents
+1950,12,1950_12,Marital status,,Family,Individual,CC,All respondents
+1950,13,1950_13,Place of Birth (state or country),,National origin,Individual,FT,All respondents
+1950,14,1950_14,Naturalized,,Immigration,Individual,CC,All respondents
+1950,15,1950_15,Doing most of last week,,Occupation,Individual,CC,14 or over
+1950,16,1950_16,Did any non-housekeeping last week,,Occupation,Individual,BN,14 or over
+1950,19,1950_19,Hours worked last week,,Occupation,Individual,FN,14 or over
+1950,17,1950_17,Seeking work,,Occupation - Unemployment,Individual,BN,14 or over
+1950,18,1950_18,Have a job or business,,Occupation,Individual,BN,14 or over
+1950,20a,1950_20a,Type of work,,Occupation - Job,Individual,FT,14 or over
+1950,20b,1950_20b,Industry,,Occupation - Job,Individual,FT,14 or over
+1950,20c,1950_20c,Class of worker,,Occupation - Job,Individual,CC,14 or over
+1950,21,1950_21,Living in same house a year ago,,Housing,Sampled Individual,BN,All respondents
+1950,22,1950_22,Living on a farm a year ago,,Housing,Sampled Individual,BN,All respondents
+1950,23,1950_23,Living in same county a year ago,,Housing,Sampled Individual,BN,All respondents
+1950,24,1950_24,Residence in 1949 (+ subquestions),,Housing,Sampled Individual,FT,All respondents
+1950,25i,1950_25i,Father place of birth,,National origin,Sampled Individual,FT,All respondents
+1950,25ii,1950_25ii,Mother place of birth,,National origin,Sampled Individual,FT,All respondents
+1950,28,1950_28,Attended school since February 1,,Education,Sampled Individual,CC,All respondents
+1950,26,1950_26,Education level attended,,Education,Sampled Individual,CC,All respondents
+1950,27,1950_27,Completed highest grade level,,Education,Sampled Individual,BN,All respondents
+1950,29,1950_29,How many weeks seeking work,,Occupation - Unemployment,Sampled Individual,FN,14 or over
+1950,30,1950_30,Weeks of work in 1949,,Occupation,Sampled Individual,FN,14 or over
+1950,31a,1950_31a,1949 salary as employee,,Occupation - Income,Sampled Individual,FN,14 or over
+1950,31b,1950_31b,1949 salary in own business/farm,,Occupation - Income,Sampled Individual,FN,14 or over
+1950,31c,1950_31c,1949 outside income,,Occupation - Income,Sampled Individual,FN,14 or over
+1950,32a,1950_32a,1949 household salary as employees,,Occupation - Income,Sampled Individual,FN,14 or over
+1950,32b,1950_32b,1949 household salary from own business/farm,,Occupation - Income,Sampled Individual,FN,14 or over
+1950,32c,1950_32c,1949 household outside income,,Occupation - Income,Sampled Individual,FN,14 or over
+1950,33a,1950_33a,Veteran of WWII,,Veteran status,Sampled Individual,BN,"14 or over, male"
+1950,33b,1950_33b,Veteran of WWI,,Veteran status,Sampled Individual,BN,"14 or over, male"
+1950,33c,1950_33c,Other service,,Veteran status,Sampled Individual,BN,"14 or over, male"
+1950,35a,1950_35a,Profession/occupation/trade of last job,,Occupation - Job,Sampled Individual,FT,"14 or over, male"
+1950,35b,1950_35b,"If not employed last week, industry of last job",,Occupation - Job,Sampled Individual,FT,"14 or over, male"
+1950,35c,1950_35c,Class of worker of last job,,Occupation - Job,Sampled Individual,FT,"14 or over, male"
+1950,36,1950_36,Married more than once,,Family,Sampled Individual,BN,Ever married
+1950,37,1950_37,Years of current marital status,,Family,Sampled Individual,FN,Ever married
+1950,38,1950_38,Mother of how many children,,Family,Sampled Individual,FN,"Ever married, women"
+1950,H,1950_H,Housing questionnaire,,Housing,Sampled Household,CC,All respondents
+1960,P2,1960_P2,Name,,Identity,Individual,FT,All respondents
+1960,P3,1960_P3,Relationship to head of family,,Family,Individual,FT,All respondents
+1960,P4,1960_P4,Sex,,Identity,Individual,CC,All respondents
+1960,P5,1960_P5,Race,,Race,Individual,CC,All respondents
+1960,P6,1960_P6,Date of birth,,Identity,Individual,FD,All respondents
+1960,P7,1960_P7,Marital status,,Family,Individual,CC,14 or over
+1960,P8,1960_P8,Place of Birth (state or country),,National origin,Indiv. in sampled household,FT,All respondents
+1960,P9,1960_P9,Mother tongue,,National origin,Indiv. in sampled household,FT,Born outside US
+1960,P10,1960_P10,Father place of birth,,National origin,Indiv. in sampled household,FT,All respondents
+1960,P11,1960_P11,Mother place of birth,,National origin,Indiv. in sampled household,FT,All respondents
+1960,P12,1960_P12,Year moved into this house,,Housing,Indiv. in sampled household,CC,All respondents
+1960,P13,1960_P13,Residence in 1955 (+ subquestions),,Housing,Indiv. in sampled household,CC,All respondents
+1960,P16,1960_P16,Attended school since February 1,,Education,Indiv. in sampled household,BN,All respondents
+1960,P14,1960_P14,Education level attended,,Education,Indiv. in sampled household,CC,All respondents
+1960,P15,1960_P15,Completed highest grade level,,Education,Indiv. in sampled household,CC,All respondents
+1960,P17,1960_P17,Private or public school,,Education,Indiv. in sampled household,CC,All respondents
+1960,P18,1960_P18,Married more than once,,Family,Indiv. in sampled household,CC,Ever married
+1960,P19,1960_P19,Date of first marriage,,Family,Indiv. in sampled household,FD,All respondents
+1960,P20,1960_P20,Mother of how many children,,Family,Indiv. in sampled household,FN,"Ever married, women"
+1960,P22,1960_P22,Any work last week,,Occupation,Indiv. in sampled household,BN,14 or over
+1960,P23,1960_P23,Hours worked last week,,Occupation,Indiv. in sampled household,CC,14 or over
+1960,P28,1960_P28,Location of work,,Occupation - Job,Indiv. in sampled household,FT,"14 or over, employed"
+1960,P25,1960_P25,Temporarily absent from job or business,,Occupation,Indiv. in sampled household,BN,14 or over
+1960,P24,1960_P24,Seeking work or on layoff,,Occupation - Unemployment,Indiv. in sampled household,BN,14 or over
+1960,P26,1960_P26,Time of last work,,Occupation,Indiv. in sampled household,CC,14 or over
+1960,P27,1960_P27,Occupation category,,Occupation - Job,Indiv. in sampled household,CC,14 or over
+1960,P27a,1960_P27a,Name of employer,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1960,P27b,1960_P27b,Type of business,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1960,P27d,1960_P27d,Type of work,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1960,P27c,1960_P27c,Industry,,Occupation - Job,Indiv. in sampled household,CC,14 or over
+1960,P27e,1960_P27e,Class of worker,,Occupation - Job,Indiv. in sampled household,CC,14 or over
+1960,P29,1960_P29,Commute mode of transportation,,Occupation,Indiv. in sampled household,CC,"14 or over, employed"
+1960,P30,1960_P30,Any work in 1959,,Occupation,Indiv. in sampled household,BN,14 or over
+1960,P31,1960_P31,Weeks of work in 1959,,Occupation,Indiv. in sampled household,CC,14 or over
+1960,P32,1960_P32,1959 wages as employee,,Occupation - Income,Indiv. in sampled household,FN,14 or over
+1960,P33,1960_P33,1959 wages in own business/farm,,Occupation - Income,Indiv. in sampled household,FN,14 or over
+1960,P34,1960_P34,1959 income from Social Security/pension,,Occupation - Income,Indiv. in sampled household,FN,14 or over
+1960,P35,1960_P35,Veteran or present service,,Veteran status,Indiv. in sampled household,CC,"14 or over, male"
+1960,H,1960_H,Housing questionnaire,,Housing,Sampled Household,CC,All respondents
+1970,1,1970_1,Name,,Identity,Individual,FT,All respondents
+1970,2,1970_2,Relationship to head of family,,Family,Individual,CC,All respondents
+1970,3,1970_3,Sex,,Identity,Individual,CC,All respondents
+1970,4,1970_4,Color or race,,Race,Individual,CC,All respondents
+1970,5,1970_5,Date of birth / age,,Identity,Individual,FD,All respondents
+1970,6,1970_6,Month of birth,,Identity,Individual,CC,All respondents
+1970,7,1970_7,Year of birth,,Identity,Individual,CC,All respondents
+1970,8,1970_8,Marital status,,Family,Individual,CC,All respondents
+1970,13a,1970_13a,Place of Birth (state or country),,National origin,Indiv. in sampled household,FT,All respondents
+1970,17,1970_17,Mother tongue,,National origin,Indiv. in sampled household,CC,All respondents
+1970,13b,1970_13b,Hispanic origin,,Race,Indiv. in sampled household,CC,All respondents
+1970,14,1970_14,Father place of birth,,National origin,Indiv. in sampled household,FT,All respondents
+1970,15,1970_15,Mother place of birth,,National origin,Indiv. in sampled household,FT,All respondents
+1970,16a,1970_16a,Naturalized,,Immigration,Indiv. in sampled household,CC,Born outside US
+1970,16b,1970_16b,Year of immigration to US,,Immigration,Indiv. in sampled household,CC,Born outside US
+1970,18,1970_18,Year moved into this house,,Housing,Indiv. in sampled household,CC,All respondents
+1970,19a,1970_19a,Lived here in 1965,,Housing,Indiv. in sampled household,CC,All respondents
+1970,19b,1970_19b,Residence in 1965 (+ subquestions),,Housing,Indiv. in sampled household,FT,All respondents
+1970,20,1970_20,Attended school since February 1,,Education,Indiv. in sampled household,CC,All respondents
+1970,21,1970_21,Education level attended,,Education,Indiv. in sampled household,CC,All respondents
+1970,22,1970_22,Completed highest grade level,,Education,Indiv. in sampled household,CC,All respondents
+1970,24a,1970_24a,Married more than once,,Family,Indiv. in sampled household,CC,Ever married
+1970,24b,1970_24b,Date of first marriage,,Family,Indiv. in sampled household,FD,All respondents
+1970,24c,1970_24c,First marriage ended becuase of death,,Family,Indiv. in sampled household,BN,All respondents
+1970,25,1970_25,Mother of how many children,,Family,Indiv. in sampled household,CC,All respondents
+1970,26a,1970_26a,Veteran status,,Veteran status,Indiv. in sampled household,BN,Men
+1970,26b,1970_26b,Period of military service,,Veteran status,Indiv. in sampled household,CC,All respondents
+1970,28a,1970_28a,Health condition limiting work,,Disability,Indiv. in sampled household,BN,Under 65
+1970,28b,1970_28b,Health condition preventing any work,,Disability,Indiv. in sampled household,BN,Under 65
+1970,28c,1970_28c,Duration of health condition limiting work,,Disability,Indiv. in sampled household,CC,Under 65
+1970,27a,1970_27a,Vocational training,,Occupation,Indiv. in sampled household,BN,All respondents
+1970,27b,1970_27b,Field of vocational training,,Occupation,Indiv. in sampled household,CC,All respondents
+1970,29a,1970_29a,Any work last week,,Occupation,Indiv. in sampled household,BN,14 or over
+1970,29b,1970_29b,Hours worked last week,,Occupation,Indiv. in sampled household,CC,14 or over
+1970,29c,1970_29c,Location of work,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1970,29d,1970_29d,Commute mode of transportation,,Occupation - Commute,Indiv. in sampled household,CC,14 or over
+1970,30,1970_30,Temporarily absent from job or business,,Occupation,Indiv. in sampled household,CC,14 or over
+1970,31a,1970_31a,Seeking work,,Occupation - Unemployment,Indiv. in sampled household,BN,14 or over
+1970,31b,1970_31b,Reason unable to take a job,,Occupation,Indiv. in sampled household,CC,14 or over
+1970,32,1970_32,Time of last work,,Occupation,Indiv. in sampled household,CC,14 or over
+1970,33a,1970_33a,Name of employer,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1970,33b,1970_33b,Type of business,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1970,34a,1970_34a,Type of work,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1970,33c,1970_33c,Industry,,Occupation - Job,Indiv. in sampled household,CC,14 or over
+1970,34b,1970_34b,Job responsibilities,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1970,34c,1970_34c,Job title,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1970,35,1970_35,Class of worker,,Occupation - Job,Indiv. in sampled household,CC,14 or over
+1970,37a,1970_37a,Working in 1965,,Occupation,Indiv. in sampled household,BN,14 or over
+1970,37b,1970_37b,Armed forces in 1965,,Occupation,Indiv. in sampled household,BN,14 or over
+1970,37c,1970_37c,College in 1965,,Occupation,Indiv. in sampled household,BN,14 or over
+1970,38a,1970_38a,Industry of work in 1965,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1970,38b,1970_38b,Occupation in 1965,,Occupation - Job,Indiv. in sampled household,FT,14 or over
+1970,38c,1970_38c,Class of worker in 1965,,Occupation - Job,Indiv. in sampled household,CC,14 or over
+1970,39a,1970_39a,Any work in 1969,,Occupation,Indiv. in sampled household,BN,14 or over
+1970,39b,1970_39b,Weeks of work in 1969,,Occupation,Indiv. in sampled household,CC,14 or over
+1970,40a,1970_40a,1969 wages as employee,,Occupation - Income,Indiv. in sampled household,FN,14 or over
+1970,40b,1970_40b,1969 wages as owner,,Occupation - Income,Indiv. in sampled household,FN,14 or over
+1970,40c,1970_40c,1969 wages from farm,,Occupation - Income,Indiv. in sampled household,FN,14 or over
+1970,41a,1970_41a,1969 income from Social Security,,Occupation - Income,Indiv. in sampled household,FN,14 or over
+1970,41b,1970_41b,1969 income from public assistance/welfare,,Occupation - Income,Indiv. in sampled household,FN,14 or over
+1970,41c,1970_41c,"1969 income from pension, other",,Occupation - Income,Indiv. in sampled household,FN,14 or over
+1970,36,1970_36,Residence in 1965,,Housing,Indiv. in sampled household,FT,14 or over
+1970,H,1970_H,Housing questionnaire,,Housing,Sampled Household,CC,All respondents
+1980,1,1980_1,Name,,Identity,Individual,FT,All respondents
+1980,2,1980_2,Relationship to head of family,,Family,Individual,CC,All respondents
+1980,6,1980_6,Marital status,,Family,Individual,CC,All respondents
+1980,21a,1980_21a,Married more than once,,Family,Indiv. in sampled household,CC,Ever married
+1980,21b,1980_21b,Date of first marriage,,Family,Indiv. in sampled household,FD,Ever married
+1980,21c,1980_21c,First marriage ended becuase of death,,Family,Indiv. in sampled household,BN,Ever married
+1980,20,1980_20,Mother of how many children,,Family,Indiv. in sampled household,CC,"15 or over, female"
+1980,3,1980_3,Sex,,Identity,Individual,CC,All respondents
+1980,4,1980_4,Race,,Race,Individual,CC,All respondents
+1980,5a,1980_5a,Age,,Identity,Individual,FN,All respondents
+1980,5b-5c,1980_5b-5c,Birth month and year,,Identity,Individual,FD,All respondents
+1980,7,1980_7,Hispanic origin,,Race,Individual,CC,All respondents
+1980,8,1980_8,Attended school since February 1,,Education,Individual,CC,All respondents
+1980,9,1980_9,Education level attended,,Education,Individual,CC,All respondents
+1980,10,1980_10,Completed highest grade level,,Education,Individual,CC,All respondents
+1980,11,1980_11,Place of Birth (state or country),,National origin,Indiv. in sampled household,FT,All respondents
+1980,12a,1980_12a,Naturalized,,Immigration,Indiv. in sampled household,CC,All respondents
+1980,12b,1980_12b,Year of immigration to US,,Immigration,Indiv. in sampled household,CC,All respondents
+1980,13a,1980_13a,Other than English spoken at home,,National origin,Indiv. in sampled household,BN,All respondents
+1980,13b,1980_13b,Languge spoken at home,,National origin,Indiv. in sampled household,FT,All respondents
+1980,13c,1980_13c,English language ability,,National origin,Indiv. in sampled household,CC,All respondents
+1980,14,1980_14,Ancestry/Ethnicity,,National origin,Indiv. in sampled household,FT,All respondents
+1980,15a,1980_15a,Lived here in 1975,,Housing,Indiv. in sampled household,CC,All respondents
+1980,15b,1980_15b,Residence in 1975 (+ subquestions),,Housing,Indiv. in sampled household,FT,All respondents
+1980,18a,1980_18a,Veteran status,,Veteran status,Indiv. in sampled household,BN,15 or over
+1980,18b,1980_18b,Period of military service,,Veteran status,Indiv. in sampled household,FT,15 or over
+1980,19a,1980_19a,Health condition limiting work,,Disability,Indiv. in sampled household,BN,15 or over
+1980,19b,1980_19b,Health condition preventing any work,,Disability,Indiv. in sampled household,BN,15 or over
+1980,19c,1980_19c,Health condition limiting public transportation,,Disability,Indiv. in sampled household,BN,15 or over
+1980,22a,1980_22a,Any work last week,,Occupation,Indiv. in sampled household,BN,15 or over
+1980,22b,1980_22b,Hours worked last week,,Occupation,Indiv. in sampled household,FN,15 or over
+1980,23,1980_23,Location of work,,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1980,24b,1980_24b,Commute mode of transportation,,Occupation - Commute,Indiv. in sampled household,CC,15 or over
+1980,24a,1980_24a,Commute duration,,Occupation - Commute,Indiv. in sampled household,FN,15 or over
+1980,24c,1980_24c,Drive alone or carpool,,Occupation - Commute,Indiv. in sampled household,CC,15 or over
+1980,24d,1980_24d,Number in carpool,,Occupation - Commute,Indiv. in sampled household,CC,15 or over
+1980,25,1980_25,Temporarily absent from job or business,,Occupation,Indiv. in sampled household,CC,15 or over
+1980,26a,1980_26a,Seeking work in last 4 weeks,,Occupation - Unemployment,Indiv. in sampled household,BN,15 or over
+1980,26b,1980_26b,Reason unable to take a job,,Occupation,Indiv. in sampled household,CC,15 or over
+1980,27,1980_27,Time of last work,,Occupation,Indiv. in sampled household,CC,15 or over
+1980,28a,1980_28a,Name of employer,,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1980,28b,1980_28b,Type of business,,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1980,29a,1980_29a,Type of work,,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1980,28c,1980_28c,Industry,,Occupation - Job,Indiv. in sampled household,CC,15 or over
+1980,29b,1980_29b,Job responsibilities,,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1980,30,1980_30,Class of worker,,Occupation - Job,Indiv. in sampled household,CC,15 or over
+1980,17c,1980_17c,Working in 1975,,Occupation,Indiv. in sampled household,BN,15 or over
+1980,17a,1980_17a,Armed forces in 1975,,Occupation,Indiv. in sampled household,BN,15 or over
+1980,17b,1980_17b,College in 1975,,Occupation,Indiv. in sampled household,BN,15 or over
+1980,31a,1980_31a,Any work in 1979,,Occupation,Indiv. in sampled household,BN,15 or over
+1980,31b,1980_31b,Weeks of work in 1979,,Occupation,Indiv. in sampled household,FN,15 or over
+1980,31c,1980_31c,Hours of work per week in 1979,,Occupation,Indiv. in sampled household,FN,15 or over
+1980,31d,1980_31d,Weeks looking for work in 1979,,Occupation - Unemployment,Indiv. in sampled household,FN,15 or over
+1980,32a,1980_32a,1979 wages as employee,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1980,32b,1980_32b,1979 wages as owner,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1980,32c,1980_32c,1979 wages from farm,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1980,32e,1980_32e,1979 income from Social Security,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1980,32f,1980_32f,1979 income from public assistance/welfare,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1980,32g,1980_32g,"1979 income from unemployment, pension, etc.",,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1980,32d,1980_32d,1979 income from outside sources,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1980,33,1980_33,Total income in 1979,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1980,H,1980_H,Household questionnaire,,Housing,Sampled Household,CC,All respondents
+1990,1,1990_1,Name,,Identity,Individual,FT,All respondents
+1990,2,1990_2,Relationship to head of family,,Family,Individual,CC,All respondents
+1990,3,1990_3,Sex,,Identity,Individual,CC,All respondents
+1990,4,1990_4,Race,,Race,Individual,CC,All respondents
+1990,5a,1990_5a,Age,,Identity,Individual,FN,All respondents
+1990,5b,1990_5b,Year of birth,,Identity,Individual,FD,All respondents
+1990,6,1990_6,Marital status,,Family,Individual,CC,All respondents
+1990,7,1990_7,Hispanic origin,,Race,Individual,CC,All respondents
+1990,8,1990_8,Place of Birth (state or country),,National origin,Indiv. in sampled household,FT,All respondents
+1990,15a,1990_15a,Other than English spoken at home,,National origin,Indiv. in sampled household,BN,All respondents
+1990,15b,1990_15b,Languge spoken at home,,National origin,Indiv. in sampled household,FT,All respondents
+1990,15c,1990_15c,English language ability,,National origin,Indiv. in sampled household,CC,All respondents
+1990,13,1990_13,Ancestry/Ethnicity,,National origin,Indiv. in sampled household,FT,All respondents
+1990,9,1990_9,Citizenship,,Immigration,Indiv. in sampled household,CC,All respondents
+1990,10,1990_10,Year of immigration to US,,Immigration,Indiv. in sampled household,CC,All respondents
+1990,11,1990_11,Attended school since February 1,,Education,Indiv. in sampled household,CC,All respondents
+1990,12,1990_12,Education level completed,,Education,Indiv. in sampled household,CC,All respondents
+1990,14a,1990_14a,Lived here in 1985,,Housing,Indiv. in sampled household,CC,All respondents
+1990,14b,1990_14b,Residence in 1985 (+ subquestions),,Housing,Indiv. in sampled household,FT,All respondents
+1990,17a,1990_17a,Armed services,,Veteran status,Indiv. in sampled household,CC,15 or over
+1990,17b,1990_17b,Period of military service,,Veteran status,Indiv. in sampled household,CC,15 or over
+1990,17c,1990_17c,Years of active duty service,,Veteran status,Indiv. in sampled household,FN,15 or over
+1990,18a,1990_18a,Health condition limiting work,,Disability,Indiv. in sampled household,BN,15 or over
+1990,18b,1990_18b,Health condition preventing work,,Disability,Indiv. in sampled household,BN,15 or over
+1990,19a,1990_19a,Health condition difficulty going out,,Disability,Indiv. in sampled household,BN,15 or over
+1990,19b,1990_19b,Health condition difficulty at home,,Disability,Indiv. in sampled household,BN,15 or over
+1990,20,1990_20,Mother of how many children,,Family,Indiv. in sampled household,CC,"15 or over, female"
+1990,21a,1990_21a,Any work last week,,Occupation,Indiv. in sampled household,BN,15 or over
+1990,21b,1990_21b,Hours worked last week,,Occupation,Indiv. in sampled household,FN,15 or over
+1990,22,1990_22,Location of work last week,,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1990,23a,1990_23a,Commute mode of transportation,,Occupation - Commute,Indiv. in sampled household,CC,15 or over
+1990,23b,1990_23b,Number in carpool,,Occupation - Commute,Indiv. in sampled household,CC,15 or over
+1990,24a,1990_24a,Time left for work,,Occupation - Commute,Indiv. in sampled household,FN,15 or over
+1990,24b,1990_24b,Commute duration,,Occupation - Commute,Indiv. in sampled household,FN,15 or over
+1990,25,1990_25,Temporarily absent from job or business,,Occupation,Indiv. in sampled household,CC,15 or over
+1990,26a,1990_26a,Seeking work in last 4 weeks,,Occupation - Unemployment,Indiv. in sampled household,BN,15 or over
+1990,26b,1990_26b,Reason unable to take a job,,Occupation,Indiv. in sampled household,CC,15 or over
+1990,27,1990_27,Time of last work,,Occupation,Indiv. in sampled household,CC,15 or over
+1990,28a,1990_28a,Name of employer (current/last),,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1990,28b,1990_28b,Type of business (current/last),,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1990,29a,1990_29a,Type of work (current/last),,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1990,28c,1990_28c,Industry (current/last),,Occupation - Job,Indiv. in sampled household,CC,15 or over
+1990,29b,1990_29b,Job responsibilities (current/last),,Occupation - Job,Indiv. in sampled household,FT,15 or over
+1990,30,1990_30,Class of worker (current/last),,Occupation - Job,Indiv. in sampled household,CC,15 or over
+1990,31a,1990_31a,Any work in 1989,,Occupation,Indiv. in sampled household,BN,15 or over
+1990,31b,1990_31b,Weeks of work in 1989,,Occupation,Indiv. in sampled household,FN,15 or over
+1990,31c,1990_31c,Hours of work per week in 1989,,Occupation,Indiv. in sampled household,FN,15 or over
+1990,32a,1990_32a,1989 wages as employee,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1990,32b,1990_32b,1989 wages as owner,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1990,32c,1990_32c,1989 wages from farm,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1990,32e,1990_32e,1989 income from Social Security,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1990,32f,1990_32f,1989 income from public assistance/welfare,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1990,32g,1990_32g,1989 income from retirement or disability,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1990,32h,1990_32h,"1989 income from VA, unemployment, etc.",,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1990,32d,1990_32d,1989 income from outside sources,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1990,33,1990_33,Total income in 1989,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+1990,H,1990_H,Housing questionnaire,,Housing,Sampled Household,CC,All respondents
+2000,r1,2000_r1,# of people living here,,[Admin.],Reference Individual,FN,All respondents
+2000,r2,2000_r2,Rent or own,,Housing,Household,CC,All respondents
+2000,r4,2000_r4,Telephone number,,[Admin.],Reference Individual,FN,All respondents
+2000,1,2000_1,Name,,Identity,Individual,FT,All respondents
+2000,2,2000_2,Relationship to head of family,,Family,Individual,CC,All respondents
+2000,3,2000_3,Sex,,Identity,Individual,CC,All respondents
+2000,4,2000_4,Date of birth / age,,Identity,Individual,FN,All respondents
+2000,6,2000_6,Race,,Race,Individual,CC,All respondents
+2000,5,2000_5,Hispanic origin,,Race,Individual,CC,All respondents
+2000,7,2000_7,Marital status,,Family,Indiv. in sampled household,CC,All respondents
+2000,8a,2000_8a,Attended school since February 1,,Education,Indiv. in sampled household,CC,All respondents
+2000,8b,2000_8b,Education level attended,,Education,Indiv. in sampled household,CC,All respondents
+2000,9,2000_9,Education level completed,,Education,Indiv. in sampled household,CC,All respondents
+2000,12,2000_12,Place of Birth (state or country),,National origin,Indiv. in sampled household,FT,All respondents
+2000,11a,2000_11a,Other than English spoken at home,,National origin,Indiv. in sampled household,BN,All respondents
+2000,11b,2000_11b,Languge spoken at home,,National origin,Indiv. in sampled household,FT,All respondents
+2000,11c,2000_11c,English language ability,,National origin,Indiv. in sampled household,CC,All respondents
+2000,10,2000_10,Ancestry/Ethnicity,,National origin,Indiv. in sampled household,FT,All respondents
+2000,13,2000_13,Citizenship,,Immigration,Indiv. in sampled household,CC,All respondents
+2000,14,2000_14,Year of immigration to US,,Immigration,Indiv. in sampled household,FD,All respondents
+2000,15a,2000_15a,Lived here in 1995,,Housing,Indiv. in sampled household,CC,All respondents
+2000,15b,2000_15b,Residence in 1995 (+ subquestions),,Housing,Indiv. in sampled household,FT,All respondents
+2000,16a,2000_16a,Blind or deaf,,Disability,Indiv. in sampled household,BN,All respondents
+2000,16b,2000_16b,Health condition limiting mobility,,Disability,Indiv. in sampled household,BN,All respondents
+2000,17a,2000_17a,Health condition difficulty learning,,Disability,Indiv. in sampled household,BN,All respondents
+2000,17d,2000_17d,Health condition difficulty working,,Disability,Indiv. in sampled household,BN,16 or over
+2000,17c,2000_17c,Health condition difficulty going out,,Disability,Indiv. in sampled household,BN,16 or over
+2000,17b,2000_17b,Health condition difficulty at home,,Disability,Indiv. in sampled household,BN,All respondents
+2000,19a,2000_19a,Live with grandchildren,,Occupation,Indiv. in sampled household,BN,15 or over
+2000,19b,2000_19b,Primary caregiver for grandchildren,,Occupation,Indiv. in sampled household,BN,15 or over
+2000,19c,2000_19c,How long primary caregiver for grandchildren,,Occupation,Indiv. in sampled household,CC,15 or over
+2000,20a,2000_20a,Armed services,,Veteran status,Indiv. in sampled household,CC,15 or over
+2000,20b,2000_20b,Period of military service,,Veteran status,Indiv. in sampled household,CC,15 or over
+2000,20c,2000_20c,Years of active duty service,,Veteran status,Indiv. in sampled household,CC,15 or over
+2000,21,2000_21,Any work last week,,Occupation,Indiv. in sampled household,BN,15 or over
+2000,22,2000_22,Location of work,,Occupation - Job,Indiv. in sampled household,FT,15 or over
+2000,23a,2000_23a,Commute mode of transportation,,Occupation - Commute,Indiv. in sampled household,CC,15 or over
+2000,23b,2000_23b,Number in carpool,,Occupation - Commute,Indiv. in sampled household,CC,15 or over
+2000,24a,2000_24a,Time left for work,,Occupation - Commute,Indiv. in sampled household,FN,15 or over
+2000,24b,2000_24b,Commute duration,,Occupation - Commute,Indiv. in sampled household,FN,15 or over
+2000,25a,2000_25a,On layoff last week,,Occupation - Unemployment,Indiv. in sampled household,BN,15 or over
+2000,25b,2000_25b,Temporarily absent from job or business,,Occupation,Indiv. in sampled household,BN,15 or over
+2000,25c,2000_25c,Planned return to work,,Occupation,Indiv. in sampled household,BN,15 or over
+2000,25d,2000_25d,Seeking work in last 4 weeks,,Occupation - Unemployment,Indiv. in sampled household,BN,15 or over
+2000,25e,2000_25e,Reason unable to take a job,,Occupation,Indiv. in sampled household,CC,15 or over
+2000,26,2000_26,Time of last work,,Occupation,Indiv. in sampled household,CC,15 or over
+2000,27a,2000_27a,Name of employer (current/last),,Occupation - Job,Indiv. in sampled household,FT,15 or over
+2000,27b,2000_27b,Type of business (current/last),,Occupation - Job,Indiv. in sampled household,FT,15 or over
+2000,28a,2000_28a,Type of work (current/last),,Occupation - Job,Indiv. in sampled household,FT,15 or over
+2000,27c,2000_27c,Industry (current/last),,Occupation - Job,Indiv. in sampled household,CC,15 or over
+2000,28b,2000_28b,Job responsibilities,,Occupation - Job,Indiv. in sampled household,FT,15 or over
+2000,29,2000_29,Class of worker,,Occupation - Job,Indiv. in sampled household,CC,15 or over
+2000,30a,2000_30a,Any work in 1999,,Occupation,Indiv. in sampled household,BN,15 or over
+2000,30b,2000_30b,Weeks of work in 1999,,Occupation,Indiv. in sampled household,FN,15 or over
+2000,30c,2000_30c,Hours of work per week in 1999,,Occupation,Indiv. in sampled household,FN,15 or over
+2000,31a,2000_31a,1999 wages as employee,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+2000,31b,2000_31b,1999 wages as owner,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+2000,31d,2000_31d,1999 income from Social Security,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+2000,31e,2000_31e,1999 income from SSI,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+2000,31f,2000_31f,1999 income from public assistance/welfare,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+2000,31g,2000_31g,1999 income from retirement or disability,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+2000,31h,2000_31h,"1999 income from VA, unemployment, etc.",,Occupation - Income,Indiv. in sampled household,FN,15 or over
+2000,31c,2000_31c,1999 income from outside sources,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+2000,32,2000_32,Total income in 1999,,Occupation - Income,Indiv. in sampled household,FN,15 or over
+2000,H,2000_H,Housing questionnaire,,Housing,Sampled Household,CC,All respondents
+2000,r1,2000_r1,# of people living here,,[Admin.],Reference Individual,FN,All respondents
+2010,r2,2010_r2,Any additional people,,[Admin.],Reference Individual,CC,All respondents
+2010,r3,2010_r3,Rent or own,,Housing,Household,CC,All respondents
+2010,r4,2010_r4,Telephone number,,[Admin.],Reference Individual,FN,All respondents
+2010,1,2010_1,Name,,Identity,Individual,FT,All respondents
+2010,2,2010_2,Relationship to head of family,,Family,Individual,CC,All respondents
+2010,3,2010_3,Sex,,Identity,Individual,CC,All respondents
+2010,4,2010_4,Date of birth / age,,Identity,Individual,FN,All respondents
+2010,6,2010_6,Race,,Race,Individual,CC,All respondents
+2010,5,2010_5,Hispanic origin,,Race,Individual,CC,All respondents
+2010,7,2010_7,Sometimes lives elsewhere,,Housing,Individual,CC,All respondents
+2010,ACS,2010_ACS,Questions shifted to the ACS,,[Multiple],Indiv. in sampled household,CC,All respondents
+2020,r1,2020_r1,# of people living here,,[Admin.],Reference Individual,FN,All respondents
+2020,r2,2020_r2,Any additional people,,[Admin.],Reference Individual,CC,All respondents
+2020,r3,2020_r3,Rent or own,,Housing,Household,CC,All respondents
+2020,r4,2020_r4,Telephone number,,[Admin.],Reference Individual,FN,All respondents
+2020,1,2020_1,Name,,Identity,Individual,FT,All respondents
+2020,2,2020_2,Usually lives elsewhere,,Housing,Individual,CC,All respondents
+2020,3,2020_3,Relationship to head of family,,Family,Individual,CC,All respondents
+2020,4,2020_4,Sex,,Identity,Individual,CC,All respondents
+2020,5,2020_5,Date of birth / age,,Identity,Individual,FN,All respondents
+2020,7,2020_7,Race,,Race,Individual,CC,All respondents
+2020,6,2020_6,Hispanic origin,,Race,Individual,CC,All respondents

@@ -6,6 +6,5 @@ npm-debug.log
 node_modules
 dev
 dist
-svg
-src/assets
+svg/*.svg
 scripts/two-n-deploy.sh
