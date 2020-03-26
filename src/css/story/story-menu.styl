@@ -104,6 +104,8 @@
     background-color white
     transition opacity 0.5s
     pointer-events none
+    @media (max-width: 768px)
+      width 0
     &.visible
       opacity 1
       pointer-events auto
@@ -142,6 +144,8 @@
       grid-row 3 / 7
     &_filter
       padding 10px
+      @media (max-width: 768px)
+        width 0px
       .filter-label
         set-type-size(small)
         margin-bottom 10px
