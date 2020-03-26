@@ -354,9 +354,7 @@ function makeTooltip({ x, y, d }, isMobile, storyKey, svgWidth) {
     </div>
     ${
       d[AGE_RANGE]
-        ? `<div class='interactive__tooltip_category' style='color:${color};'>By age range (${
-            d[AGE_RANGE].split(",").length
-          } brackets)</div>`
+        ? `<div class='interactive__tooltip_category'>By age range (${d[AGE_RANGE]} brackets)</div>`
         : ""
     }
     <div class='interactive__tooltip_question'>

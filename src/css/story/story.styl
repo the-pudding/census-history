@@ -8,6 +8,7 @@
     width auto
     min-width 300px
     max-width 600px
+    max-height 450px
     border 2px solid
     padding 4px
     transition top 0.5s, left 0.5s, right 0.5s, opacity 0.25s
@@ -52,6 +53,7 @@
       font-family $national
       text-transform uppercase
       set-type-size(xx-small, false)
+      color #4BB650
       .icon
         opacity 0.75
         display inline-block
@@ -61,12 +63,9 @@
         width 16px
 
     .image-question
-      grid-row 2 / 3
-      grid-column 1 / 2
       object-fit contain
-      align-self center
-      justify-self center
-      height calc(100% - 37px)
+      max-width 100%
+      max-height 390px
       @media (max-width: 768px)
         opacity 0
 
