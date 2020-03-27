@@ -6,8 +6,9 @@
 		max-width 35rem
 		margin 0 auto
 		text-align center
-		set-type-size(xxx-large)
-		font-family: $tiempos
+		set-type-size(xxxxx-large)
+		line-height 1.125
+		font-family: $tiempos-hed
 		@media (max-width: 768px)
 			set-type-size(xx-large)
 
@@ -33,25 +34,18 @@
 		text-align center
 
 	&__imgs
-		position absolute
-		top -6px
-		right calc(50% + 20rem + 20px)
 		width 240px
-		height auto
-		margin 0 auto
-		margin-top 1rem
+		height 115px
+		position relative
+		top auto
+		right auto
+		margin 1rem auto 0 auto
 		text-align center
 		img
 			position absolute
 			left 0px
 			top 0px
 			apply-animation()
-		@media (max-width: 768px)
-			height 115px
-			position relative
-			top auto
-			right auto
-			margin 0 auto
 
 	&__text
 		display block

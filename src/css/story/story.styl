@@ -74,22 +74,24 @@
     position absolute
     height auto
     width 240px
-    top 40px
+    top 10px
     right calc(50% + 20rem + 20px)
     opacity 0
     transition opacity 0.25s
     &.populated
       opacity 1
     @media (max-width: $mobile-lg)
+      max-width 360px
+      width 70%
       position relative
       top auto
       right auto
-      margin 0 auto
+      margin 0 auto 1rem auto
     @media (max-width: $mobile-sm)
       position relative
       top auto
       right auto
-      margin 0 auto
+      margin 0 auto 1rem auto
   &__step-start
     position absolute
     display flex
